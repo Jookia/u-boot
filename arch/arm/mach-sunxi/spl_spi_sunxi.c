@@ -344,7 +344,7 @@ static void spi0_xfer(const u8 *txbuf, u32 txlen, u8 *rxbuf, u32 rxlen)
 	}
 }
 
-static void spi0_read_data(void *buf, u32 addr, u32 len)
+static void spi0_read_data(void *buf, u32 addr, u32 len, u32 addr_len)
 {
 	u8 *buf8 = buf;
 	u32 chunk_len;
@@ -355,9 +355,15 @@ static void spi0_read_data(void *buf, u32 addr, u32 len)
 
 		/* Configure the Read Data Bytes (03h) command header */
 		txbuf[0] = 0x03;
-		txbuf[1] = (u8)(addr >> 16);
-		txbuf[2] = (u8)(addr >> 8);
-		txbuf[3] = (u8)(addr);
+		if (addr_len == 3) {
+			txbuf[1] = (u8)(addr >> 16);
+			txbuf[2] = (u8)(addr >> 8);
+			txbuf[3] = (u8)(addr);
+		} else if (addr_len == 2) {
+			txbuf[1] = (u8)(addr >> 8);
+			txbuf[2] = (u8)(addr);
+			txbuf[3] = 0; /* dummy */
+		}
 
 		if (chunk_len > SPI_READ_MAX_SIZE)
 			chunk_len = SPI_READ_MAX_SIZE;
@@ -376,7 +382,7 @@ static void spi0_read_data(void *buf, u32 addr, u32 len)
 static ulong spi_load_read(struct spl_load_info *load, ulong sector,
 			   ulong count, void *buf)
 {
-	spi0_read_data(buf, sector, count);
+	spi0_read_data(buf, sector, count, 3);
 
 	return count;
 }
@@ -395,7 +401,7 @@ static int spl_spi_load_image(struct spl_image_info *spl_image,
 
 	spi0_init();
 
-	spi0_read_data((void *)header, load_offset, 0x40);
+	spi0_read_data((void *)header, load_offset, 0x40, 3);
 
         if (IS_ENABLED(CONFIG_SPL_LOAD_FIT) &&
 		image_get_magic(header) == FDT_MAGIC) {
@@ -412,7 +418,7 @@ static int spl_spi_load_image(struct spl_image_info *spl_image,
 			return ret;
 
 		spi0_read_data((void *)spl_image->load_addr,
-			       load_offset, spl_image->size);
+			       load_offset, spl_image->size, 3);
 	}
 
 	spi0_deinit();
