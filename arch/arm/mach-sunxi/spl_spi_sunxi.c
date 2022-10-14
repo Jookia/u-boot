@@ -379,8 +379,8 @@ static void spi0_read_data(void *buf, u32 addr, u32 len, u32 addr_len)
 	}
 }
 
-static ulong spi_load_read(struct spl_load_info *load, ulong sector,
-			   ulong count, void *buf)
+static ulong spi_load_read_nor(struct spl_load_info *load, ulong sector,
+			       ulong count, void *buf)
 {
 	spi0_read_data(buf, sector, count, 3);
 
@@ -389,37 +389,54 @@ static ulong spi_load_read(struct spl_load_info *load, ulong sector,
 
 /*****************************************************************************/
 
-static int spl_spi_load_image(struct spl_image_info *spl_image,
-			      struct spl_boot_device *bootdev)
+static int spl_spi_try_load(struct spl_image_info *spl_image,
+			    struct spl_boot_device *bootdev,
+			    struct spl_load_info *load, u32 offset,
+			    bool allow_raw)
 {
 	int ret = 0;
 	struct legacy_img_hdr *header;
-	uint32_t load_offset = sunxi_get_spl_size();
-
 	header = (struct legacy_img_hdr *)CONFIG_TEXT_BASE;
-	load_offset = max_t(uint32_t, load_offset, CONFIG_SYS_SPI_U_BOOT_OFFS);
 
-	spi0_init();
-
-	spi0_read_data((void *)header, load_offset, 0x40, 3);
+	if (load->read(load, offset, 0x40, (void *)header) == 0)
+		return -EINVAL;
 
         if (IS_ENABLED(CONFIG_SPL_LOAD_FIT) &&
 		image_get_magic(header) == FDT_MAGIC) {
-		struct spl_load_info load;
 
 		debug("Found FIT image\n");
-		spl_set_bl_len(&load, 1);
-		load.read = spi_load_read;
-		ret = spl_load_simple_fit(spl_image, &load,
-					  load_offset, header);
+		ret = spl_load_simple_fit(spl_image, load,
+					  offset, header);
 	} else {
+		if (!allow_raw && image_get_magic(header) != IH_MAGIC)
+			return -EINVAL;
+
 		ret = spl_parse_image_header(spl_image, bootdev, header);
 		if (ret)
 			return ret;
 
-		spi0_read_data((void *)spl_image->load_addr,
-			       load_offset, spl_image->size, 3);
+		if (load->read(load, offset, spl_image->size,
+			       (void *)spl_image->load_addr) == 0)
+			ret = -EINVAL;
 	}
+
+	return ret;
+}
+
+static int spl_spi_load_image(struct spl_image_info *spl_image,
+			      struct spl_boot_device *bootdev)
+{
+	int ret = 0;
+	uint32_t load_offset = sunxi_get_spl_size();
+	struct spl_load_info load;
+
+	load_offset = max_t(uint32_t, load_offset, CONFIG_SYS_SPI_U_BOOT_OFFS);
+
+	spi0_init();
+
+	spl_set_bl_len(&load, 1);
+	load.read = spi_load_read_nor;
+	ret = spl_spi_try_load(spl_image, bootdev, &load, load_offset, true);
 
 	spi0_deinit();
 
