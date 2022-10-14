@@ -344,6 +344,49 @@ static void spi0_xfer(const u8 *txbuf, u32 txlen, u8 *rxbuf, u32 rxlen)
 	}
 }
 
+#if defined(CONFIG_SPL_SPI_SUNXI_NAND)
+static int spi0_nand_switch_page(u32 page)
+{
+	unsigned count;
+	u8 buf[4];
+
+	/* Configure the Page Data Read (13h) command header */
+	buf[0] = 0x13;
+	buf[1] = (u8)(page >> 16);
+	buf[2] = (u8)(page >> 8);
+	buf[3] = (u8)(page);
+
+	spi0_xfer(buf, 4, NULL, 0);
+
+	/* Wait for NAND chip to exit busy state */
+	buf[0] = 0x0f;
+	buf[1] = 0xc0;
+
+	/* Load a NAND page can take up to 2-decimal-digit microseconds */
+	for (count = 0; count < 100; count ++) {
+		udelay(1);
+		spi0_xfer(buf, 2, buf+2, 1);
+		if (!(buf[2] & 0x1))
+			return 0;
+	}
+
+	return -ETIMEDOUT;
+}
+
+static void spi0_nand_reset(void)
+{
+	u8 buf[1];
+
+	/* Configure the Device RESET (ffh) command */
+	buf[0] = 0xff;
+
+	spi0_xfer(buf, 1, NULL, 0);
+
+	/* Wait for the NAND to finish resetting */
+	udelay(10);
+}
+#endif
+
 static void spi0_read_data(void *buf, u32 addr, u32 len, u32 addr_len)
 {
 	u8 *buf8 = buf;
@@ -386,6 +429,28 @@ static ulong spi_load_read_nor(struct spl_load_info *load, ulong sector,
 
 	return count;
 }
+
+#if defined(CONFIG_SPL_SPI_SUNXI_NAND)
+static ulong spi_load_read_nand(struct spl_load_info *load, ulong sector,
+			       ulong count, void *buf)
+{
+	const ulong pagesize = CONFIG_SPL_SPI_SUNXI_NAND_ASSUMED_PAGESIZE;
+	ulong remain = count;
+
+	while (remain) {
+		ulong count_in_page = min(remain, pagesize - (sector % pagesize));
+		ulong current_page = sector / pagesize;
+		if (spi0_nand_switch_page(current_page) != 0)
+			return 0;
+		spi0_read_data(buf, sector % pagesize, count_in_page, 2);
+		remain -= count_in_page;
+		sector += count_in_page;
+		buf += count_in_page;
+	}
+
+	return count;
+}
+#endif
 
 /*****************************************************************************/
 
@@ -434,10 +499,20 @@ static int spl_spi_load_image(struct spl_image_info *spl_image,
 
 	spi0_init();
 
+#if defined(CONFIG_SPL_SPI_SUNXI_NAND)
+	spi0_nand_reset();
+	load.read = spi_load_read_nand;
+	spl_set_bl_len(&load, 1);
+	ret = spl_spi_try_load(spl_image, bootdev, &load, load_offset, false);
+	if (!ret)
+		goto out;
+#endif
+
 	spl_set_bl_len(&load, 1);
 	load.read = spi_load_read_nor;
 	ret = spl_spi_try_load(spl_image, bootdev, &load, load_offset, true);
 
+out:
 	spi0_deinit();
 
 	return ret;
