@@ -479,19 +479,15 @@ static int musb_usb_probe(struct udevice *dev)
 	if (!host->host)
 		return -EIO;
 
-	ret = musb_lowlevel_init(host);
-	if (!ret)
-		printf("Allwinner mUSB OTG (Host)\n");
+	return musb_lowlevel_init(host);
 #else
 	pdata.mode = MUSB_PERIPHERAL;
 	host->host = musb_register(&pdata, &glue->dev, base);
 	if (IS_ERR_OR_NULL(host->host))
 		return -EIO;
 
-	printf("Allwinner mUSB OTG (Peripheral)\n");
+	return 0;
 #endif
-
-	return ret;
 }
 
 static int musb_usb_remove(struct udevice *dev)
