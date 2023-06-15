@@ -84,6 +84,7 @@
 
 struct sunxi_musb_config {
 	struct musb_hdrc_config *config;
+	bool has_sram;
 };
 
 struct sunxi_glue {
@@ -312,7 +313,10 @@ static int sunxi_musb_init(struct musb *musb)
 
 	musb->isr = sunxi_musb_interrupt;
 
-	USBC_ConfigFIFO_Base();
+	if (glue->cfg->has_sram) {
+		USBC_ConfigFIFO_Base();
+	}
+
 	USBC_EnableDpDmPullUp(musb->mregs);
 	USBC_EnableIdPullUp(musb->mregs);
 
@@ -518,6 +522,7 @@ static int musb_usb_remove(struct udevice *dev)
 
 static const struct sunxi_musb_config sun4i_a10_cfg = {
 	.config = &musb_config,
+	.has_sram = true,
 };
 
 static const struct sunxi_musb_config sun6i_a31_cfg = {
