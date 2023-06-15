@@ -172,15 +172,22 @@ static void USBC_ForceVbusValidToHigh(__iomem void *base)
 	musb_writel(base, USBC_REG_o_ISCR, reg_val);
 }
 
-static void USBC_ConfigFIFO_Base(void)
-{
-	u32 reg_value;
+/******************************************************************************
+ * Non-USBC register access needed for initialization
+ ******************************************************************************/
 
-	/* config usb fifo, 8kb mode */
-	reg_value = readl(SUNXI_SRAMC_BASE + 0x04);
-	reg_value &= ~(0x03 << 0);
-	reg_value |= BIT(0);
-	writel(reg_value, SUNXI_SRAMC_BASE + 0x04);
+/*
+ * A10(s), A13, GR8, A20:
+ * switch ownership of SRAM block 'D' to the USB-OTG controller
+ */
+static void sunxi_musb_claim_sram(uintptr_t syscon_base)
+{
+	/*
+	 * BIT(0) of SRAM_CTRL_REG1 (syscon+0x04) controls SRAM-D ownership:
+	 * '0' -> exclusive access by CPU
+	 * '1' -> exclusive access by USB0
+	 */
+	setbits_le32(syscon_base + 0x04, BIT(0));
 }
 
 /******************************************************************************
@@ -314,7 +321,13 @@ static int sunxi_musb_init(struct musb *musb)
 	musb->isr = sunxi_musb_interrupt;
 
 	if (glue->cfg->has_sram) {
-		USBC_ConfigFIFO_Base();
+		/*
+		 * This is an older USB-OTG controller that Allwinner did not
+		 * endow with a dedicated SRAM block; it instead uses SRAM
+		 * block 'D', ownership of which needs to be handed over by
+		 * the CPU
+		 */
+		sunxi_musb_claim_sram(SUNXI_SRAMC_BASE);
 	}
 
 	USBC_EnableDpDmPullUp(musb->mregs);
