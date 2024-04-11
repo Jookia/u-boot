@@ -10,6 +10,7 @@
 
 #include <config.h>
 
+extern void spinand_init(void);
 extern void nand_init(void);
 void nand_reinit(void);
 unsigned long nand_size(void);
@@ -110,7 +111,9 @@ int nand_get_lock_status(struct mtd_info *mtd, loff_t offset);
 u32 nand_spl_adjust_offset(u32 sector, u32 offs);
 int nand_spl_load_image(uint32_t offs, unsigned int size, void *dst);
 int nand_spl_read_block(int block, int offset, int len, void *dst);
+int spinand_spl_read_block(int block, int offset, int len, void *dst);
 void nand_deselect(void);
+void spinand_deselect(void);
 
 #ifdef CONFIG_SYS_NAND_SELECT_DEVICE
 void board_nand_select_device(struct nand_chip *nand, int chip);
