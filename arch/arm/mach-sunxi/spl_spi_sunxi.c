@@ -450,6 +450,27 @@ static ulong spi_load_read_nand(struct spl_load_info *load, ulong sector,
 
 	return count;
 }
+
+void spinand_init(void)
+{
+	spi0_init();
+	spi0_nand_reset();
+}
+
+void spinand_deselect(void)
+{
+	spi0_deinit();
+}
+
+int spinand_spl_read_block(int block, int offset, int len, void *dst)
+{
+	ulong byte_offset = (block * CONFIG_SPL_SPINAND_BLOCK_SIZE) + offset;
+
+	spi_load_read_nand(NULL, byte_offset, len, dst);
+
+	return 0;
+}
+
 #endif
 
 /*****************************************************************************/
