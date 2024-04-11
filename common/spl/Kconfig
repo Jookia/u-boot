@@ -906,6 +906,27 @@ config SPL_MUSB_NEW
 	  the drivers in drivers/usb/musb-new as part of an SPL build. The
 	  old drivers are in drivers/usb/musb.
 
+config SPL_SPINAND_SUPPORT
+	bool "Support SPINAND flash"
+	help
+	  Enable support for SPINAND (Negative AND) flash in SPL. SPINAND flash
+	  can be used to allow SPL to load U-Boot from supported devices.
+
+config SPL_SPINAND_PAGE_SIZE
+        hex "SPINAND chip page size"
+        depends on SPL_SPINAND_SUPPORT
+        help
+          Number of data bytes in one page for the SPINAND chip on the
+          board, not including the OOB area.
+
+config SPL_SPINAND_BLOCK_SIZE
+        hex "SPINAND chip eraseblock size"
+        depends on SPL_SPINAND_SUPPORT
+        help
+          Number of data bytes in one eraseblock for the SPINAND chip on the
+          board. This is the multiple of SPINAND_PAGE_SIZE and the number of
+          pages.
+
 config SPL_NAND_SUPPORT
 	bool "Support NAND flash"
 	select SPL_LOAD_BLOCK
