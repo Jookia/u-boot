@@ -16,8 +16,6 @@
 #define SUNXI_BOOTED_FROM_NAND	1
 #define SUNXI_BOOTED_FROM_MMC2	2
 #define SUNXI_BOOTED_FROM_SPI	3
-#define SUNXI_BOOTED_FROM_MMC0_HIGH	0x10
-#define SUNXI_BOOTED_FROM_MMC2_HIGH	0x12
 
 /*
  * Values taken from the F1C200s BootROM stack
