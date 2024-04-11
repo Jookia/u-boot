@@ -276,6 +276,7 @@ static int sunxi_get_boot_source(void)
 uint32_t sunxi_get_boot_device(void)
 {
 	int boot_source = sunxi_get_boot_source();
+	int boot_dev = (boot_source & 0xF); /* Low nibble is device */
 
 	/*
 	 * When booting from the SD card or NAND memory, the "eGON.BT0"
@@ -293,16 +294,15 @@ uint32_t sunxi_get_boot_device(void)
 	 * binary over USB. If it is found, it determines where SPL was
 	 * read from.
 	 */
-	switch (boot_source) {
-	case SUNXI_INVALID_BOOT_SOURCE:
+	if (boot_source == SUNXI_INVALID_BOOT_SOURCE)
 		return BOOT_DEVICE_BOARD;
+
+	switch (boot_dev) {
 	case SUNXI_BOOTED_FROM_MMC0:
-	case SUNXI_BOOTED_FROM_MMC0_HIGH:
 		return BOOT_DEVICE_MMC1;
 	case SUNXI_BOOTED_FROM_NAND:
 		return BOOT_DEVICE_NAND;
 	case SUNXI_BOOTED_FROM_MMC2:
-	case SUNXI_BOOTED_FROM_MMC2_HIGH:
 		return BOOT_DEVICE_MMC2;
 	case SUNXI_BOOTED_FROM_SPI:
 		return BOOT_DEVICE_SPI;
@@ -310,6 +310,14 @@ uint32_t sunxi_get_boot_device(void)
 
 	panic("Unknown boot source %d\n", boot_source);
 	return -1;		/* Never reached */
+}
+
+uint32_t sunxi_get_boot_position(void)
+{
+	int boot_source = sunxi_get_boot_source();
+	int boot_pos = ((boot_source >> 8) & 0xF); /* High nibble is position */
+
+	return boot_pos;
 }
 
 #ifdef CONFIG_SPL_BUILD
@@ -343,12 +351,8 @@ unsigned long board_spl_mmc_get_uboot_raw_sector(struct mmc *mmc,
 
 	sector = max(raw_sect, spl_size / 512);
 
-	switch (sunxi_get_boot_source()) {
-	case SUNXI_BOOTED_FROM_MMC0_HIGH:
-	case SUNXI_BOOTED_FROM_MMC2_HIGH:
+	if (sunxi_get_boot_position() == 1)
 		sector += (128 - 8) * 2;
-		break;
-	}
 
 	return sector;
 }
