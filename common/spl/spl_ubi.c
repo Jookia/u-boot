@@ -12,6 +12,16 @@
 #include <ubispl.h>
 #include <spl.h>
 
+static ulong ram_spl_load_read(struct spl_load_info *load, ulong sector,
+			       ulong count, void *buf)
+{
+	char *ubi_contents = load->priv;
+
+	memcpy(buf, ubi_contents + sector, count);
+
+	return count;
+}
+
 int spl_ubi_load_image(struct spl_image_info *spl_image,
 		       struct spl_boot_device *bootdev)
 {
@@ -69,10 +79,11 @@ int spl_ubi_load_image(struct spl_image_info *spl_image,
 		puts("Loading Linux failed, falling back to U-Boot.\n");
 	}
 #endif
-	header = spl_get_load_buffer(-sizeof(*header), sizeof(header));
+	/* Ensure there's enough room for the full UBI volume! */
+	header = (void *)CONFIG_SYS_LOAD_ADDR;
 #ifdef CONFIG_SPL_UBI_LOAD_BY_VOLNAME
 	volumes[0].vol_id = -1;
-	strncpy(volumes[0].name,
+	strlcpy(volumes[0].name,
 		CONFIG_SPL_UBI_LOAD_MONITOR_VOLNAME,
 		UBI_VOL_NAME_MAX + 1);
 #else
@@ -81,8 +92,23 @@ int spl_ubi_load_image(struct spl_image_info *spl_image,
 	volumes[0].load_addr = (void *)header;
 
 	ret = ubispl_load_volumes(&info, volumes, 1);
-	if (!ret)
-		spl_parse_image_header(spl_image, bootdev, header);
+	if (ret)
+		goto out;
+
+	spl_parse_image_header(spl_image, bootdev, header);
+
+	if (IS_ENABLED(CONFIG_SPL_LOAD_FIT) &&
+	    image_get_magic(header) == FDT_MAGIC) {
+		struct spl_load_info load;
+
+		printf("Found FIT\n");
+		load.priv = (char *)header;
+		load.read = ram_spl_load_read;
+		spl_set_bl_len(&load, 1);
+
+		ret = spl_load_simple_fit(spl_image, &load, 0, header);
+	}
+
 out:
 #ifdef CONFIG_SPL_SPINAND_SUPPORT
 	if (bootdev->boot_device == BOOT_DEVICE_SPINAND)
