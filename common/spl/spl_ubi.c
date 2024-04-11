@@ -21,6 +21,13 @@ int spl_ubi_load_image(struct spl_image_info *spl_image,
 	int ret = 1;
 
 	switch (bootdev->boot_device) {
+#ifdef CONFIG_SPL_SPINAND_SUPPORT
+	case BOOT_DEVICE_SPINAND:
+		spinand_init();
+		info.read = spinand_spl_read_block;
+		info.peb_size = CONFIG_SPL_SPINAND_BLOCK_SIZE;
+		break;
+#endif
 #ifdef CONFIG_SPL_NAND_SUPPORT
 	case BOOT_DEVICE_NAND:
 		nand_init();
@@ -77,12 +84,18 @@ int spl_ubi_load_image(struct spl_image_info *spl_image,
 	if (!ret)
 		spl_parse_image_header(spl_image, bootdev, header);
 out:
+#ifdef CONFIG_SPL_SPINAND_SUPPORT
+	if (bootdev->boot_device == BOOT_DEVICE_SPINAND)
+		spinand_deselect();
+#endif
 #ifdef CONFIG_SPL_NAND_SUPPORT
 	if (bootdev->boot_device == BOOT_DEVICE_NAND)
 		nand_deselect();
 #endif
 	return ret;
 }
-/* Use priorty 0 so that Ubi will override NAND and ONENAND methods */
+
+/* Use priority 0 so that UBI will override all NAND methods */
 SPL_LOAD_IMAGE_METHOD("NAND", 0, BOOT_DEVICE_NAND, spl_ubi_load_image);
 SPL_LOAD_IMAGE_METHOD("OneNAND", 0, BOOT_DEVICE_ONENAND, spl_ubi_load_image);
+SPL_LOAD_IMAGE_METHOD("SPINAND", 0, BOOT_DEVICE_SPINAND, spl_ubi_load_image);
