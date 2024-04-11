@@ -344,7 +344,7 @@ static void spi0_xfer(const u8 *txbuf, u32 txlen, u8 *rxbuf, u32 rxlen)
 	}
 }
 
-#if defined(CONFIG_SPL_SPI_SUNXI_NAND)
+#if defined(CONFIG_SPL_SPINAND_SUPPORT)
 static int spi0_nand_switch_page(u32 page)
 {
 	unsigned count;
@@ -430,11 +430,11 @@ static ulong spi_load_read_nor(struct spl_load_info *load, ulong sector,
 	return count;
 }
 
-#if defined(CONFIG_SPL_SPI_SUNXI_NAND)
+#if defined(CONFIG_SPL_SPINAND_SUPPORT)
 static ulong spi_load_read_nand(struct spl_load_info *load, ulong sector,
 			       ulong count, void *buf)
 {
-	const ulong pagesize = CONFIG_SPL_SPI_SUNXI_NAND_ASSUMED_PAGESIZE;
+	const ulong pagesize = CONFIG_SPL_SPINAND_PAGE_SIZE;
 	ulong remain = count;
 
 	while (remain) {
@@ -501,7 +501,7 @@ static int spl_spi_load_image(struct spl_image_info *spl_image,
 	spi0_init();
 
 	switch (bootdev->boot_device) {
-#if defined(CONFIG_SPL_SPI_SUNXI_NAND)
+#if defined(CONFIG_SPL_SPINAND_SUPPORT)
 	case BOOT_DEVICE_SPINAND:
 		spi0_nand_reset();
 		load.read = spi_load_read_nand;
@@ -524,6 +524,6 @@ static int spl_spi_load_image(struct spl_image_info *spl_image,
 /* Use priorty 0 to override the default if it happens to be linked in */
 SPL_LOAD_IMAGE_METHOD("sunxi SPI", 0, BOOT_DEVICE_SPI, spl_spi_load_image);
 
-#if IS_ENABLED(CONFIG_SPL_SPI_SUNXI_NAND)
+#if IS_ENABLED(CONFIG_SPL_SPINAND_SUPPORT)
 SPL_LOAD_IMAGE_METHOD("sunxi SPI NAND", 0, BOOT_DEVICE_SPINAND, spl_spi_load_image);
 #endif

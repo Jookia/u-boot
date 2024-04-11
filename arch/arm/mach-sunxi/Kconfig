@@ -1084,22 +1084,6 @@ config SPL_SPI_SUNXI
 	  sunxi SPI Flash. It uses the same method as the boot ROM, so does
 	  not need any extra configuration.
 
-config SPL_SPI_SUNXI_NAND
-	bool "Support for SPI NAND Flash on Allwinner SoCs in SPL"
-	depends on SPL_SPI_SUNXI
-	help
-	  Enable support for SPI NAND Flash. This option allows SPL to mimic
-	  Allwinner boot ROM's behavior to gain support for SPI NAND Flash;
-	  a fixed page size needs to be assumed when building the SPL image.
-
-config SPL_SPI_SUNXI_NAND_ASSUMED_PAGESIZE
-	hex "Assumed pagesize for SPI NAND Flash in SPL"
-	depends on SPL_SPI_SUNXI_NAND
-	default 0x400 if MACH_SUNIV
-	help
-	  Set the page size assumed by the SPL SPI NAND code, the default
-	  value is the same with the boot ROM.
-
 config PINE64_DT_SELECTION
 	bool "Enable Pine64 device tree selection code"
 	depends on MACH_SUN50I
