@@ -222,11 +222,12 @@ static int suniv_get_boot_source(void)
 	switch (brom_call) {
 	case SUNIV_BOOTED_FROM_MMC0:
 		return SUNXI_BOOTED_FROM_MMC0;
-	case SUNIV_BOOTED_FROM_SPI:
 	case SUNIV_BOOTED_FROM_NAND:
 		return SUNXI_BOOTED_FROM_SPI;
 	case SUNIV_BOOTED_FROM_MMC1:
 		return SUNXI_BOOTED_FROM_MMC2;
+	case SUNIV_BOOTED_FROM_SPI:
+		return SUNXI_BOOTED_FROM_SPINAND;
 	}
 	/* If we get here something went wrong try to boot from FEL.*/
 	printf("Unknown boot source from BROM: 0x%x\n", brom_call);
@@ -306,6 +307,8 @@ uint32_t sunxi_get_boot_device(void)
 		return BOOT_DEVICE_MMC2;
 	case SUNXI_BOOTED_FROM_SPI:
 		return BOOT_DEVICE_SPI;
+	case SUNXI_BOOTED_FROM_SPINAND:
+		return BOOT_DEVICE_SPINAND;
 	}
 
 	panic("Unknown boot source %d\n", boot_source);
