@@ -166,6 +166,10 @@ static int gpio_init(void)
 	sunxi_gpio_set_cfgpin(SUNXI_GPB(0), SUN8I_GPB_UART2);
 	sunxi_gpio_set_cfgpin(SUNXI_GPB(1), SUN8I_GPB_UART2);
 	sunxi_gpio_set_pull(SUNXI_GPB(1), SUNXI_GPIO_PULL_UP);
+#elif CONFIG_CONS_INDEX == 3 && defined(CONFIG_MACH_SUN8I_R528)
+	sunxi_gpio_set_cfgpin(SUNXI_GPD(1), SUN8I_T113_GPD_UART2);
+	sunxi_gpio_set_cfgpin(SUNXI_GPD(2), SUN8I_T113_GPD_UART2);
+	sunxi_gpio_set_pull(SUNXI_GPD(2), SUNXI_GPIO_PULL_UP);
 #elif CONFIG_CONS_INDEX == 4 && defined(CONFIG_MACH_SUN8I_R528)
 	sunxi_gpio_set_cfgpin(SUNXI_GPB(6), 7);
 	sunxi_gpio_set_cfgpin(SUNXI_GPB(7), 7);
@@ -174,8 +178,9 @@ static int gpio_init(void)
 	sunxi_gpio_set_cfgpin(SUNXI_GPL(2), SUN8I_GPL_R_UART);
 	sunxi_gpio_set_cfgpin(SUNXI_GPL(3), SUN8I_GPL_R_UART);
 	sunxi_gpio_set_pull(SUNXI_GPL(3), SUNXI_GPIO_PULL_UP);
-#elif CONFIG_CONS_INDEX == 2 && defined(CONFIG_MACH_SUN8I) && \
-				!defined(CONFIG_MACH_SUN8I_R40)
+#elif CONFIG_CONS_INDEX == 2 && ((defined(CONFIG_MACH_SUN8I) && \
+				!defined(CONFIG_MACH_SUN8I_R40)) || \
+				defined(CONFIG_MACH_SUN8I_R528))
 	sunxi_gpio_set_cfgpin(SUNXI_GPG(6), SUN8I_GPG_UART1);
 	sunxi_gpio_set_cfgpin(SUNXI_GPG(7), SUN8I_GPG_UART1);
 	sunxi_gpio_set_pull(SUNXI_GPG(7), SUNXI_GPIO_PULL_UP);
