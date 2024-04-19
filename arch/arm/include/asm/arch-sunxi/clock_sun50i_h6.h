@@ -376,12 +376,20 @@ struct sunxi_ccm_reg {
 /* TCON0 clock bit field */
 #define CCM_TCON0_CTRL_ENABLE		(0x1 << 31)
 #define CCM_TCON0_CTRL_VIDEO0_4X	(0x1 << 24)
+#define CCM_TCON0_CTRL_VIDEO1_4X	(0x3 << 24)
 #define CCM_TCON0_CTRL_M(m)		((((m) - 1) & 0xf) << 0)
 
 /* TCON1 clock bit field */
 #define CCM_TCON1_CTRL_ENABLE		(0x1 << 31)
 #define CCM_TCON1_CTRL_VIDEO0_4X	(0x1 << 24)
+#define CCM_TCON1_CTRL_VIDEO1_4X	(0x3 << 24)
 #define CCM_TCON1_CTRL_M(m)		((((m) - 1) & 0xf) << 0)
+
+/* HDMI clock bit field */
+#define CCM_HDMI_CTRL_ENABLE		(0x1 << 31)
+#define CCM_HDMI_CTRL_VIDEO1_4X_H6	(0x2 << 24)
+#define CCM_HDMI_CTRL_VIDEO0_4X_H616	(0x1 << 24)
+#define CCM_HDMI_CTRL_M(m)		((((m) - 1) & 0xf) << 0)
 
 /* CCM bits common to all Display Engine 2.0 clock ctrl regs */
 #define CCM_DE2_CTRL_M(n)		((((n) - 1) & 0xf) << 0)
@@ -399,6 +407,7 @@ void clock_set_pll3(unsigned int hz);
 void clock_set_video1(unsigned int hz);
 void clock_set_pll10(unsigned int hz);
 unsigned int clock_get_pll3(void);
+unsigned int clock_get_video1(void);
 #endif
 #endif
 

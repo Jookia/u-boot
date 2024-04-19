@@ -230,4 +230,14 @@ unsigned int clock_get_pll3(void)
 	return 12000 * n * 1000;
 }
 
+unsigned int clock_get_video1(void)
+{
+	struct sunxi_ccm_reg *const ccm =
+		(struct sunxi_ccm_reg *)SUNXI_CCM_BASE;
+	u32 rval = readl(&ccm->pll_video1_cfg);
+	int n = ((rval & CCM_VIDEO1_CTRL_N_MASK) >> CCM_VIDEO1_CTRL_N_SHIFT) + 1;
+
+	return 12000 * n * 1000;
+}
+
 #endif
