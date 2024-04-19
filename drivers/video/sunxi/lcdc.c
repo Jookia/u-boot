@@ -216,7 +216,10 @@ void lcdc_pll_set(struct sunxi_ccm_reg *ccm, int tcon, int dotclock,
 	int value, n, m, min_m, max_m, diff, step;
 	int best_n = 0, best_m = 0, best_diff = 0x0FFFFFFF;
 	int best_double = 0;
+
+#ifdef CONFIG_MACH_SUN6I
 	bool use_mipi_pll = false;
+#endif
 
 #ifdef CONFIG_SUNXI_DE2
 	step = 6000;
