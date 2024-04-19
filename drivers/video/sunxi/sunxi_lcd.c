@@ -26,7 +26,7 @@ struct sunxi_lcd_priv {
 
 static void sunxi_lcdc_config_pinmux(void)
 {
-#ifdef CONFIG_MACH_SUN50I
+#if IS_ENABLED(CONFIG_MACH_SUN50I) || IS_ENABLED(CONFIG_SUN50I_GEN_H6) || IS_ENABLED(CONFIG_MACH_SUN8I_R528)
 	int pin;
 
 	for (pin = SUNXI_GPD(0); pin <= SUNXI_GPD(21); pin++) {
@@ -47,10 +47,12 @@ static int sunxi_lcd_enable(struct udevice *dev, int bpp,
 	struct udevice *backlight;
 	int clk_div, clk_double, ret;
 
+#if !IS_ENABLED(CONFIG_SUN50I_GEN_H6) && !IS_ENABLED(CONFIG_MACH_SUN8I_R528)
 	/* Reset off */
 	setbits_le32(&ccm->ahb_reset1_cfg, 1 << AHB_RESET_OFFSET_LCD0);
 	/* Clock on */
 	setbits_le32(&ccm->ahb_gate1, 1 << AHB_GATE_OFFSET_LCD0);
+#endif
 
 	lcdc_init(lcdc);
 	sunxi_lcdc_config_pinmux();
@@ -146,7 +148,7 @@ U_BOOT_DRIVER(sunxi_lcd) = {
 	.priv_auto	= sizeof(struct sunxi_lcd_priv),
 };
 
-#ifdef CONFIG_MACH_SUN50I
+#if IS_ENABLED(CONFIG_MACH_SUN50I) || IS_ENABLED(CONFIG_SUN50I_GEN_H6) || IS_ENABLED(CONFIG_MACH_SUN8I_R528)
 U_BOOT_DRVINFO(sunxi_lcd) = {
 	.name = "sunxi_lcd"
 };

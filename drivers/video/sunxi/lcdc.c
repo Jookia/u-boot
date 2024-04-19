@@ -277,6 +277,12 @@ void lcdc_pll_set(struct sunxi_ccm_reg *ccm, int tcon, int dotclock,
 		}
 	}
 
+#if IS_ENABLED(CONFIG_SUN50I_GEN_H6) || IS_ENABLED(CONFIG_SUNXI_GEN_NCAT2)
+	/* No need to clock doubling, just ask for a higher PLL clock */
+	best_double = 0;
+	step *= 2;
+#endif
+
 #ifdef CONFIG_MACH_SUN6I
 	/*
 	 * Use the MIPI pll if we've been unable to find any matching setting
@@ -302,6 +308,19 @@ void lcdc_pll_set(struct sunxi_ccm_reg *ccm, int tcon, int dotclock,
 		      best_double + 1, step, best_n, best_m);
 	}
 
+#if IS_ENABLED(CONFIG_SUN50I_GEN_H6) || IS_ENABLED(CONFIG_SUNXI_GEN_NCAT2)
+	if (tcon == 0) {
+		writel(CCM_TCON0_CTRL_VIDEO0_4X | CCM_TCON0_CTRL_ENABLE,
+		       &ccm->tcon_lcd0_clk_cfg);
+		setbits_le32(&ccm->tcon_lcd_gate_reset, BIT(RESET_SHIFT));
+		setbits_le32(&ccm->tcon_lcd_gate_reset, BIT(GATE_SHIFT));
+	} else {
+		writel(CCM_TCON1_CTRL_VIDEO0_4X | CCM_TCON1_CTRL_ENABLE,
+		       &ccm->tcon_tv0_clk_cfg);
+		setbits_le32(&ccm->tcon_tv_gate_reset, BIT(RESET_SHIFT));
+		setbits_le32(&ccm->tcon_tv_gate_reset, BIT(GATE_SHIFT));
+	}
+#else
 	if (tcon == 0) {
 		u32 pll;
 
@@ -329,6 +348,7 @@ void lcdc_pll_set(struct sunxi_ccm_reg *ccm, int tcon, int dotclock,
 			setbits_le32(&ccm->lcd0_ch1_clk_cfg,
 				     CCM_LCD_CH1_CTRL_HALF_SCLK1);
 	}
+#endif
 #endif
 
 	*clk_div = best_m;
