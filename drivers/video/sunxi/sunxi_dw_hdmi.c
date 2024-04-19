@@ -230,7 +230,12 @@ static void sunxi_dw_hdmi_pll_set(uint clk_khz, int *phy_div)
 
 	*phy_div = best_div;
 
+#if IS_ENABLED(CONFIG_SUN50I_GEN_H6) || IS_ENABLED(CONFIG_SUNXI_GEN_NCAT2)
+	panic("setting HDMI pll not implemented");
+#else
 	clock_set_pll3_factors(best_m, best_n);
+#endif
+
 	debug("dotclock: %dkHz = %dkHz: (24MHz * %d) / %d / %d\n",
 	      clk_khz, (clock_get_pll3() / 1000) / best_div,
 	      best_n, best_m, best_div);
@@ -244,6 +249,9 @@ static void sunxi_dw_hdmi_lcdc_init(int mux, const struct display_timing *edid,
 	int div = DIV_ROUND_UP(clock_get_pll3(), edid->pixelclock.typ);
 	struct sunxi_lcdc_reg *lcdc;
 
+#if IS_ENABLED(CONFIG_SUN50I_GEN_H6) || IS_ENABLED(CONFIG_SUNXI_GEN_NCAT2)
+	panic("initializing HDMI lcdc not implemented");
+#else
 	if (mux == 0) {
 		lcdc = (struct sunxi_lcdc_reg *)SUNXI_LCD0_BASE;
 
@@ -265,6 +273,7 @@ static void sunxi_dw_hdmi_lcdc_init(int mux, const struct display_timing *edid,
 		writel(CCM_LCD1_CTRL_GATE | CCM_LCD1_CTRL_M(div),
 		       &ccm->lcd1_clk_cfg);
 	}
+#endif
 
 	lcdc_init(lcdc);
 	lcdc_tcon1_mode_set(lcdc, edid, false, false);
@@ -338,6 +347,9 @@ static int sunxi_dw_hdmi_probe(struct udevice *dev)
 	if (priv->hvcc)
 		regulator_set_enable(priv->hvcc, true);
 
+#if IS_ENABLED(CONFIG_SUN50I_GEN_H6) || IS_ENABLED(CONFIG_SUNXI_GEN_NCAT2)
+	panic("initializing HDMI not implemented");
+#else
 	/* Set pll3 to 297 MHz */
 	clock_set_pll3(297000000);
 
@@ -347,6 +359,7 @@ static int sunxi_dw_hdmi_probe(struct udevice *dev)
 
 	/* This reset is referenced from the PHY devicetree node. */
 	setbits_le32(&ccm->ahb_reset1_cfg, 1 << AHB_RESET_OFFSET_HDMI2);
+#endif
 
 	ret = reset_deassert_bulk(&priv->resets);
 	if (ret)
