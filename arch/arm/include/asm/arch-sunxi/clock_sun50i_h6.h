@@ -236,6 +236,28 @@ struct sunxi_ccm_reg {
 #define CCM_PLL1_CTRL_P(p)		((p) << 16)
 #define CCM_PLL1_CTRL_N(n)		(((n) - 1) << 8)
 
+/* pll3 (video0) bit field */
+#define CCM_PLL3_CTRL_EN		BIT(31)
+#define CCM_PLL3_LDO_EN			BIT(30)
+#define CCM_PLL3_LOCK_EN		BIT(29)
+#define CCM_PLL3_LOCK			BIT(28)
+#define CCM_PLL3_OUT_EN			BIT(27)
+#define CCM_PLL3_INPUT_DIV2		BIT(1)
+#define CCM_PLL3_CTRL_N(n)		(((n) - 1) << 8)
+#define CCM_PLL3_CTRL_N_SHIFT		8
+#define CCM_PLL3_CTRL_N_MASK		(0xff << CCM_PLL3_CTRL_N_SHIFT)
+
+/* video1 bit field */
+#define CCM_VIDEO1_CTRL_EN		BIT(31)
+#define CCM_VIDEO1_LDO_EN		BIT(30)
+#define CCM_VIDEO1_LOCK_EN		BIT(29)
+#define CCM_VIDEO1_LOCK			BIT(28)
+#define CCM_VIDEO1_OUT_EN		BIT(27)
+#define CCM_VIDEO1_INPUT_DIV2		BIT(1)
+#define CCM_VIDEO1_CTRL_N(n)		(((n) - 1) << 8)
+#define CCM_VIDEO1_CTRL_N_SHIFT		8
+#define CCM_VIDEO1_CTRL_N_MASK		(0xff << CCM_VIDEO1_CTRL_N_SHIFT)
+
 /* pll5 bit field */
 #define CCM_PLL5_CTRL_EN		BIT(31)
 #define CCM_PLL5_LOCK_EN		BIT(29)
@@ -257,6 +279,16 @@ struct sunxi_ccm_reg {
 #define CCM_PLL6_CTRL_DIV1_MASK		(0x1 << CCM_PLL6_CTRL_DIV1_SHIFT)
 #define CCM_PLL6_CTRL_DIV2_SHIFT	1
 #define CCM_PLL6_CTRL_DIV2_MASK		(0x1 << CCM_PLL6_CTRL_DIV2_SHIFT)
+
+/* pll10 bit field */
+#define CCM_PLL10_CTRL_EN		BIT(31)
+#define CCM_PLL10_LOCK_EN		BIT(29)
+#define CCM_PLL10_LOCK			BIT(28)
+#define CCM_PLL10_OUT_EN		BIT(27)
+#define CCM_PLL10_INPUT_DIV2		BIT(1)
+#define CCM_PLL10_CTRL_N(n)		(((n) - 1) << 8)
+#define CCM_PLL10_CTRL_N_SHIFT		8
+#define CCM_PLL10_CTRL_N_MASK		(0xff << CCM_PLL10_CTRL_N_SHIFT)
 
 /* cpu_axi bit field*/
 #define CCM_CPU_AXI_MUX_MASK		(0x3 << 24)
@@ -341,9 +373,42 @@ struct sunxi_ccm_reg {
 #define CCM_MMC_CTRL_OCLK_DLY(a)	((void) (a), 0)
 #define CCM_MMC_CTRL_SCLK_DLY(a)	((void) (a), 0)
 
+/* TCON0 clock bit field */
+#define CCM_TCON0_CTRL_ENABLE		(0x1 << 31)
+#define CCM_TCON0_CTRL_VIDEO0_4X	(0x1 << 24)
+#define CCM_TCON0_CTRL_VIDEO1_4X	(0x3 << 24)
+#define CCM_TCON0_CTRL_M(m)		((((m) - 1) & 0xf) << 0)
+
+/* TCON1 clock bit field */
+#define CCM_TCON1_CTRL_ENABLE		(0x1 << 31)
+#define CCM_TCON1_CTRL_VIDEO0_4X	(0x1 << 24)
+#define CCM_TCON1_CTRL_VIDEO1_4X	(0x3 << 24)
+#define CCM_TCON1_CTRL_M(m)		((((m) - 1) & 0xf) << 0)
+
+/* HDMI clock bit field */
+#define CCM_HDMI_CTRL_ENABLE		(0x1 << 31)
+#define CCM_HDMI_CTRL_VIDEO1_4X_H6	(0x2 << 24)
+#define CCM_HDMI_CTRL_VIDEO0_4X_H616	(0x1 << 24)
+#define CCM_HDMI_CTRL_M(m)		((((m) - 1) & 0xf) << 0)
+
+/* CCM bits common to all Display Engine 2.0 clock ctrl regs */
+#define CCM_DE2_CTRL_M(n)		((((n) - 1) & 0xf) << 0)
+#define CCM_DE2_CTRL_PLL_MASK		(3 << 24)
+#define CCM_DE2_CTRL_PLL10_H6		(0 << 24)
+#define CCM_DE2_CTRL_VIDEO1_4X_NCAT	(2 << 24)
+#define CCM_DE2_CTRL_GATE		(0x1 << 31)
+
 #ifndef __ASSEMBLY__
 void clock_set_pll1(unsigned int hz);
 unsigned int clock_get_pll6(void);
+
+#ifdef CONFIG_SUNXI_DE2
+void clock_set_pll3(unsigned int hz);
+void clock_set_video1(unsigned int hz);
+void clock_set_pll10(unsigned int hz);
+unsigned int clock_get_pll3(void);
+unsigned int clock_get_video1(void);
+#endif
 #endif
 
 #endif /* _SUNXI_CLOCK_SUN50I_H6_H */

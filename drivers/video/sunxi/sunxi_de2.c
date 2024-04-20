@@ -45,6 +45,23 @@ static void sunxi_de2_composer_init(void)
 	writel(reg_value, SUNXI_SRAMC_BASE + 0x04);
 #endif
 
+#if IS_ENABLED(CONFIG_SUN50I_GEN_H6) || IS_ENABLED(CONFIG_SUNXI_GEN_NCAT2)
+	if (IS_ENABLED(CONFIG_SUNXI_GEN_NCAT2)) {
+		/* Set DE parent to video1 */
+		clock_set_video1(432000000);
+		clrsetbits_le32(&ccm->de_clk_cfg, CCM_DE2_CTRL_PLL_MASK,
+				CCM_DE2_CTRL_VIDEO1_4X_NCAT);
+	} else {
+		/* Set DE parent to pll10 */
+		clock_set_pll10(432000000);
+		clrsetbits_le32(&ccm->de_clk_cfg, CCM_DE2_CTRL_PLL_MASK,
+				CCM_DE2_CTRL_PLL10_H6);
+	}
+
+	/* Ungate the DE */
+	setbits_le32(&ccm->de_gate_reset, BIT(RESET_SHIFT));
+	setbits_le32(&ccm->de_gate_reset, BIT(GATE_SHIFT));
+#else
 	clock_set_pll10(432000000);
 
 	/* Set DE parent to pll10 */
@@ -54,6 +71,7 @@ static void sunxi_de2_composer_init(void)
 	/* Set ahb gating to pass */
 	setbits_le32(&ccm->ahb_reset1_cfg, 1 << AHB_RESET_OFFSET_DE);
 	setbits_le32(&ccm->ahb_gate1, 1 << AHB_GATE_OFFSET_DE);
+#endif
 
 	/* Clock on */
 	setbits_le32(&ccm->de_clk_cfg, CCM_DE2_CTRL_GATE);

@@ -198,6 +198,12 @@ static void sunxi_dw_hdmi_pll_set(uint clk_khz, int *phy_div)
 {
 	int value, n, m, div, diff;
 	int best_n = 0, best_m = 0, best_div = 0, best_diff = 0x0FFFFFFF;
+	int step = 24000, max_m = 16, pll_value = 0;
+
+	if (IS_ENABLED(CONFIG_SUN50I_GEN_H6) || IS_ENABLED(CONFIG_SUNXI_GEN_NCAT2)) {
+		step = 12000;
+		max_m = 1;
+	}
 
 	/*
 	 * Find the lowest divider resulting in a matching clock. If there
@@ -212,11 +218,11 @@ static void sunxi_dw_hdmi_pll_set(uint clk_khz, int *phy_div)
 		if (target > 912000)
 			continue;
 
-		for (m = 1; m <= 16; m++) {
-			n = (m * target) / 24000;
+		for (m = 1; m <= max_m; m++) {
+			n = (m * target) / step;
 
 			if (n >= 1 && n <= 128) {
-				value = (24000 * n) / m / div;
+				value = (step * n) / m / div;
 				diff = clk_khz - value;
 				if (diff < best_diff) {
 					best_diff = diff;
@@ -230,9 +236,21 @@ static void sunxi_dw_hdmi_pll_set(uint clk_khz, int *phy_div)
 
 	*phy_div = best_div;
 
+#if IS_ENABLED(CONFIG_SUN50I_GEN_H6) || IS_ENABLED(CONFIG_SUNXI_GEN_NCAT2)
+	if (IS_ENABLED(CONFIG_MACH_SUN50I_H6)) {
+		clock_set_video1(step * best_n);
+		pll_value = clock_get_video1();
+	} else {
+		clock_set_pll3(step * best_n);
+		pll_value = clock_get_pll3();
+	}
+#else
 	clock_set_pll3_factors(best_m, best_n);
+	pll_value = clock_get_pll3();
+#endif
+
 	debug("dotclock: %dkHz = %dkHz: (24MHz * %d) / %d / %d\n",
-	      clk_khz, (clock_get_pll3() / 1000) / best_div,
+	      clk_khz, (pll_value / 1000) / best_div,
 	      best_n, best_m, best_div);
 }
 
@@ -241,8 +259,33 @@ static void sunxi_dw_hdmi_lcdc_init(int mux, const struct display_timing *edid,
 {
 	struct sunxi_ccm_reg * const ccm =
 		(struct sunxi_ccm_reg *)SUNXI_CCM_BASE;
-	int div = DIV_ROUND_UP(clock_get_pll3(), edid->pixelclock.typ);
+	int div, pll_value;
 	struct sunxi_lcdc_reg *lcdc;
+
+#if IS_ENABLED(CONFIG_SUN50I_GEN_H6) || IS_ENABLED(CONFIG_SUNXI_GEN_NCAT2)
+	int tcon1_src;
+
+	if (IS_ENABLED(CONFIG_MACH_SUN50I_H6)) {
+		tcon1_src = CCM_TCON1_CTRL_VIDEO1_4X;
+		pll_value = clock_get_video1();
+	} else {
+		tcon1_src = CCM_TCON1_CTRL_VIDEO0_4X;
+		pll_value = clock_get_pll3();
+	}
+
+	div = DIV_ROUND_UP(pll_value, edid->pixelclock.typ);
+
+	if (mux == 0) {
+		writel(tcon1_src | CCM_TCON1_CTRL_ENABLE | CCM_TCON1_CTRL_M(div),
+		       &ccm->tcon_tv0_clk_cfg);
+		setbits_le32(&ccm->tcon_tv_gate_reset, BIT(RESET_SHIFT));
+		setbits_le32(&ccm->tcon_tv_gate_reset, BIT(GATE_SHIFT));
+	} else {
+		/* TODO: H616 supports a second TV encoder */
+		panic("using HDMI lcdc mux 1 is not implemented");
+	}
+#else
+	div = DIV_ROUND_UP(pll_value, edid->pixelclock.typ);
 
 	if (mux == 0) {
 		lcdc = (struct sunxi_lcdc_reg *)SUNXI_LCD0_BASE;
@@ -265,6 +308,7 @@ static void sunxi_dw_hdmi_lcdc_init(int mux, const struct display_timing *edid,
 		writel(CCM_LCD1_CTRL_GATE | CCM_LCD1_CTRL_M(div),
 		       &ccm->lcd1_clk_cfg);
 	}
+#endif
 
 	lcdc_init(lcdc);
 	lcdc_tcon1_mode_set(lcdc, edid, false, false);
@@ -291,7 +335,12 @@ static int sunxi_dw_hdmi_read_edid(struct udevice *dev, u8 *buf, int buf_size)
 static bool sunxi_dw_hdmi_mode_valid(struct udevice *dev,
 				     const struct display_timing *timing)
 {
-	return timing->pixelclock.typ <= 297000000;
+	int max_clock = 297000000;
+
+	if(IS_ENABLED(CONFIG_SUN50I_GEN_H6) || IS_ENABLED(CONFIG_SUNXI_GEN_NCAT2))
+		max_clock = 594000;
+
+	return timing->pixelclock.typ <= max_clock;
 }
 
 static int sunxi_dw_hdmi_enable(struct udevice *dev, int panel_bpp,
@@ -338,6 +387,21 @@ static int sunxi_dw_hdmi_probe(struct udevice *dev)
 	if (priv->hvcc)
 		regulator_set_enable(priv->hvcc, true);
 
+#if IS_ENABLED(CONFIG_SUN50I_GEN_H6) || IS_ENABLED(CONFIG_SUNXI_GEN_NCAT2)
+	int hdmi_src = CCM_HDMI_CTRL_VIDEO0_4X_H616;
+
+	/* Set HDMI PLL to 297 MHz */
+	if (IS_ENABLED(CONFIG_MACH_SUN50I_H6)) {
+		hdmi_src = CCM_HDMI_CTRL_VIDEO1_4X_H6;
+		clock_set_video1(297000000);
+	} else {
+		clock_set_pll3(297000000);
+	}
+
+	writel(hdmi_src | CCM_HDMI_CTRL_ENABLE, &ccm->hdmi_clk_cfg);
+	setbits_le32(&ccm->hdmi_gate_reset, BIT(RESET_SHIFT));
+	setbits_le32(&ccm->hdmi_gate_reset, BIT(GATE_SHIFT));
+#else
 	/* Set pll3 to 297 MHz */
 	clock_set_pll3(297000000);
 
@@ -347,6 +411,7 @@ static int sunxi_dw_hdmi_probe(struct udevice *dev)
 
 	/* This reset is referenced from the PHY devicetree node. */
 	setbits_le32(&ccm->ahb_reset1_cfg, 1 << AHB_RESET_OFFSET_HDMI2);
+#endif
 
 	ret = reset_deassert_bulk(&priv->resets);
 	if (ret)

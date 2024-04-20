@@ -166,6 +166,10 @@ static int gpio_init(void)
 	sunxi_gpio_set_cfgpin(SUNXI_GPB(0), SUN8I_GPB_UART2);
 	sunxi_gpio_set_cfgpin(SUNXI_GPB(1), SUN8I_GPB_UART2);
 	sunxi_gpio_set_pull(SUNXI_GPB(1), SUNXI_GPIO_PULL_UP);
+#elif CONFIG_CONS_INDEX == 3 && defined(CONFIG_MACH_SUN8I_R528)
+	sunxi_gpio_set_cfgpin(SUNXI_GPD(1), SUN8I_T113_GPD_UART2);
+	sunxi_gpio_set_cfgpin(SUNXI_GPD(2), SUN8I_T113_GPD_UART2);
+	sunxi_gpio_set_pull(SUNXI_GPD(2), SUNXI_GPIO_PULL_UP);
 #elif CONFIG_CONS_INDEX == 4 && defined(CONFIG_MACH_SUN8I_R528)
 	sunxi_gpio_set_cfgpin(SUNXI_GPB(6), 7);
 	sunxi_gpio_set_cfgpin(SUNXI_GPB(7), 7);
@@ -174,8 +178,9 @@ static int gpio_init(void)
 	sunxi_gpio_set_cfgpin(SUNXI_GPL(2), SUN8I_GPL_R_UART);
 	sunxi_gpio_set_cfgpin(SUNXI_GPL(3), SUN8I_GPL_R_UART);
 	sunxi_gpio_set_pull(SUNXI_GPL(3), SUNXI_GPIO_PULL_UP);
-#elif CONFIG_CONS_INDEX == 2 && defined(CONFIG_MACH_SUN8I) && \
-				!defined(CONFIG_MACH_SUN8I_R40)
+#elif CONFIG_CONS_INDEX == 2 && ((defined(CONFIG_MACH_SUN8I) && \
+				!defined(CONFIG_MACH_SUN8I_R40)) || \
+				defined(CONFIG_MACH_SUN8I_R528))
 	sunxi_gpio_set_cfgpin(SUNXI_GPG(6), SUN8I_GPG_UART1);
 	sunxi_gpio_set_cfgpin(SUNXI_GPG(7), SUN8I_GPG_UART1);
 	sunxi_gpio_set_pull(SUNXI_GPG(7), SUNXI_GPIO_PULL_UP);
@@ -222,13 +227,12 @@ static int suniv_get_boot_source(void)
 	switch (brom_call) {
 	case SUNIV_BOOTED_FROM_MMC0:
 		return SUNXI_BOOTED_FROM_MMC0;
-	case SUNIV_BOOTED_FROM_SPI:
+	case SUNIV_BOOTED_FROM_NAND:
 		return SUNXI_BOOTED_FROM_SPI;
 	case SUNIV_BOOTED_FROM_MMC1:
 		return SUNXI_BOOTED_FROM_MMC2;
-	/* SPI NAND is not supported yet. */
-	case SUNIV_BOOTED_FROM_NAND:
-		return SUNXI_INVALID_BOOT_SOURCE;
+	case SUNIV_BOOTED_FROM_SPI:
+		return SUNXI_BOOTED_FROM_SPINAND;
 	}
 	/* If we get here something went wrong try to boot from FEL.*/
 	printf("Unknown boot source from BROM: 0x%x\n", brom_call);
@@ -278,6 +282,7 @@ static int sunxi_get_boot_source(void)
 uint32_t sunxi_get_boot_device(void)
 {
 	int boot_source = sunxi_get_boot_source();
+	int boot_dev = (boot_source & 0xF); /* Low nibble is device */
 
 	/*
 	 * When booting from the SD card or NAND memory, the "eGON.BT0"
@@ -295,23 +300,32 @@ uint32_t sunxi_get_boot_device(void)
 	 * binary over USB. If it is found, it determines where SPL was
 	 * read from.
 	 */
-	switch (boot_source) {
-	case SUNXI_INVALID_BOOT_SOURCE:
+	if (boot_source == SUNXI_INVALID_BOOT_SOURCE)
 		return BOOT_DEVICE_BOARD;
+
+	switch (boot_dev) {
 	case SUNXI_BOOTED_FROM_MMC0:
-	case SUNXI_BOOTED_FROM_MMC0_HIGH:
 		return BOOT_DEVICE_MMC1;
 	case SUNXI_BOOTED_FROM_NAND:
 		return BOOT_DEVICE_NAND;
 	case SUNXI_BOOTED_FROM_MMC2:
-	case SUNXI_BOOTED_FROM_MMC2_HIGH:
 		return BOOT_DEVICE_MMC2;
 	case SUNXI_BOOTED_FROM_SPI:
 		return BOOT_DEVICE_SPI;
+	case SUNXI_BOOTED_FROM_SPINAND:
+		return BOOT_DEVICE_SPINAND;
 	}
 
 	panic("Unknown boot source %d\n", boot_source);
 	return -1;		/* Never reached */
+}
+
+uint32_t sunxi_get_boot_position(void)
+{
+	int boot_source = sunxi_get_boot_source();
+	int boot_pos = ((boot_source >> 8) & 0xF); /* High nibble is position */
+
+	return boot_pos;
 }
 
 #ifdef CONFIG_SPL_BUILD
@@ -345,12 +359,8 @@ unsigned long board_spl_mmc_get_uboot_raw_sector(struct mmc *mmc,
 
 	sector = max(raw_sect, spl_size / 512);
 
-	switch (sunxi_get_boot_source()) {
-	case SUNXI_BOOTED_FROM_MMC0_HIGH:
-	case SUNXI_BOOTED_FROM_MMC2_HIGH:
+	if (sunxi_get_boot_position() == 1)
 		sector += (128 - 8) * 2;
-		break;
-	}
 
 	return sector;
 }

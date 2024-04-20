@@ -154,9 +154,9 @@ static int fdt_fixup_stdout(void *fdt, int chosenoff)
 	}
 
 	/* fdt_setprop may break "path" so we copy it to tmp buffer */
-	memcpy(tmp, path, len);
+	len = sprintf(tmp, "%.*s:%d", len, (char *)path, CONFIG_BAUDRATE);
 
-	err = fdt_setprop(fdt, chosenoff, "linux,stdout-path", tmp, len);
+	err = fdt_setprop(fdt, chosenoff, "linux,stdout-path", tmp, len + 1);
 	if (err < 0)
 		printf("WARNING: could not set linux,stdout-path %s.\n",
 		       fdt_strerror(err));

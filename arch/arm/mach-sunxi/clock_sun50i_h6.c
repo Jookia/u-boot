@@ -160,3 +160,84 @@ int clock_twi_onoff(int port, int state)
 
 	return 0;
 }
+
+#ifdef CONFIG_SUNXI_DE2
+
+void clock_set_pll3(unsigned int clk)
+{
+	struct sunxi_ccm_reg * const ccm =
+		(struct sunxi_ccm_reg *)SUNXI_CCM_BASE;
+
+	if (clk == 0) {
+		clrbits_le32(&ccm->pll3_cfg, CCM_PLL3_CTRL_EN);
+		return;
+	}
+
+	/* PLL3 rate = 24000000 * n / 2 */
+	writel(CCM_PLL3_CTRL_EN | CCM_PLL3_LOCK_EN | CCM_PLL3_OUT_EN | CCM_PLL3_LDO_EN |
+	       CCM_PLL3_INPUT_DIV2 | CCM_PLL3_CTRL_N(clk / 12000000),
+	       &ccm->pll3_cfg);
+
+	while (!(readl(&ccm->pll3_cfg) & CCM_PLL3_LOCK))
+		;
+}
+
+void clock_set_video1(unsigned int clk)
+{
+	struct sunxi_ccm_reg * const ccm =
+		(struct sunxi_ccm_reg *)SUNXI_CCM_BASE;
+
+	if (clk == 0) {
+		clrbits_le32(&ccm->pll_video1_cfg, CCM_VIDEO1_CTRL_EN);
+		return;
+	}
+
+	/* VIDEO1 rate = 24000000 * n / 2 */
+	writel(CCM_VIDEO1_CTRL_EN | CCM_VIDEO1_LOCK_EN | CCM_VIDEO1_OUT_EN | CCM_VIDEO1_LDO_EN |
+	       CCM_VIDEO1_INPUT_DIV2 | CCM_VIDEO1_CTRL_N(clk / 12000000),
+	       &ccm->pll_video1_cfg);
+
+	while (!(readl(&ccm->pll_video1_cfg) & CCM_VIDEO1_LOCK))
+		;
+}
+
+void clock_set_pll10(unsigned int clk)
+{
+	struct sunxi_ccm_reg * const ccm =
+		(struct sunxi_ccm_reg *)SUNXI_CCM_BASE;
+
+	if (clk == 0) {
+		clrbits_le32(&ccm->pll10_cfg, CCM_PLL10_CTRL_EN);
+		return;
+	}
+
+	/* PLL10 rate = 24000000 * n / 2 */
+	writel(CCM_PLL10_CTRL_EN | CCM_PLL10_LOCK_EN | CCM_PLL10_OUT_EN |
+	       CCM_PLL10_INPUT_DIV2 | CCM_PLL10_CTRL_N(clk / 12000000),
+	       &ccm->pll_video1_cfg);
+
+	while (!(readl(&ccm->pll_video1_cfg) & CCM_PLL10_LOCK))
+		;
+}
+
+unsigned int clock_get_pll3(void)
+{
+	struct sunxi_ccm_reg *const ccm =
+		(struct sunxi_ccm_reg *)SUNXI_CCM_BASE;
+	u32 rval = readl(&ccm->pll3_cfg);
+	int n = ((rval & CCM_PLL3_CTRL_N_MASK) >> CCM_PLL3_CTRL_N_SHIFT) + 1;
+
+	return 12000 * n * 1000;
+}
+
+unsigned int clock_get_video1(void)
+{
+	struct sunxi_ccm_reg *const ccm =
+		(struct sunxi_ccm_reg *)SUNXI_CCM_BASE;
+	u32 rval = readl(&ccm->pll_video1_cfg);
+	int n = ((rval & CCM_VIDEO1_CTRL_N_MASK) >> CCM_VIDEO1_CTRL_N_SHIFT) + 1;
+
+	return 12000 * n * 1000;
+}
+
+#endif
