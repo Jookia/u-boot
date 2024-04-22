@@ -259,7 +259,7 @@ void spi_release_bus(struct spi_slave *slave);
  * @slave:	The SPI slave
  * @wordlen:	The number of bits in a word
  *
- * Returns: 0 on success, -1 on failure.
+ * Returns: The old word length on success, -1 on failure.
  */
 int spi_set_wordlen(struct spi_slave *slave, unsigned int wordlen);
 
