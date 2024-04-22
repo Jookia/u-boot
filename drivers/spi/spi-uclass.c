@@ -130,6 +130,35 @@ void spi_release_bus(struct spi_slave *slave)
 	dm_spi_release_bus(slave->dev);
 }
 
+static int spi_try_set_wordlen(struct spi_slave *slave, unsigned int wordlen)
+{
+	struct dm_spi_ops *ops;
+
+	ops = spi_get_ops(slave->dev->parent);
+	if (ops->set_wordlen)
+		return ops->set_wordlen(slave->dev->parent, wordlen);
+	else if (wordlen == SPI_DEFAULT_WORDLEN)
+		return 0;
+	else
+		return -EINVAL;
+}
+
+int spi_set_wordlen(struct spi_slave *slave, unsigned int wordlen)
+{
+	int oldwordlen = slave->wordlen;
+	int ret;
+
+	ret = spi_try_set_wordlen(slave, wordlen);
+	if (ret < 0) {
+		dev_err(slave->dev, "Cannot set wordlen (err=%d)\n", ret);
+		return ret;
+	}
+
+	slave->wordlen = wordlen;
+
+	return oldwordlen;
+}
+
 int spi_set_speed(struct spi_slave *slave, uint hz)
 {
 	struct dm_spi_ops *ops;
