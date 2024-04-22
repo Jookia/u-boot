@@ -12,7 +12,7 @@ int spi_set_wordlen(struct spi_slave *slave, unsigned int wordlen)
 {
 	int oldwordlen = slave->wordlen;
 
-	if (wordlen == 0 || wordlen > 32) {
+	if (wordlen != SPI_DEFAULT_WORDLEN) {
 		printf("spi: invalid wordlen %u\n", wordlen);
 		return -1;
 	}
