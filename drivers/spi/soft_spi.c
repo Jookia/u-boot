@@ -204,6 +204,12 @@ static int soft_spi_xfer(struct udevice *dev, unsigned int bitlen,
 	return 0;
 }
 
+static int soft_spi_set_wordlen(struct udevice *dev, unsigned int wordlen)
+{
+	/* Support any wordlen as this driver clock out bits individually. */
+	return 0;
+}
+
 static int soft_spi_set_speed(struct udevice *dev, unsigned int speed)
 {
 	/* Ignore any speed settings. Speed is implemented via "spi-delay-us" */
@@ -223,6 +229,7 @@ static const struct dm_spi_ops soft_spi_ops = {
 	.claim_bus	= soft_spi_claim_bus,
 	.release_bus	= soft_spi_release_bus,
 	.xfer		= soft_spi_xfer,
+	.set_wordlen    = soft_spi_set_wordlen,
 	.set_speed	= soft_spi_set_speed,
 	.set_mode	= soft_spi_set_mode,
 };
