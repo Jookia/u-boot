@@ -612,6 +612,12 @@ config VIDEO_LCD_HITACHI_TX18D42VM
 	lcd controller which needs to be initialized over SPI, once that is
 	done they work like a regular LVDS panel.
 
+config VIDEO_LCD_NEWVISION_NV3052C
+	bool "NewVision NV3052C RGB/SPI panel support"
+	select VIDEO_MIPI_DBI
+	---help---
+	Support for panels built around the NewVision NV3052C controller.
+
 config VIDEO_LCD_SPI_CS
 	string "SPI CS pin for LCD related config job"
 	depends on VIDEO_LCD_SSD2828 || VIDEO_LCD_HITACHI_TX18D42VM
