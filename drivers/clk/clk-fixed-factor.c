@@ -54,6 +54,7 @@ struct clk *clk_hw_register_fixed_factor(struct udevice *dev,
 	fix->mult = mult;
 	fix->div = div;
 	clk = &fix->clk;
+	clk->fwdev = dev;
 	clk->flags = flags;
 
 	ret = clk_register(clk, UBOOT_DM_CLK_IMX_FIXED_FACTOR, name,

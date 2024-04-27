@@ -148,6 +148,7 @@ struct clk *clk_register_composite(struct udevice *dev, const char *name,
 	}
 
 	clk = &composite->clk;
+	clk->fwdev = dev;
 	clk->flags = flags;
 	ret = clk_register(clk, UBOOT_DM_CLK_COMPOSITE, name,
 			   parent_names[clk_composite_get_parent(clk)]);
@@ -156,12 +157,20 @@ struct clk *clk_register_composite(struct udevice *dev, const char *name,
 		goto err;
 	}
 
-	if (composite->mux)
+	if (composite->mux) {
 		composite->mux->dev = clk->dev;
-	if (composite->rate)
+		composite->mux->fwdev = dev;
+	}
+
+	if (composite->rate) {
 		composite->rate->dev = clk->dev;
-	if (composite->gate)
+		composite->rate->fwdev = dev;
+	}
+
+	if (composite->gate) {
 		composite->gate->dev = clk->dev;
+		composite->gate->fwdev = dev;
+	}
 
 	return clk;
 

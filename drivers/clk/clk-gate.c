@@ -148,6 +148,7 @@ struct clk *clk_register_gate(struct udevice *dev, const char *name,
 #endif
 
 	clk = &gate->clk;
+	clk->fwdev = dev;
 	clk->flags = flags;
 
 	ret = clk_register(clk, UBOOT_DM_CLK_GATE, name, parent_name);

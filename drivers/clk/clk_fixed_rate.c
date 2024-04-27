@@ -79,6 +79,7 @@ struct clk *clk_register_fixed_rate(struct udevice *dev, const char *name,
 	fixed->fixed_rate = rate;
 
 	clk = &fixed->clk;
+	clk->fwdev = dev;
 
 	ret = clk_register(clk, UBOOT_DM_CLK_FIXED_RATE_RAW, name, NULL);
 	if (ret) {

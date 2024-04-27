@@ -113,7 +113,11 @@ static int clk_fetch_parent_index(struct clk *clk,
 		return -EINVAL;
 
 	for (i = 0; i < mux->num_parents; i++) {
-		if (!strcmp(parent->dev->name, mux->parent_names[i]))
+		const char *parent_name = mux->parent_names[i];
+
+		parent_name = clk_resolve_fwname(clk, parent_name);
+
+		if (!strcmp(parent->dev->name, parent_name))
 			return i;
 	}
 
@@ -200,6 +204,7 @@ struct clk *clk_hw_register_mux_table(struct udevice *dev, const char *name,
 #endif
 
 	clk = &mux->clk;
+	clk->fwdev = dev;
 	clk->flags = flags;
 
 	/*

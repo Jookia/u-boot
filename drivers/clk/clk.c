@@ -22,6 +22,8 @@ int clk_register(struct clk *clk, const char *drv_name,
 	struct driver *drv;
 	int ret;
 
+	parent_name = clk_resolve_fwname(clk, parent_name);
+
 	if (parent_name) {
 		ret = uclass_get_device_by_name(UCLASS_CLK, parent_name, &parent);
 		if (ret) {

@@ -217,6 +217,7 @@ static struct clk *_register_divider(struct udevice *dev, const char *name,
 
 	/* register the clock */
 	clk = &div->clk;
+	clk->fwdev = dev;
 	clk->flags = flags;
 
 	ret = clk_register(clk, UBOOT_DM_CLK_CCF_DIVIDER, name, parent_name);
