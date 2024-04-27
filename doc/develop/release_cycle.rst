@@ -19,6 +19,9 @@ Cycle as follows:
 * After the merge window closes, no new features may be added to allow for a
   release candidate phase which is intended to fix bugs and regressions.
 
+* To help with late pull requests, the **next** branch will open when the
+  second release candidate is published.
+
 *Note:* While we try to adhere to the release schedule, we will
 not hesitate and take the liberty to delay a release if there are
 good reasons, for example if there are known bugs or other technical
@@ -50,8 +53,7 @@ Current Status
 
 * U-Boot v2024.04 was released on Tue 02 April 2024.
 
-* The Merge Window for the next release (v2024.07) is **open** until the -rc1
-  release on Mon 22 April 2024.
+* The Merge Window for the next release (v2024.07) is **closed**.
 
 * The next branch is now **closed**.
 
@@ -63,9 +65,9 @@ Future Releases
 .. The following commented out dates are for when release candidates are
    planned to be tagged.
 
-.. For the next scheduled release, release candidates were made on::
+For the next scheduled release, release candidates were made on::
 
-.. * U-Boot v2024.07-rc1 was released on Mon 22 April 2024.
+* U-Boot v2024.07-rc1 was released on Mon 22 April 2024.
 
 .. * U-Boot v2024.07-rc2 was released on Tue 06 May 2024.
 

@@ -167,8 +167,8 @@ dtb-$(CONFIG_ROCKCHIP_RK3568) += \
 	rk3568-rock-3a.dtb
 
 dtb-$(CONFIG_ROCKCHIP_RK3588) += \
-	rk3588s-coolpi-4b.dts \
-	rk3588-coolpi-cm5-evb.dts \
+	rk3588s-coolpi-4b.dtb \
+	rk3588-coolpi-cm5-evb.dtb \
 	rk3588-edgeble-neu6a-io.dtb \
 	rk3588-edgeble-neu6b-io.dtb \
 	rk3588-evb1-v10.dtb \
@@ -180,6 +180,7 @@ dtb-$(CONFIG_ROCKCHIP_RK3588) += \
 	rk3588-quartzpro64.dtb \
 	rk3588s-rock-5a.dtb \
 	rk3588-rock-5b.dtb \
+	rk3588-toybrick-x0.dtb \
 	rk3588-turing-rk1.dtb
 
 dtb-$(CONFIG_ROCKCHIP_RV1108) += \
@@ -571,12 +572,6 @@ dtb-$(CONFIG_TARGET_SL28) += fsl-ls1028a-kontron-sl28.dtb \
 	fsl-ls1028a-kontron-sl28-var4.dtb \
 
 dtb-$(CONFIG_TARGET_TEN64) += fsl-ls1088a-ten64.dtb
-
-dtb-$(CONFIG_ARCH_SNAPDRAGON) += apq8016-sbc.dtb \
-	apq8096-db820c.dtb \
-	sdm845-db845c.dtb \
-	sdm845-samsung-starqltechn.dtb \
-	qcs404-evb-4000.dtb
 
 dtb-$(CONFIG_TARGET_STEMMY) += ste-ux500-samsung-stemmy.dtb
 

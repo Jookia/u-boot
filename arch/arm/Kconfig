@@ -762,10 +762,8 @@ config ARCH_IPQ40XX
 	select DM_SERIAL
 	select DM_RESET
 	select GPIO_EXTRA_HEADER
-	select MSM_SMEM
 	select PINCTRL
 	select CLK
-	select SMEM
 	select OF_CONTROL
 	select CLK_QCOM_IPQ4019
 	select PINCTRL_QCOM_IPQ4019
@@ -1022,7 +1020,7 @@ config ARCH_APPLE
 	select USB
 	imply CMD_DM
 	imply CMD_GPT
-	imply DISTRO_DEFAULTS
+	imply BOOTSTD_FULL
 	imply OF_HAS_PRIOR_STAGE
 
 config ARCH_OWL
@@ -1089,7 +1087,8 @@ config ARCH_SNAPDRAGON
 	select BOARD_LATE_INIT
 	select OF_BOARD
 	select SAVE_PREV_BL_FDT_ADDR
-	select LINUX_KERNEL_IMAGE_HEADER
+	select LINUX_KERNEL_IMAGE_HEADER if !ENABLE_ARM_SOC_BOOT0_HOOK
+	imply OF_UPSTREAM
 	imply CMD_DM
 
 config ARCH_SOCFPGA
@@ -1345,7 +1344,7 @@ config ARCH_ZYNQMP
 config ARCH_TEGRA
 	bool "NVIDIA Tegra"
 	select GPIO_EXTRA_HEADER
-	imply DISTRO_DEFAULTS
+	imply BOOTSTD_DEFAULTS
 	imply FAT_WRITE
 	imply SPL_TIMER if SPL
 

@@ -603,11 +603,9 @@ ARM SNAPDRAGON
 M:	Caleb Connolly <caleb.connolly@linaro.org>
 M:	Neil Armstrong <neil.armstrong@linaro.org>
 R:	Sumit Garg <sumit.garg@linaro.org>
+L:	u-boot-qcom@groups.io
 S:	Maintained
-F:	arch/arm/dts/msm8*.dtsi
-F:	arch/arm/dts/pm8???.dtsi
-F:	arch/arm/dts/pms405.dtsi
-F:	arch/arm/dts/sdm845.dtsi
+T:	git https://source.denx.de/u-boot/custodians/u-boot-snapdragon.git
 F:	drivers/*/*/pm8???-*
 F:	drivers/gpio/msm_gpio.c
 F:	drivers/mmc/msm_sdhci.c
@@ -1642,9 +1640,18 @@ M:	Jens Wiklander <jens.wiklander@linaro.org>
 M:	Ilias Apalodimas <ilias.apalodimas@linaro.org>
 T:	git https://source.denx.de/u-boot/custodians/u-boot-tpm.git
 S:	Maintained
+F:	cmd/optee*
+F:	doc/README.tee
+F:	doc/device-tree-bindings/firmware/linaro,optee-tz.txt
+F:	drivers/firmware/scmi/optee_agent.c
 F:	drivers/tee/
+F:	include/sandboxtee.h
 F:	include/tee.h
 F:	include/tee/
+F:	include/test/optee.h
+F:	test/dm/tee.c
+F:	test/optee/
+F:	test/py/tests/test_optee_rpmb.py
 
 TEE-lib
 M:	Bryan O'Donoghue <bryan.odonoghue@linaro.org>
