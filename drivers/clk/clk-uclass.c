@@ -422,6 +422,41 @@ int clk_get_by_name_nodev(ofnode node, const char *name, struct clk *clk)
 	return clk_get_by_index_nodev(node, index, clk);
 }
 
+const char *clk_resolve_fwname(struct clk *clk, const char *fwname)
+{
+	const char *resolved_name;
+	const char *fw_prefix;
+	const char *fw_name;
+	struct clk fw_clk;
+	int clk_index;
+	ofnode node;
+
+	if (!fwname || !clk->fwdev)
+		return NULL;
+
+	fw_prefix = strstr(fwname, "fw:");
+	fw_name = fwname + strlen("fw:");
+
+	debug("%s(fwname=%s, fw_prefix=%s, fw_name=%s)\n",
+	      __func__, fwname, fw_prefix, fw_name);
+
+	if (fw_prefix != fwname)
+		return fwname;
+
+	node = dev_ofnode(clk->fwdev);
+	clk_index = clk_get_by_name_nodev(node, fw_name, &fw_clk);
+
+	if (clk_index < 0) {
+		log_warning("Failed to resolve parent clock %s\n", fw_name);
+		return fwname;
+	}
+
+	resolved_name = fw_clk.dev->name;
+	debug("%s(resolved_name=%s)\n", __func__, resolved_name);
+
+	return resolved_name;
+}
+
 int clk_release_all(struct clk *clk, unsigned int count)
 {
 	unsigned int i;

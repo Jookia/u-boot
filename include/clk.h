@@ -37,6 +37,7 @@ struct udevice;
 /**
  * struct clk - A handle to (allowing control of) a single clock.
  * @dev: The device which implements the clock signal.
+ * @fwdev: The device used to look up firmware clocks.
  * @rate: The clock rate (in HZ).
  * @flags: Flags used across common clock structure (e.g. %CLK_)
  *         Clock IP blocks specific flags (i.e. mux, div, gate, etc) are defined
@@ -62,6 +63,7 @@ struct udevice;
  */
 struct clk {
 	struct udevice *dev;
+	struct udevice *fwdev;
 	long long rate;	/* in HZ */
 	u32 flags;
 	int enable_count;
@@ -190,6 +192,18 @@ int clk_get_by_name(struct udevice *dev, const char *name, struct clk *clk);
  * Return: 0 if OK, or a negative error code.
  */
 int clk_get_by_name_nodev(ofnode node, const char *name, struct clk *clk);
+
+/**
+ * clk_resolve_fwname - Resolves a fw: prefixed name for a clock.
+ * @clk:	The clock used to resolve the name.
+ * @fwname:	The name of the clock to resolve clock.
+ *
+ * This tries to resolve a clock name such as "fw:hosc" to a real clock such
+ * as "dcxo-clk". The lookup is done using the clk->context device.
+ *
+ * Return: The resolved name or fwname on error.
+ */
+const char *clk_resolve_fwname(struct clk *clk, const char *fwname);
 
 /**
  * devm_clk_get() - lookup and obtain a managed reference to a clock producer.
