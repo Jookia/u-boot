@@ -224,7 +224,6 @@ ARM BROADCOM BCMBCA
 M:	Anand Gore <anand.gore@broadcom.com>
 M:	William Zhang <william.zhang@broadcom.com>
 M:	Kursad Oney <kursad.oney@broadcom.com>
-M:	Joel Peshkin <joel.peshkin@broadcom.com>
 M:	Philippe Reynes <philippe.reynes@softathome.com>
 S:	Maintained
 F:	arch/arm/mach-bcmbca/
@@ -598,6 +597,22 @@ M:	Paul Barker <paul.barker@sancloud.com>
 R:	Marc Murphy <marc.murphy@sancloud.com>
 S:	Supported
 F:	arch/arm/dts/am335x-sancloud*
+
+ARM SC5XX
+M:	Nathan Barrett-Morrison <nathan.morrison@timesys.com>
+M:	Greg Malysa <greg.malysa@timesys.com>
+M:	Ian Roberts <ian.roberts@timesys.com>
+M:	Vasileios Bimpikas <vasileios.bimpikas@analog.com>
+M:	Utsav Agarwal <utsav.agarwal@analog.com>
+M:	Arturs Artamonovs <arturs.artamonovs@analog.com>
+S:	Supported
+T:	git https://github.com/analogdevicesinc/lnxdsp-u-boot
+F:	arch/arm/include/asm/arch-adi/
+F:	arch/arm/mach-sc5xx/
+F:	drivers/clk/adi/
+F:	drivers/serial/serial_adi_uart4.c
+F:	drivers/timer/adi_sc5xx_timer.c
+F:	include/env/adi/
 
 ARM SNAPDRAGON
 M:	Caleb Connolly <caleb.connolly@linaro.org>
@@ -1002,8 +1017,11 @@ F:	common/update.c
 F:	doc/api/dfu.rst
 F:	doc/usage/dfu.rst
 F:	drivers/dfu/
+F:	drivers/usb/*/*gadget*
 F:	drivers/usb/gadget/
 F:	include/dfu.h
+F:	include/linux/usb/ch9.h
+F:	include/linux/usb/gadget.h
 
 DRIVER MODEL
 M:	Simon Glass <sjg@chromium.org>
@@ -1103,6 +1121,7 @@ F:	test/py/tests/test_event_dump.py
 FASTBOOT
 M:	Mattijs Korpershoek <mkorpershoek@baylibre.com>
 S:	Maintained
+T:	git https://source.denx.de/u-boot/custodians/u-boot-dfu.git
 F:	cmd/fastboot.c
 F:	doc/android/fastboot*.rst
 F:	include/fastboot.h
@@ -1568,7 +1587,7 @@ F:	cmd/sqfs.c
 F:	test/py/tests/test_fs/test_squashfs/
 
 STACKPROTECTOR
-M:	Joel Peshkin <joel.peshkin@broadcom.com>
+M:	William Zhang <william.zhang@broadcom.com>
 S:	Maintained
 F:	common/stackprot.c
 F:	cmd/stackprot_test.c

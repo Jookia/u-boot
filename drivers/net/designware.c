@@ -8,7 +8,6 @@
  * Designware ethernet IP driver for U-Boot
  */
 
-#include <common.h>
 #include <clk.h>
 #include <cpu_func.h>
 #include <dm.h>
@@ -871,6 +870,7 @@ static const struct udevice_id designware_eth_ids[] = {
 	{ .compatible = "amlogic,meson6-dwmac" },
 	{ .compatible = "st,stm32-dwmac" },
 	{ .compatible = "snps,arc-dwmac-3.70a" },
+	{ .compatible = "sophgo,cv1800b-dwmac" },
 	{ }
 };
 

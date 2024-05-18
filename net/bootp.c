@@ -8,7 +8,6 @@
  *	Copyright 2000-2004 Wolfgang Denk, wd@denx.de
  */
 
-#include <common.h>
 #include <bootstage.h>
 #include <command.h>
 #include <env.h>
@@ -886,7 +885,7 @@ static void dhcp_process_options(uchar *popt, uchar *end)
 		case 40:	/* NIS Domain name */
 			if (net_nis_domain[0] == 0) {
 				size = truncate_sz("NIS Domain Name",
-					sizeof(net_nis_domain), size);
+					sizeof(net_nis_domain), oplen);
 				memcpy(&net_nis_domain, popt + 2, size);
 				net_nis_domain[size] = 0;
 			}
