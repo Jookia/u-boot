@@ -15,6 +15,8 @@
 static struct ccu_clk_gate d1_gates[] = {
 	[CLK_APB0]		= GATE_DUMMY,
 
+	[CLK_BUS_PWM]		= GATE(0x7ac, BIT(0)),
+
 	[CLK_BUS_MMC0]		= GATE(0x84c, BIT(0)),
 	[CLK_BUS_MMC1]		= GATE(0x84c, BIT(1)),
 	[CLK_BUS_MMC2]		= GATE(0x84c, BIT(2)),
@@ -48,6 +50,8 @@ static struct ccu_clk_gate d1_gates[] = {
 };
 
 static struct ccu_reset d1_resets[] = {
+	[RST_BUS_PWM]		= RESET(0x7ac, BIT(16)),
+
 	[RST_BUS_MMC0]		= RESET(0x84c, BIT(16)),
 	[RST_BUS_MMC1]		= RESET(0x84c, BIT(17)),
 	[RST_BUS_MMC2]		= RESET(0x84c, BIT(18)),
