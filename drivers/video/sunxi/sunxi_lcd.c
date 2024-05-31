@@ -8,6 +8,7 @@
 #include <common.h>
 #include <display.h>
 #include <log.h>
+#include <panel.h>
 #include <video_bridge.h>
 #include <backlight.h>
 #include <dm.h>
@@ -45,6 +46,7 @@ static int sunxi_lcd_enable(struct udevice *dev, int bpp,
 	       (struct sunxi_lcdc_reg *)SUNXI_LCD0_BASE;
 	struct sunxi_lcd_priv *priv = dev_get_priv(dev);
 	struct udevice *backlight;
+	struct udevice *panel;
 	int clk_div, clk_double, ret;
 
 	/* Reset off */
@@ -59,6 +61,12 @@ static int sunxi_lcd_enable(struct udevice *dev, int bpp,
 	lcdc_tcon0_mode_set(lcdc, edid, clk_div, false,
 			    priv->panel_bpp, CONFIG_VIDEO_LCD_DCLK_PHASE);
 	lcdc_enable(lcdc, priv->panel_bpp);
+
+	ret = uclass_get_device(UCLASS_PANEL, 0, &panel);
+	if (ret == 0) {
+		if (panel_enable_backlight(panel) == 0)
+			return 0;
+	}
 
 	ret = uclass_get_device(UCLASS_PANEL_BACKLIGHT, 0, &backlight);
 	if (!ret)
@@ -114,6 +122,11 @@ static int sunxi_lcd_probe(struct udevice *dev)
 	if (ret) {
 		debug("video panel not found: %d\n", ret);
 		return ret;
+	}
+
+	if (panel_get_display_timing(cdev, &priv->timing) == 0) {
+		priv->panel_bpp = 32;
+		return 0;
 	}
 
 	if (fdtdec_decode_display_timing(gd->fdt_blob, dev_of_offset(cdev),
