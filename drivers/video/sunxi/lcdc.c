@@ -133,9 +133,9 @@ void lcdc_tcon0_mode_set(struct sunxi_lcdc_reg * const lcdc,
 	}
 
 	val = SUNXI_LCDC_TCON0_IO_POL_DCLK_PHASE(dclk_phase);
-	if (mode->flags & DISPLAY_FLAGS_HSYNC_LOW)
+	if (mode->flags & DISPLAY_FLAGS_HSYNC_HIGH)
 		val |= SUNXI_LCDC_TCON_HSYNC_MASK;
-	if (mode->flags & DISPLAY_FLAGS_VSYNC_LOW)
+	if (mode->flags & DISPLAY_FLAGS_VSYNC_HIGH)
 		val |= SUNXI_LCDC_TCON_VSYNC_MASK;
 
 #ifdef CONFIG_VIDEO_VGA_VIA_LCD_FORCE_SYNC_ACTIVE_HIGH
