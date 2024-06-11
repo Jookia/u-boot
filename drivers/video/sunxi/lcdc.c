@@ -137,6 +137,10 @@ void lcdc_tcon0_mode_set(struct sunxi_lcdc_reg * const lcdc,
 		val |= SUNXI_LCDC_TCON_HSYNC_MASK;
 	if (mode->flags & DISPLAY_FLAGS_VSYNC_HIGH)
 		val |= SUNXI_LCDC_TCON_VSYNC_MASK;
+	if (mode->flags & DISPLAY_FLAGS_DE_LOW)
+		val |= SUNXI_LCDC_TCON_DE_MASK;
+	if (mode->flags & DISPLAY_FLAGS_PIXDATA_NEGEDGE)
+		val |= SUNXI_LCDC_TCON_PIXDATA_MASK;
 
 #ifdef CONFIG_VIDEO_VGA_VIA_LCD_FORCE_SYNC_ACTIVE_HIGH
 	if (for_ext_vga_dac)

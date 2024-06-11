@@ -64,6 +64,8 @@ struct sunxi_lcdc_reg {
 #define SUNXI_LCDC_Y(y)				(((y) - 1) << 0)
 #define SUNXI_LCDC_TCON_VSYNC_MASK		(1 << 24)
 #define SUNXI_LCDC_TCON_HSYNC_MASK		(1 << 25)
+#define SUNXI_LCDC_TCON_PIXDATA_MASK		(1 << 26)
+#define SUNXI_LCDC_TCON_DE_MASK			(1 << 27)
 #define SUNXI_LCDC_CTRL_IO_MAP_MASK		(1 << 0)
 #define SUNXI_LCDC_CTRL_IO_MAP_TCON0		(0 << 0)
 #define SUNXI_LCDC_CTRL_IO_MAP_TCON1		(1 << 0)
