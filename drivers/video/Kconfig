@@ -157,6 +157,12 @@ config VIDEO_MIPI_DSI
 	  The MIPI Display Serial Interface (MIPI DSI) defines a high-speed
 	  serial interface between a host processor and a display module.
 
+config VIDEO_MIPI_DBI
+	bool "Support MIPI DBI interface"
+	help
+	  Support MIPI DBI interface for driving a MIPI compatible device
+	  over a SPI interface.
+
 config CONSOLE_NORMAL
 	bool "Support a simple text console"
 	default y
