@@ -1,3 +1,12 @@
+Testing branch
+--------------
+
+This is my development branch where I test new features.
+Please do not use this branch unless I've asked you to for testing.
+
+Current work in progress features:
+- Nothing!
+
 Jookia's U-Boot
 ---------------
 
