@@ -4,8 +4,9 @@ VERSION = 2024
 PATCHLEVEL = 07
 SUBLEVEL =
 EXTRAVERSION = -rc4
-PATCHESVERSION = -allpatches20240528
 NAME =
+
+PATCHESVERSION = -allpatches20240528
 
 # *DOCUMENTATION*
 # To see a list of typical targets execute "make help"
