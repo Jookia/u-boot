@@ -69,6 +69,7 @@ obj-$(CONFIG_VIDEO_LCD_TDO_TL070WSH30) += tdo-tl070wsh30.o
 obj-$(CONFIG_VIDEO_MCDE_SIMPLE) += mcde_simple.o
 obj-${CONFIG_VIDEO_MESON} += meson/
 obj-${CONFIG_VIDEO_MIPI_DSI} += mipi_dsi.o
+obj-${CONFIG_VIDEO_MIPI_DBI} += mipi_dbi.o
 obj-$(CONFIG_VIDEO_MVEBU) += mvebu_lcd.o
 obj-$(CONFIG_VIDEO_MXS) += mxsfb.o videomodes.o
 obj-$(CONFIG_VIDEO_NX) += nexell_display.o videomodes.o nexell/

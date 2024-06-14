@@ -10,14 +10,16 @@
 
 int spi_set_wordlen(struct spi_slave *slave, unsigned int wordlen)
 {
-	if (wordlen == 0 || wordlen > 32) {
+	int oldwordlen = slave->wordlen;
+
+	if (wordlen != SPI_DEFAULT_WORDLEN) {
 		printf("spi: invalid wordlen %u\n", wordlen);
 		return -1;
 	}
 
 	slave->wordlen = wordlen;
 
-	return 0;
+	return oldwordlen;
 }
 
 void *spi_do_alloc_slave(int offset, int size, unsigned int bus,
