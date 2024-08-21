@@ -13,7 +13,6 @@
  * commit cd72f890d2 : usb: dwc3: core: enable phy suspend quirk on non-FPGA
  */
 
-#include <common.h>
 #include <clk.h>
 #include <cpu_func.h>
 #include <malloc.h>
@@ -595,7 +594,8 @@ static int dwc3_core_init(struct dwc3 *dwc)
 
 	reg = dwc3_readl(dwc->regs, DWC3_GSNPSID);
 	/* This should read as U3 followed by revision number */
-	if ((reg & DWC3_GSNPSID_MASK) != 0x55330000) {
+	if ((reg & DWC3_GSNPSID_MASK) != 0x55330000 &&
+	    (reg & DWC3_GSNPSID_MASK) != 0x33310000) {
 		dev_err(dwc->dev, "this is not a DesignWare USB3 DRD Core\n");
 		ret = -ENODEV;
 		goto err0;

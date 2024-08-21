@@ -6,8 +6,9 @@
  * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
  */
 
-#include <common.h>
+#include <config.h>
 #include <asm/mmu.h>
+#include <asm/ppc.h>
 
 struct fsl_e_tlb_entry tlb_table[] = {
 	/* TLB 0 - for temp stack in cache */
@@ -79,7 +80,6 @@ struct fsl_e_tlb_entry tlb_table[] = {
 	SET_TLB_ENTRY(1, CFG_SYS_PCIE3_MEM_VIRT, CFG_SYS_PCIE3_MEM_PHYS,
 		      MAS3_SX|MAS3_SW|MAS3_SR, MAS2_I|MAS2_G,
 		      0, 5, BOOKE_PAGESZ_256M, 1),
-
 
 	/* *I*G* - PCIe 4, 0xc0000000 */
 	SET_TLB_ENTRY(1, CFG_SYS_PCIE4_MEM_VIRT, CFG_SYS_PCIE4_MEM_PHYS,

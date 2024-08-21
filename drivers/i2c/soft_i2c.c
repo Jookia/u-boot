@@ -15,7 +15,7 @@
  * Please see doc/driver-model/i2c-howto.rst for instructions.
  */
 
-#include <common.h>
+#include <config.h>
 #if defined(CONFIG_AT91FAMILY)
 #include <asm/io.h>
 #include <asm/arch/hardware.h>
@@ -95,7 +95,6 @@ DECLARE_GLOBAL_DATA_PTR;
 
 #define I2C_ACK		0		/* PD_SDA level to ack a byte */
 #define I2C_NOACK	1		/* PD_SDA level to noack a byte */
-
 
 #ifdef DEBUG_I2C
 #define PRINTD(fmt,args...)	do {	\

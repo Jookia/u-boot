@@ -5,7 +5,6 @@
  * Copyright (C) 2018 Texas Instruments Incorporated - https://www.ti.com
  */
 
-#include <common.h>
 #include <cpu_func.h>
 #include <log.h>
 #include <asm/cache.h>
@@ -80,7 +79,6 @@ struct k3_nav_ring_rt_regs {
 #define K3_DMARING_RING_RT_OCC_TDOWN_COMPLETE		BIT(31)
 #define K3_DMARING_RING_RT_DB_ENTRY_MASK		GENMASK(7, 0)
 #define K3_DMARING_RING_RT_DB_TDOWN_ACK		BIT(31)
-
 
 /**
  * struct k3_nav_ring_fifo_regs -  The Ring Accelerator Queues Registers region

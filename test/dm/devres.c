@@ -5,7 +5,6 @@
  * Copyright 2019 Google LLC
  */
 
-#include <common.h>
 #include <errno.h>
 #include <dm.h>
 #include <log.h>
@@ -69,7 +68,6 @@ static int dm_test_devres_free(struct unit_test_state *uts)
 	return 0;
 }
 DM_TEST(dm_test_devres_free, UT_TESTF_SCAN_PDATA);
-
 
 /* Test that kzalloc() returns memory that is zeroed */
 static int dm_test_devres_kzalloc(struct unit_test_state *uts)

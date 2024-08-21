@@ -48,7 +48,6 @@
 ****************************************************************************/
 
 #define __io
-#include <common.h>
 #include <asm/io.h>
 #include "biosemui.h"
 
@@ -422,7 +421,6 @@ static u32 BE_accessReg(int regOffset, u32 value, int func)
 	u8 val8;
 	u16 val16;
 	u32 val32;
-
 
 	/* Decode the configuration register values for the register we wish to
 	 * access

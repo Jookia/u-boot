@@ -3,7 +3,6 @@
  * Copyright (C) 2015 Google, Inc
  */
 
-#include <common.h>
 #include <console.h>
 #include <dm.h>
 #include <part.h>
@@ -423,7 +422,6 @@ static int dm_test_usb_keyb(struct unit_test_state *uts)
 		/* End of list */
 		{0x00, 0x00, "\0"}
 	};
-
 
 	state_set_skip_delays(true);
 	ut_assertok(usb_init());

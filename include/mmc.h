@@ -18,13 +18,6 @@
 
 struct bd_info;
 
-#if CONFIG_IS_ENABLED(MMC_HS200_SUPPORT)
-#define MMC_SUPPORTS_TUNING
-#endif
-#if CONFIG_IS_ENABLED(MMC_UHS_SUPPORT)
-#define MMC_SUPPORTS_TUNING
-#endif
-
 /* SD/MMC version bits; 8 flags, 8 major, 8 minor, 8 change */
 #define SD_VERSION_SD	(1U << 31)
 #define MMC_VERSION_MMC	(1U << 30)
@@ -80,7 +73,6 @@ struct bd_info;
 #define MMC_MODE_1BIT		BIT(28)
 #define MMC_MODE_SPI		BIT(27)
 
-
 #define SD_DATA_4BIT	0x00040000
 
 #define IS_SD(x)	((x)->version & SD_VERSION_SD)
@@ -119,7 +111,6 @@ struct bd_info;
 
 #define MMC_CMD62_ARG1			0xefac62ec
 #define MMC_CMD62_ARG2			0xcbaea7
-
 
 #define SD_CMD_SEND_RELATIVE_ADDR	3
 #define SD_CMD_SWITCH_FUNC		6
@@ -485,7 +476,7 @@ struct dm_mmc_ops {
 	 */
 	int (*get_wp)(struct udevice *dev);
 
-#ifdef MMC_SUPPORTS_TUNING
+#if CONFIG_IS_ENABLED(MMC_SUPPORTS_TUNING)
 	/**
 	 * execute_tuning() - Start the tuning process
 	 *

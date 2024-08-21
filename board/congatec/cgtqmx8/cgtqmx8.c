@@ -3,7 +3,7 @@
  * Copyright 2018 congatec AG
  * Copyright (C) 2019 Oliver Graute <oliver.graute@kococonnector.com>
  */
-#include <common.h>
+#include <config.h>
 #include <errno.h>
 #include <linux/libfdt.h>
 #include <fsl_esdhc.h>
@@ -370,7 +370,6 @@ void detail_board_ddr_info(void)
 {
 	puts("\nDDR    ");
 }
-
 
 #ifdef CONFIG_OF_BOARD_SETUP
 int ft_board_setup(void *blob, struct bd_info *bd)

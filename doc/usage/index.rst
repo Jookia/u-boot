@@ -33,6 +33,7 @@ Shell commands
    cmd/bootd
    cmd/bootdev
    cmd/bootefi
+   cmd/bootelf
    cmd/bootflow
    cmd/booti
    cmd/bootm
@@ -49,6 +50,7 @@ Shell commands
    cmd/coninfo
    cmd/conitrace
    cmd/cp
+   cmd/cpu
    cmd/cyclic
    cmd/dm
    cmd/ebtupdate

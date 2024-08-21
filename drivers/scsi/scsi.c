@@ -6,7 +6,6 @@
 
 #define LOG_CATEGORY	UCLASS_SCSI
 
-#include <common.h>
 #include <blk.h>
 #include <bootdev.h>
 #include <bootstage.h>
@@ -345,7 +344,6 @@ static int scsi_read_capacity(struct udevice *dev, struct scsi_cmd *pccb,
 
 	return 0;
 }
-
 
 /*
  * Some setup (fill-in) routines

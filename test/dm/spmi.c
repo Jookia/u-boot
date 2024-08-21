@@ -3,7 +3,6 @@
  * (C) Copyright 2015 Mateusz Kulikowski <mateusz.kulikowski@gmail.com>
  */
 
-#include <common.h>
 #include <fdtdec.h>
 #include <dm.h>
 #include <malloc.h>
@@ -70,7 +69,6 @@ static int dm_test_spmi_access(struct unit_test_state *uts)
 	return 0;
 }
 DM_TEST(dm_test_spmi_access, UT_TESTF_SCAN_FDT);
-
 
 /* Test if it's possible to access GPIO that should be in pmic */
 static int dm_test_spmi_access_peripheral(struct unit_test_state *uts)

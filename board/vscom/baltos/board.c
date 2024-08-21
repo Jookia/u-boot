@@ -7,7 +7,7 @@
  * Copyright (C) 2011, Texas Instruments, Incorporated - https://www.ti.com/
  */
 
-#include <common.h>
+#include <config.h>
 #include <env.h>
 #include <errno.h>
 #include <init.h>
@@ -284,7 +284,6 @@ int ft_board_setup(void *blob, struct bd_info *bd)
 	mac_addr[3] = header.MAC1[3];
 	mac_addr[4] = header.MAC1[4];
 	mac_addr[5] = header.MAC1[5];
-
 
 	node = fdt_path_offset(blob, "ethernet0");
 	if (node < 0) {

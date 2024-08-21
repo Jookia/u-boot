@@ -13,7 +13,6 @@
  *	    Vikas Sajjan <vikas.sajjan@samsung.com>
  */
 
-#include <common.h>
 #include <cpu_func.h>
 #include <log.h>
 #include <asm/byteorder.h>
@@ -531,9 +530,8 @@ static void reset_ep(struct usb_device *udev, int ep_index)
 	if (!event)
 		return;
 
-	BUG_ON(TRB_TO_SLOT_ID(le32_to_cpu(event->event_cmd.flags))
-		!= udev->slot_id || GET_COMP_CODE(le32_to_cpu(
-		event->event_cmd.status)) != COMP_SUCCESS);
+	BUG_ON(TRB_TO_SLOT_ID(le32_to_cpu(event->event_cmd.flags)) != udev->slot_id ||
+	       GET_COMP_CODE(le32_to_cpu(event->event_cmd.status)) != COMP_SUCCESS);
 	xhci_acknowledge_event(ctrl);
 }
 
@@ -566,8 +564,7 @@ static void abort_td(struct usb_device *udev, int ep_index)
 		field = le32_to_cpu(event->trans_event.flags);
 		BUG_ON(TRB_TO_SLOT_ID(field) != udev->slot_id);
 		BUG_ON(TRB_TO_EP_INDEX(field) != ep_index);
-		BUG_ON(GET_COMP_CODE(le32_to_cpu(event->trans_event.transfer_len
-			!= COMP_STOP)));
+		BUG_ON(GET_COMP_CODE(le32_to_cpu(event->trans_event.transfer_len != COMP_STOP)));
 		xhci_acknowledge_event(ctrl);
 
 		event = xhci_wait_for_event(ctrl, TRB_COMPLETION);
@@ -581,9 +578,8 @@ static void abort_td(struct usb_device *udev, int ep_index)
 
 	comp = GET_COMP_CODE(le32_to_cpu(event->event_cmd.status));
 	BUG_ON(type != TRB_COMPLETION ||
-		TRB_TO_SLOT_ID(le32_to_cpu(event->event_cmd.flags))
-		!= udev->slot_id || (comp != COMP_SUCCESS && comp
-		!= COMP_CTX_STATE));
+		TRB_TO_SLOT_ID(le32_to_cpu(event->event_cmd.flags)) != udev->slot_id ||
+		(comp != COMP_SUCCESS && comp != COMP_CTX_STATE));
 	xhci_acknowledge_event(ctrl);
 
 	addr = xhci_trb_virt_to_dma(ring->enq_seg,
@@ -593,9 +589,8 @@ static void abort_td(struct usb_device *udev, int ep_index)
 	if (!event)
 		return;
 
-	BUG_ON(TRB_TO_SLOT_ID(le32_to_cpu(event->event_cmd.flags))
-		!= udev->slot_id || GET_COMP_CODE(le32_to_cpu(
-		event->event_cmd.status)) != COMP_SUCCESS);
+	BUG_ON(TRB_TO_SLOT_ID(le32_to_cpu(event->event_cmd.flags)) != udev->slot_id ||
+	       GET_COMP_CODE(le32_to_cpu(event->event_cmd.status)) != COMP_SUCCESS);
 	xhci_acknowledge_event(ctrl);
 }
 

@@ -4,7 +4,7 @@
  * Copyright 2020 NXP
  */
 
-#include <common.h>
+#include <config.h>
 #include <command.h>
 #include <image.h>
 #include <init.h>
@@ -621,7 +621,6 @@ void board_reset(void)
 		config_board_mux(MUX_TYPE_IFC);
 }
 #endif
-
 
 int misc_init_r(void)
 {

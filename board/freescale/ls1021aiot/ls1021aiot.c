@@ -4,7 +4,7 @@
  * Copyright 2021 NXP
  */
 
-#include <common.h>
+#include <config.h>
 #include <clock_legacy.h>
 #include <fdt_support.h>
 #include <init.h>
@@ -32,7 +32,6 @@
 DECLARE_GLOBAL_DATA_PTR;
 
 #define DDR_SIZE		0x40000000
-
 
 int checkboard(void)
 {

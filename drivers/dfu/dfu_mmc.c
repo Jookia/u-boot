@@ -6,7 +6,6 @@
  * author: Lukasz Majewski <l.majewski@samsung.com>
  */
 
-#include <common.h>
 #include <log.h>
 #include <malloc.h>
 #include <errno.h>
@@ -269,7 +268,6 @@ int dfu_get_medium_size_mmc(struct dfu_entity *dfu, u64 *size)
 		return -1;
 	}
 }
-
 
 static int mmc_file_buf_read(struct dfu_entity *dfu, u64 offset, void *buf,
 			     long *len)

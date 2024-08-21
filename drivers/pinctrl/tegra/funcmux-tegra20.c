@@ -4,7 +4,6 @@
  */
 
 /* Tegra20 high-level function multiplexing */
-#include <common.h>
 #include <log.h>
 #include <asm/arch/clock.h>
 #include <asm/arch/funcmux.h>
@@ -32,7 +31,6 @@ static const struct pmux_pingrp_config disp1_default[] = {
 	PINMUX(LVS,   DISPA,      NORMAL,    NORMAL),
 	PINMUX(SLXD,  SPDIF,      NORMAL,    NORMAL),
 };
-
 
 int funcmux_select(enum periph_id id, int config)
 {

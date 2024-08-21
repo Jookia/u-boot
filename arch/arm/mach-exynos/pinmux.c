@@ -4,7 +4,6 @@
  * Abhilash Kesavan <a.kesavan@samsung.com>
  */
 
-#include <common.h>
 #include <fdtdec.h>
 #include <log.h>
 #include <asm/gpio.h>
@@ -391,7 +390,6 @@ static void exynos5420_i2s_config(int peripheral)
 		break;
 	}
 }
-
 
 void exynos5_spi_config(int peripheral)
 {

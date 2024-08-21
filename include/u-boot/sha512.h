@@ -1,6 +1,8 @@
 #ifndef _SHA512_H
 #define _SHA512_H
 
+#include <linux/types.h>
+
 #define SHA384_SUM_LEN          48
 #define SHA384_DER_LEN          19
 #define SHA512_SUM_LEN          64
@@ -33,6 +35,5 @@ void sha384_finish(sha512_context * ctx, uint8_t digest[SHA384_SUM_LEN]);
 
 void sha384_csum_wd(const unsigned char *input, unsigned int ilen,
 		unsigned char *output, unsigned int chunk_sz);
-
 
 #endif /* _SHA512_H */

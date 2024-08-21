@@ -63,7 +63,8 @@ enum bootflow_flags_t {
  *
  * @bm_node: Points to siblings in the same bootdev
  * @glob_node: Points to siblings in the global list (all bootdev)
- * @dev: Bootdev device which produced this bootflow
+ * @dev: Bootdev device which produced this bootflow, NULL for flows created by
+ *      BOOTMETHF_GLOBAL bootmeths
  * @blk: Block device which contains this bootflow, NULL if this is a network
  *	device or sandbox 'host' device
  * @part: Partition number (0 for whole device)
@@ -406,6 +407,15 @@ void bootflow_remove(struct bootflow *bflow);
  * Return: 0 if OK, -ENOTSUPP if some other device is used (e.g. ethernet)
  */
 int bootflow_iter_check_blk(const struct bootflow_iter *iter);
+
+/**
+ * bootflow_iter_check_mmc() - Check that a bootflow uses a MMC device
+ *
+ * This checks the bootdev in the bootflow to make sure it uses a mmc device
+ *
+ * Return: 0 if OK, -ENOTSUPP if some other device is used (e.g. ethernet)
+ */
+int bootflow_iter_check_mmc(const struct bootflow_iter *iter);
 
 /**
  * bootflow_iter_check_sf() - Check that a bootflow uses SPI FLASH

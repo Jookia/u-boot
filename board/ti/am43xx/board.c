@@ -7,8 +7,7 @@
  * Copyright (C) 2013, Texas Instruments, Incorporated - https://www.ti.com/
  */
 
-#include <common.h>
-#include <eeprom.h>
+#include <config.h>
 #include <asm/global_data.h>
 #include <dm/uclass.h>
 #include <env.h>
@@ -336,7 +335,6 @@ const struct dpll_params *get_dpll_ddr_params(void)
 	printf(" Board '%s' not supported\n", board_ti_get_name());
 	return NULL;
 }
-
 
 /*
  * get_opp_offset:

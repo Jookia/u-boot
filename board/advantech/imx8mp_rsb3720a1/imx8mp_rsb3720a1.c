@@ -4,7 +4,6 @@
  * Copyright 2022 Linaro
  */
 
-#include <common.h>
 #include <dwc3-uboot.h>
 #include <efi.h>
 #include <efi_loader.h>
@@ -59,7 +58,6 @@ struct efi_capsule_update_info update_info = {
 };
 
 #endif /* EFI_HAVE_CAPSULE_SUPPORT */
-
 
 int board_early_init_f(void)
 {

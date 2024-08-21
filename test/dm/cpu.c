@@ -4,7 +4,6 @@
  * Mario Six, Guntermann & Drunck GmbH, mario.six@gdsys.cc
  */
 
-#include <common.h>
 #include <dm.h>
 #include <log.h>
 #include <dm/test.h>
@@ -43,6 +42,8 @@ static int dm_test_cpu(struct unit_test_state *uts)
 
 	ut_assertok(cpu_get_vendor(dev, text, sizeof(text)));
 	ut_assertok(strcmp(text, "Languid Example Garbage Inc."));
+
+	ut_assertok(cpu_release_core(dev, 0));
 
 	return 0;
 }

@@ -4,7 +4,7 @@
  * Copyright 2021 NXP
  */
 
-#include <common.h>
+#include <config.h>
 #include <command.h>
 #include <fdt_support.h>
 #include <hang.h>
@@ -146,7 +146,6 @@ int dram_init(void)
 	return 0;
 }
 #endif
-
 
 int board_early_init_f(void)
 {

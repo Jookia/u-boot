@@ -3,7 +3,6 @@
  * Copyright (c) 2013 Google, Inc
  */
 
-#include <common.h>
 #include <dm.h>
 #include <errno.h>
 #include <fdtdec.h>
@@ -20,6 +19,7 @@
 #include <dm/util.h>
 #include <dm/of_access.h>
 #include <linux/ioport.h>
+#include <linux/list.h>
 #include <test/test.h>
 #include <test/ut.h>
 
@@ -163,7 +163,7 @@ static int dm_test_fdt(struct unit_test_state *uts)
 	ut_assert(!ret);
 
 	/* These are num_devices compatible root-level device tree nodes */
-	ut_asserteq(num_devices, list_count_items(&uc->dev_head));
+	ut_asserteq(num_devices, list_count_nodes(&uc->dev_head));
 
 	/* Each should have platform data but no private data */
 	for (i = 0; i < num_devices; i++) {
@@ -218,7 +218,7 @@ static int dm_test_fdt_pre_reloc(struct unit_test_state *uts)
 	 * one with "bootph-all" property (a-test node), and the other
 	 * one whose driver marked with DM_FLAG_PRE_RELOC flag (h-test node).
 	 */
-	ut_asserteq(2, list_count_items(&uc->dev_head));
+	ut_asserteq(2, list_count_nodes(&uc->dev_head));
 
 	return 0;
 }

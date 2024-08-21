@@ -3,7 +3,7 @@
  * Copyright (C) 2008, Guennadi Liakhovetski <lg@denx.de>
  */
 
-#include <common.h>
+#include <config.h>
 #include <clk.h>
 #include <dm.h>
 #include <log.h>
@@ -621,7 +621,6 @@ static int mxc_spi_xfer(struct udevice *dev, unsigned int bitlen,
 		const void *dout, void *din, unsigned long flags)
 {
 	struct mxc_spi_slave *mxcs = dev_get_plat(dev->parent);
-
 
 	return mxc_spi_xfer_internal(mxcs, bitlen, dout, din, flags);
 }

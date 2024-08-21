@@ -7,7 +7,7 @@
  * Copyright (C) 2011, Texas Instruments, Incorporated - https://www.ti.com/
  */
 
-#include <common.h>
+#include <config.h>
 #include <env.h>
 #include <errno.h>
 #include <init.h>
@@ -347,7 +347,6 @@ int board_eth_init(struct bd_info *bis)
 		if (is_valid_ethaddr(mac_addr))
 			eth_env_set_enetaddr("eth1addr", mac_addr);
 	}
-
 
 	writel(MII_MODE_ENABLE, &cdev->miisel);
 	cpsw_slaves[0].phy_if = cpsw_slaves[1].phy_if =

@@ -9,7 +9,6 @@
  */
 
 #include <clk.h>
-#include <common.h>
 #include <cpu_func.h>
 #include <dm.h>
 #include <generic-phy.h>
@@ -390,7 +389,6 @@ static int zynq_phy_init(struct udevice *dev)
 
 	return phy_config(priv->phydev);
 }
-
 
 static int zynq_gem_init(struct udevice *dev)
 {

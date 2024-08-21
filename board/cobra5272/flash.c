@@ -4,13 +4,17 @@
  * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
  */
 
-#include <common.h>
+#include <config.h>
 #include <console.h>
 #include <cpu_func.h>
 #include <flash.h>
 #include <irq_func.h>
+#include <stdio.h>
+#include <time.h>
 #include <uuid.h>
+#include <vsprintf.h>
 #include <linux/delay.h>
+#include <linux/string.h>
 
 #define PHYS_FLASH_1 CFG_SYS_FLASH_BASE
 #define FLASH_BANK_SIZE 0x200000
@@ -56,7 +60,6 @@ void flash_print_info(flash_info_t *info)
 Done:
 	return;
 }
-
 
 unsigned long flash_init(void)
 {
@@ -108,7 +111,6 @@ unsigned long flash_init(void)
 	return size;
 }
 
-
 #define CMD_READ_ARRAY		0x00F0
 #define CMD_UNLOCK1		0x00AA
 #define CMD_UNLOCK2		0x0055
@@ -128,7 +130,6 @@ unsigned long flash_init(void)
 #define READY 1
 #define ERR   2
 #define TMO   4
-
 
 int flash_erase(flash_info_t *info, int s_first, int s_last)
 {
@@ -263,7 +264,6 @@ static int write_word(flash_info_t *info, ulong dest, ulong data)
 	if ((result & data) != data)
 		return ERR_NOT_ERASED;
 
-
 	/*
 	 * Disable interrupts which might cause a timeout
 	 * here. Remember that our exception vectors are
@@ -312,7 +312,6 @@ static int write_word(flash_info_t *info, ulong dest, ulong data)
 
 	return rc;
 }
-
 
 int write_buff(flash_info_t *info, uchar *src, ulong addr, ulong cnt)
 {

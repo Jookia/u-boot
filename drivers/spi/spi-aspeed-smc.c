@@ -12,7 +12,6 @@
 
 #include <asm/io.h>
 #include <clk.h>
-#include <common.h>
 #include <dm.h>
 #include <dm/device_compat.h>
 #include <linux/bitops.h>
@@ -960,7 +959,6 @@ static int aspeed_spi_ctrl_init(struct udevice *bus)
 		priv->flashes[cs].ahb_decoded_sz = 0x10000000;
 		return 0;
 	}
-
 
 	ret = aspeed_spi_read_fixed_decoded_ranges(bus);
 	if (ret != 0)

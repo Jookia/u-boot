@@ -5,7 +5,6 @@
  */
 
 #include <ansi.h>
-#include <common.h>
 #include <cli.h>
 #include <malloc.h>
 #include <errno.h>
@@ -398,7 +397,6 @@ struct menu *menu_create(char *title, int timeout, int prompt,
 		}
 	} else
 		m->title = NULL;
-
 
 	INIT_LIST_HEAD(&m->items);
 

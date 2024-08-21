@@ -10,7 +10,6 @@
  * project.
  */
 
-#include <common.h>
 #include <blk.h>
 #include <bootstage.h>
 #include <command.h>
@@ -550,7 +549,6 @@ static int usb_test(struct usb_device *dev, int port, char* arg)
 	}
 }
 
-
 /******************************************************************************
  * usb boot command intepreter. Derived from diskboot
  */
@@ -737,7 +735,6 @@ U_BOOT_CMD(
 	"    from memory address `addr'"
 #endif /* CONFIG_USB_STORAGE */
 );
-
 
 #ifdef CONFIG_USB_STORAGE
 U_BOOT_CMD(

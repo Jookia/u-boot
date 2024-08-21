@@ -12,7 +12,6 @@
  * GNU General Public License for more details.
  */
 
-#include <common.h>
 #include <asm/io.h>
 #include <memalign.h>
 #include <nand.h>
@@ -1699,7 +1698,7 @@ static int brcmnand_fill_dma_desc(struct brcmnand_host *host,
 	desc->cmd_irq = (dma_cmd << 24) |
 		(end ? (0x03 << 8) : 0) | /* IRQ | STOP */
 		(!!begin) | ((!!end) << 1); /* head, tail */
-#ifdef CONFIG_CPU_BIG_ENDIAN
+#ifdef CONFIG_SYS_BIG_ENDIAN
 	desc->cmd_irq |= 0x01 << 12;
 #endif
 	desc->dram_addr = lower_32_bits(buf);

@@ -3,7 +3,6 @@
  * Copyright (C) 2017 The Android Open Source Project
  */
 
-#include <common.h>
 #include <android_ab.h>
 #include <command.h>
 #include <env.h>
@@ -35,7 +34,6 @@ static int do_ab_select(struct cmd_tbl *cmdtp, int flag, int argc,
 						 false) < 0) {
 		return CMD_RET_FAILURE;
 	}
-
 
 	ret = ab_select_slot(dev_desc, &part_info, dec_tries);
 	if (ret < 0) {

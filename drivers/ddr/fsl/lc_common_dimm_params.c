@@ -4,7 +4,6 @@
  * Copyright 2017-2021 NXP Semiconductor
  */
 
-#include <common.h>
 #include <fsl_ddr_sdram.h>
 #include <log.h>
 #include <asm/bitops.h>
@@ -191,7 +190,6 @@ compute_cas_latency(const unsigned int ctrl_num,
 	debug("lowest common SPD-defined CAS latency = %u\n",
 	      lowest_good_caslat);
 	outpdimm->lowest_common_spd_caslat = lowest_good_caslat;
-
 
 	/*
 	 * Compute a common 'de-rated' CAS latency.

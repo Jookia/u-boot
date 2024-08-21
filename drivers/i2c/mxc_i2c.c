@@ -14,7 +14,7 @@
  *
  */
 
-#include <common.h>
+#include <config.h>
 #include <log.h>
 #include <asm/arch/clock.h>
 #include <asm/arch/imx-regs.h>
@@ -511,7 +511,6 @@ static int i2c_init_transfer(struct mxc_i2c_bus *i2c_bus, u8 chip,
 	printf("%s: give up i2c_regs=0x%lx\n", __func__, i2c_bus->base);
 	return ret;
 }
-
 
 static int i2c_write_data(struct mxc_i2c_bus *i2c_bus, u8 chip, const u8 *buf,
 			  int len)

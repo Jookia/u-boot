@@ -28,7 +28,6 @@
  */
 
 #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-#include <common.h>
 #include <log.h>
 #include <malloc.h>
 #include <watchdog.h>
@@ -2768,7 +2767,6 @@ out:
 	return ret;
 }
 
-
 /**
  * nand_write_page_raw - [INTERN] raw page write function
  * @mtd: mtd info structure
@@ -2928,7 +2926,6 @@ static int nand_write_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
 	return 0;
 }
 
-
 /**
  * nand_write_subpage_hwecc - [REPLACEABLE] hardware ECC based subpage write
  * @mtd:	mtd info structure
@@ -2994,7 +2991,6 @@ static int nand_write_subpage_hwecc(struct mtd_info *mtd,
 
 	return 0;
 }
-
 
 /**
  * nand_write_page_syndrome - [REPLACEABLE] hardware ECC syndrome based page write

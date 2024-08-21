@@ -13,7 +13,6 @@
  * Copyright 2017-2019 NXP
  */
 
-#include <common.h>
 #include <clk.h>
 #include <cpu_func.h>
 #include <dm.h>
@@ -277,7 +276,6 @@ static inline int mxs_nand_calc_ecc_for_large_oob(struct bch_geometry *geo,
 			/ (geo->gf_len * geo->ecc_chunk_count);
 	max_ecc = min(round_down(max_ecc, 2),
 				nand_info->max_ecc_strength_supported);
-
 
 	/* search a supported ecc strength that makes bbm */
 	/* located in data chunk  */

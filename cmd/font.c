@@ -6,7 +6,6 @@
  * Written by Simon Glass <sjg@chromium.org>
  */
 
-#include <common.h>
 #include <command.h>
 #include <dm.h>
 #include <video.h>
@@ -77,7 +76,6 @@ static int do_font_size(struct cmd_tbl *cmdtp, int flag, int argc,
 
 	return 0;
 }
-
 
 U_BOOT_LONGHELP(font,
 	"list       - list available fonts\n"

@@ -8,8 +8,6 @@
 #ifndef _NAND_H_
 #define _NAND_H_
 
-#include <config.h>
-
 extern void spinand_init(void);
 extern void nand_init(void);
 void nand_reinit(void);
@@ -60,7 +58,6 @@ static inline int nand_erase(struct mtd_info *info, loff_t off, size_t size)
 
 	return mtd_erase(info, &instr);
 }
-
 
 /*****************************************************************************
  * declarations from nand_util.c

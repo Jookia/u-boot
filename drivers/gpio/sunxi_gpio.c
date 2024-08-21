@@ -9,7 +9,6 @@
  * Tom Cubie <tangliang@allwinnertech.com>
  */
 
-#include <common.h>
 #include <dm.h>
 #include <errno.h>
 #include <fdtdec.h>
@@ -157,7 +156,6 @@ void sunxi_gpio_set_pull_bank(void *bank_base, int pin_offset, u32 val)
 	clrsetbits_le32(bank_base + GPIO_PULL_REG_OFFSET + index * 4,
 			0x3U << offset, val << offset);
 }
-
 
 /* =========== Non-DM code, used by the SPL. ============ */
 

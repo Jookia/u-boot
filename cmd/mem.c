@@ -10,7 +10,6 @@
  * Copied from FADS ROM, Dan Malek (dmalek@jlc.net)
  */
 
-#include <common.h>
 #include <console.h>
 #include <bootretry.h>
 #include <cli.h>
@@ -24,6 +23,7 @@
 #include <log.h>
 #include <mapmem.h>
 #include <rand.h>
+#include <time.h>
 #include <watchdog.h>
 #include <asm/global_data.h>
 #include <asm/io.h>
@@ -1316,13 +1316,11 @@ U_BOOT_CMD(
 	"[.b, .w, .l" HELP_Q "] address [# of objects]"
 );
 
-
 U_BOOT_CMD(
 	mm,	2,	1,	do_mem_mm,
 	"memory modify (auto-incrementing address)",
 	"[.b, .w, .l" HELP_Q "] address"
 );
-
 
 U_BOOT_CMD(
 	nm,	2,	1,	do_mem_nm,

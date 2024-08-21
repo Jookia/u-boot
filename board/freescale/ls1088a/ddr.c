@@ -3,7 +3,6 @@
  * Copyright 2017 NXP
  */
 
-#include <common.h>
 #include <fsl_ddr_sdram.h>
 #include <fsl_ddr_dimm_params.h>
 #include <log.h>
@@ -94,7 +93,6 @@ found:
 	 */
 	popts->wrlvl_override = 1;
 	popts->wrlvl_sample = 0xf;
-
 
 	/* Enable ZQ calibration */
 	popts->zq_en = 1;

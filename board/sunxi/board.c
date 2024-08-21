@@ -10,7 +10,6 @@
  * Some board init for the Allwinner A10-evb board.
  */
 
-#include <common.h>
 #include <clock_legacy.h>
 #include <dm.h>
 #include <env.h>
@@ -516,7 +515,7 @@ int board_mmc_init(struct bd_info *bis)
 	return 0;
 }
 
-#if CONFIG_MMC_SUNXI_SLOT_EXTRA != -1
+#ifdef CONFIG_SYS_MMC_ENV_DEV
 int mmc_get_env_dev(void)
 {
 	switch (sunxi_get_boot_device()) {
@@ -563,7 +562,7 @@ void sunxi_board_init(void)
 #if defined CONFIG_AXP152_POWER || defined CONFIG_AXP209_POWER || \
 	defined CONFIG_AXP221_POWER || defined CONFIG_AXP305_POWER || \
 	defined CONFIG_AXP809_POWER || defined CONFIG_AXP818_POWER || \
-	defined CONFIG_AXP313_POWER
+	defined CONFIG_AXP313_POWER || defined CONFIG_AXP717_POWER
 	power_failed = axp_init();
 
 	if (IS_ENABLED(CONFIG_AXP_DISABLE_BOOT_ON_POWERON) && !power_failed) {

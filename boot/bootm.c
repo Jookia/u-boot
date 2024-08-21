@@ -5,7 +5,6 @@
  */
 
 #ifndef USE_HOSTCC
-#include <common.h>
 #include <bootm.h>
 #include <bootstage.h>
 #include <cli.h>
@@ -25,6 +24,7 @@
 #include <asm/io.h>
 #include <linux/sizes.h>
 #include <tpm-v2.h>
+#include <tpm_tcg2.h>
 #if defined(CONFIG_CMD_USB)
 #include <usb.h>
 #endif
@@ -740,18 +740,6 @@ ulong bootm_disable_interrupts(void)
 	eth_halt();
 #endif
 
-#if defined(CONFIG_CMD_USB)
-	/*
-	 * turn off USB to prevent the host controller from writing to the
-	 * SDRAM while Linux is booting. This could happen (at least for OHCI
-	 * controller), because the HCCA (Host Controller Communication Area)
-	 * lies within the SDRAM and the host controller writes continously to
-	 * this area (as busmaster!). The HccaFrameNumber is for example
-	 * updated every 1 ms within the HCCA structure in SDRAM! For more
-	 * details see the OpenHCI specification.
-	 */
-	usb_stop();
-#endif
 	return iflag;
 }
 

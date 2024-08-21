@@ -8,7 +8,6 @@
 
 #define LOG_CATEGORY UCLASS_BOOTSTD
 
-#include <common.h>
 #include <bootdev.h>
 #include <bootflow.h>
 #include <bootmeth.h>
@@ -184,7 +183,7 @@ static const struct udevice_id extlinux_bootmeth_ids[] = {
 	{ }
 };
 
-/* Put an number before 'extlinux' to provide a default ordering */
+/* Put a number before 'extlinux' to provide a default ordering */
 U_BOOT_DRIVER(bootmeth_1extlinux) = {
 	.name		= "bootmeth_extlinux",
 	.id		= UCLASS_BOOTMETH,

@@ -3,7 +3,6 @@
  * Copyright (c) 2013, The Chromium Authors
  */
 
-#include <common.h>
 #include <abuf.h>
 #include <bootm.h>
 #include <command.h>
@@ -139,7 +138,6 @@ static const char zstd_compressed[] =
 	"\x15\xb6\x26\x68\x05\x4f\x23\x12\xee\x53\x55\x2d\x44\x2f\x54\x95"
 	"\x01\xe4\xf4\x6e\xfa";
 static const unsigned long zstd_compressed_size = sizeof(zstd_compressed) - 1;
-
 
 #define TEST_BUFFER_SIZE	512
 

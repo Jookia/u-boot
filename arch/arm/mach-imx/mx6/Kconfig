@@ -481,6 +481,7 @@ config TARGET_MX6ULZ_SMM_M2
 	select DM_MTD
 	select DM_THERMAL
 	select SUPPORT_SPL
+	imply OF_UPSTREAM
 
 config TARGET_MYS_6ULX
 	bool "MYiR MYS-6ULX"
@@ -635,6 +636,7 @@ config TARGET_UDOO_NEO
 	select DM_THERMAL
 	select SUPPORT_SPL
 	imply CMD_DM
+	imply OF_UPSTREAM
 
 config TARGET_SOFTING_VINING_2000
 	bool "Softing VIN|ING 2000"

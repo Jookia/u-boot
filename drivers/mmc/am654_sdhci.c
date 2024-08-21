@@ -6,7 +6,6 @@
  */
 
 #include <clk.h>
-#include <common.h>
 #include <dm.h>
 #include <malloc.h>
 #include <mmc.h>
@@ -106,6 +105,8 @@ struct am654_sdhci_plat {
 #define FREQSEL_2_BIT	BIT(2)
 #define STRBSEL_4_BIT	BIT(3)
 #define DLL_CALIB	BIT(4)
+	u32 quirks;
+#define SDHCI_AM654_QUIRK_FORCE_CDTEST BIT(0)
 };
 
 struct timing_data {
@@ -351,10 +352,8 @@ int am654_sdhci_init(struct am654_sdhci_plat *plat)
 }
 
 #define MAX_SDCD_DEBOUNCE_TIME 2000
-static int am654_sdhci_deferred_probe(struct sdhci_host *host)
+static int am654_sdhci_cd_poll(struct mmc *mmc)
 {
-	struct udevice *dev = host->mmc->dev;
-	struct am654_sdhci_plat *plat = dev_get_plat(dev);
 	unsigned long start;
 	int val;
 
@@ -369,12 +368,35 @@ static int am654_sdhci_deferred_probe(struct sdhci_host *host)
 		if (get_timer(start) > MAX_SDCD_DEBOUNCE_TIME)
 			return -ENOMEDIUM;
 
-		val = mmc_getcd(host->mmc);
+		val = mmc_getcd(mmc);
 	} while (!val);
+
+	return 0;
+}
+
+static int am654_sdhci_deferred_probe(struct sdhci_host *host)
+{
+	struct udevice *dev = host->mmc->dev;
+	struct am654_sdhci_plat *plat = dev_get_plat(dev);
+	int ret;
+
+	if (!(plat->quirks & SDHCI_AM654_QUIRK_FORCE_CDTEST)) {
+		if (am654_sdhci_cd_poll(host->mmc))
+			return -ENOMEDIUM;
+	}
 
 	am654_sdhci_init(plat);
 
-	return sdhci_probe(dev);
+	ret = sdhci_probe(dev);
+
+	if (plat->quirks & SDHCI_AM654_QUIRK_FORCE_CDTEST) {
+		u8 hostctrlreg = sdhci_readb(host, SDHCI_HOST_CONTROL);
+
+		hostctrlreg |= SDHCI_CTRL_CD_TEST_INS | SDHCI_CTRL_CD_TEST;
+		sdhci_writeb(host, hostctrlreg, SDHCI_HOST_CONTROL);
+	}
+
+	return ret;
 }
 
 static void am654_sdhci_write_b(struct sdhci_host *host, u8 val, int reg)
@@ -397,7 +419,7 @@ static void am654_sdhci_write_b(struct sdhci_host *host, u8 val, int reg)
 
 	writeb(val, host->ioaddr + reg);
 }
-#ifdef MMC_SUPPORTS_TUNING
+#if CONFIG_IS_ENABLED(MMC_SUPPORTS_TUNING)
 #define ITAPDLY_LENGTH 32
 #define ITAPDLY_LAST_INDEX (ITAPDLY_LENGTH - 1)
 
@@ -500,7 +522,7 @@ static int am654_sdhci_execute_tuning(struct mmc *mmc, u8 opcode)
 }
 #endif
 const struct sdhci_ops am654_sdhci_ops = {
-#ifdef MMC_SUPPORTS_TUNING
+#if CONFIG_IS_ENABLED(MMC_SUPPORTS_TUNING)
 	.platform_execute_tuning = am654_sdhci_execute_tuning,
 #endif
 	.deferred_probe		= am654_sdhci_deferred_probe,
@@ -560,7 +582,7 @@ static int j721e_4bit_sdhci_set_ios_post(struct sdhci_host *host)
 }
 
 const struct sdhci_ops j721e_4bit_sdhci_ops = {
-#ifdef MMC_SUPPORTS_TUNING
+#if CONFIG_IS_ENABLED(MMC_SUPPORTS_TUNING)
 	.platform_execute_tuning = am654_sdhci_execute_tuning,
 #endif
 	.deferred_probe		= am654_sdhci_deferred_probe,
@@ -680,6 +702,9 @@ static int am654_sdhci_probe(struct udevice *dev)
 
 	regmap_init_mem_index(dev_ofnode(dev), &plat->base, 1);
 
+	if (plat->quirks & SDHCI_AM654_QUIRK_FORCE_CDTEST)
+		am654_sdhci_deferred_probe(host);
+
 	return 0;
 }
 
@@ -729,6 +754,8 @@ static int am654_sdhci_of_to_plat(struct udevice *dev)
 
 	dev_read_u32(dev, "ti,strobe-sel", &plat->strb_sel);
 	dev_read_u32(dev, "ti,clkbuf-sel", &plat->clkbuf_sel);
+	if (dev_read_bool(dev, "ti,fails-without-test-cd"))
+		plat->quirks |= SDHCI_AM654_QUIRK_FORCE_CDTEST;
 
 	ret = mmc_of_parse(dev, cfg);
 	if (ret)

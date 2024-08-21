@@ -6,7 +6,6 @@
  * Written by Simon Glass <sjg@chromium.org>
  */
 
-#include <common.h>
 #include <bootstd.h>
 #include <dm.h>
 #include <bootdev.h>
@@ -680,7 +679,6 @@ static int bootdev_test_next_label(struct unit_test_state *uts)
 }
 BOOTSTD_TEST(bootdev_test_next_label, UT_TESTF_DM | UT_TESTF_SCAN_FDT |
 	     UT_TESTF_ETH_BOOTDEV | UT_TESTF_SF_BOOTDEV);
-
 
 /* Check iterating to the next prioirty in a list */
 static int bootdev_test_next_prio(struct unit_test_state *uts)

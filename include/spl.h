@@ -436,7 +436,6 @@ int spl_load_legacy_img(struct spl_image_info *spl_image,
 			struct spl_load_info *load, ulong offset,
 			struct legacy_img_hdr *hdr);
 
-
 /**
  * spl_load_imx_container() - Loads a imx container image from a device.
  * @spl_image:	Image description to set up
@@ -815,6 +814,14 @@ int spl_early_init(void);
  * board_init_f(), and no device tree will be available.
  */
 int spl_init(void);
+
+/*
+ * spl_soc_init() - Do architecture-specific init in SPL
+ *
+ * If SPL_SOC_INIT is enabled, this is called from board_init_r() before
+ * jumping to the next phase.
+ */
+void spl_soc_init(void);
 
 /*
  * spl_board_init() - Do board-specific init in SPL

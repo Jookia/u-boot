@@ -18,7 +18,6 @@
  * ext4write : Based on generic ext4 protocol.
  */
 
-#include <common.h>
 #include <blk.h>
 #include <ext_common.h>
 #include <ext4fs.h>
@@ -1206,7 +1205,6 @@ fail:
 
 }
 
-
 static void alloc_single_indirect_block(struct ext2_inode *file_inode,
 					unsigned int *total_remaining_blocks,
 					unsigned int *no_blks_reqd)
@@ -2380,7 +2378,6 @@ int ext4fs_mount(void)
 	/* Make sure this is an ext2 filesystem. */
 	if (le16_to_cpu(data->sblock.magic) != EXT2_MAGIC)
 		goto fail_noerr;
-
 
 	if (le32_to_cpu(data->sblock.revision_level) == 0) {
 		fs->inodesz = 128;

@@ -4,7 +4,6 @@
  * Copyright 2013 Freescale Semiconductor, Inc.
  */
 
-#include <common.h>
 #include <clock_legacy.h>
 #include <clk.h>
 #include <dm.h>
@@ -101,7 +100,6 @@ static void lpuart_write32(u32 flags, u32 *addr, u32 val)
 			out_le32(addr, val);
 	}
 }
-
 
 u32 __weak get_lpuart_clk(void)
 {

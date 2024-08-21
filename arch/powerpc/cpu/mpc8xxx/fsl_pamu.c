@@ -5,12 +5,14 @@
  * Copyright 2012-2016 Freescale Semiconductor, Inc.
  */
 
-#include <common.h>
+#include <config.h>
 #include <log.h>
 #include <linux/bitops.h>
 #include <linux/log2.h>
 #include <malloc.h>
 #include <asm/fsl_pamu.h>
+#include <asm/io.h>
+#include <asm/ppc.h>
 
 struct paace *ppaact;
 struct paace *sec;
@@ -23,7 +25,6 @@ static inline int __ilog2_roundup_64(uint64_t val)
 	else
 		return  __ilog2_u64(val) + 1;
 }
-
 
 static inline int count_lsb_zeroes(unsigned long val)
 {
@@ -330,14 +331,12 @@ void pamu_disable(void)
 	u32 i  = 0;
 	u32 base_addr = CFG_SYS_PAMU_ADDR;
 
-
 	for (i = 0; i < CFG_NUM_PAMU; i++) {
 		clrbits_be32((void *)base_addr + PAMU_PCR_OFFSET, PAMU_PCR_PE);
 		sync();
 		base_addr += PAMU_OFFSET;
 	}
 }
-
 
 static uint64_t find_max(uint64_t arr[], int num)
 {

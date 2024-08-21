@@ -6,7 +6,7 @@
  * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
  */
 
-#include <common.h>
+#include <config.h>
 #include <display_options.h>
 #include <init.h>
 #include <asm/bitops.h>
@@ -353,6 +353,5 @@ void clear_ddr_tlbs(unsigned int memsize_in_meg)
 {
 	clear_ddr_tlbs_phys(CFG_SYS_DDR_SDRAM_BASE, memsize_in_meg);
 }
-
 
 #endif /* not SPL */

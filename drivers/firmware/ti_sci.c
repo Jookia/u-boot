@@ -7,7 +7,6 @@
  *	Lokesh Vutla <lokeshvutla@ti.com>
  */
 
-#include <common.h>
 #include <dm.h>
 #include <errno.h>
 #include <log.h>
@@ -139,7 +138,6 @@ static struct ti_sci_xfer *ti_sci_setup_one_xfer(struct ti_sci_info *info,
 		dev_err(info->dev, "TI-SCI message transfer size not sane\n");
 		return ERR_PTR(-ERANGE);
 	}
-
 
 	info->seq = ~info->seq;
 	xfer->tx_message.buf = buf;

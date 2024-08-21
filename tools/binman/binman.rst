@@ -711,6 +711,13 @@ missing-msg:
     information about what needs to be fixed. See missing-blob-help for the
     message for each tag.
 
+assume-size:
+    Sets the assumed size of a blob entry if it is missing. This allows for a
+    check that the rest of the image fits into the available space, even when
+    the contents are not available. If the entry is missing, Binman will use
+    this assumed size for the entry size, including creating a fake file of that
+    size if requested.
+
 no-expanded:
     By default binman substitutes entries with expanded versions if available,
     so that a `u-boot` entry type turns into `u-boot-expanded`, for example. The
@@ -1204,7 +1211,7 @@ Templates provide a simple way to handle this::
 
         spi-image {
             filename = "image-spi.bin";
-            insert-template = <&fit>;
+            insert-template = <&common_part>;
 
             /* things specific to SPI follow */
             footer {
@@ -1217,7 +1224,7 @@ Templates provide a simple way to handle this::
 
         mmc-image {
             filename = "image-mmc.bin";
-            insert-template = <&fit>;
+            insert-template = <&common_part>;
 
             /* things specific to MMC follow */
             footer {

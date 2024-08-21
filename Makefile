@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: GPL-2.0+
 
 VERSION = 2024
-PATCHLEVEL = 07
+PATCHLEVEL = 10
 SUBLEVEL =
-EXTRAVERSION =
+EXTRAVERSION = -rc3
 NAME =
 
 PATCHESVERSION = -allpatches20240614
@@ -1050,7 +1050,7 @@ endif
 CHECKFLAGS += --arch=$(ARCH)
 
 # insure the checker run with the right endianness
-CHECKFLAGS += $(if $(CONFIG_CPU_BIG_ENDIAN),-mbig-endian,-mlittle-endian)
+CHECKFLAGS += $(if $(CONFIG_SYS_BIG_ENDIAN),-mbig-endian,-mlittle-endian)
 
 # the checker needs the correct machine size
 CHECKFLAGS += $(if $(CONFIG_64BIT),-m64,-m32)
@@ -1390,9 +1390,12 @@ cmd_binman = $(srctree)/tools/binman/binman $(if $(BINMAN_DEBUG),-D) \
 		-a rockchip-tpl-path=$(ROCKCHIP_TPL) \
 		-a spl-bss-pad=$(if $(CONFIG_SPL_SEPARATE_BSS),,1) \
 		-a tpl-bss-pad=$(if $(CONFIG_TPL_SEPARATE_BSS),,1) \
+		-a vpl-bss-pad=$(if $(CONFIG_VPL_SEPARATE_BSS),,1) \
 		-a spl-dtb=$(CONFIG_SPL_OF_REAL) \
 		-a tpl-dtb=$(CONFIG_TPL_OF_REAL) \
+		-a vpl-dtb=$(CONFIG_VPL_OF_REAL) \
 		-a pre-load-key-path=${PRE_LOAD_KEY_PATH} \
+		-a of-spl-remove-props=$(CONFIG_OF_SPL_REMOVE_PROPS) \
 		$(BINMAN_$(@F))
 
 OBJCOPYFLAGS_u-boot.ldr.hex := -I binary -O ihex
@@ -1838,7 +1841,7 @@ ENV_FILE := $(if $(ENV_SOURCE_FILE),$(ENV_FILE_CFG),$(wildcard $(ENV_FILE_BOARD)
 quiet_cmd_gen_envp = ENVP    $@
       cmd_gen_envp = \
 	if [ -s "$(ENV_FILE)" ]; then \
-		$(CPP) -P $(CFLAGS) -x assembler-with-cpp -undef \
+		$(CPP) -P $(cpp_flags) -x assembler-with-cpp -undef \
 			-D__ASSEMBLY__ \
 			-D__UBOOT_CONFIG__ \
 			-I . -I include -I $(srctree)/include \
@@ -1900,8 +1903,11 @@ $(filter-out tools, $(u-boot-dirs)): tools
 # is "yes"), so compile examples after U-Boot is compiled.
 examples: $(filter-out examples, $(u-boot-dirs))
 
+# The setlocalversion script comes from linux and expects a
+# KERNELVERSION variable in the environment for figuring out which
+# annotated tags are relevant. Pass UBOOTVERSION.
 define filechk_uboot.release
-	echo "$(UBOOTVERSION)$$($(CONFIG_SHELL) $(srctree)/scripts/setlocalversion $(srctree))"
+	KERNELVERSION=$(UBOOTVERSION) $(CONFIG_SHELL) $(srctree)/scripts/setlocalversion $(srctree)
 endef
 
 # Store (new) UBOOTRELEASE string in include/config/uboot.release
@@ -2212,7 +2218,7 @@ MRPROPER_DIRS  += include/config include/generated spl tpl vpl \
 # Remove include/asm symlink created by U-Boot before v2014.01
 MRPROPER_FILES += .config .config.old include/autoconf.mk* include/config.h \
 		  ctags etags tags TAGS cscope* GPATH GTAGS GRTAGS GSYMS \
-		  drivers/video/fonts/*.S include/asm
+		  drivers/video/fonts/*.S include/asm *imx8mimage* *imx8mcst*
 
 # clean - Delete most, but leave enough to build external modules
 #
@@ -2428,7 +2434,7 @@ checkstack:
 	$(PERL) $(src)/scripts/checkstack.pl $(ARCH)
 
 ubootrelease:
-	@echo "$(UBOOTVERSION)$$($(CONFIG_SHELL) $(srctree)/scripts/setlocalversion $(srctree))"
+	@$(filechk_uboot.release)
 
 ubootversion:
 	@echo $(UBOOTVERSION)

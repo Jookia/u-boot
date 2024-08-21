@@ -206,7 +206,7 @@ config SPL_BINMAN_SYMBOLS
 config SPL_BINMAN_UBOOT_SYMBOLS
 	bool "Declare binman symbols for U-Boot phases in SPL"
 	depends on SPL_BINMAN_SYMBOLS
-	default n if ARCH_IMX8M || ARCH_IMX9
+	default n if ARCH_IMX8M || ARCH_IMX8ULP || ARCH_IMX9
 	default y
 	help
 	  This enables use of symbols in SPL which refer to U-Boot phases,
@@ -271,6 +271,13 @@ config SPL_TEXT_BASE
 	default 0x0
 	help
 	  The address in memory that SPL will be running from.
+
+config SPL_SOC_INIT
+	bool "Call SoC-specific initialization in SPL"
+	help
+	  If this option is enabled, U-Boot will call the function
+	  spl_soc_init() from board_init_r(). This function should be
+	  provided by the SoC vendor.
 
 config SPL_BOARD_INIT
 	bool "Call board-specific initialization in SPL"
@@ -409,6 +416,7 @@ config SPL_STACK_R_MALLOC_SIMPLE_LEN
 	depends on SPL_STACK_R && SPL_SYS_MALLOC_SIMPLE
 	hex "Size of malloc_simple heap after switching to DRAM SPL stack"
 	default 0x400000 if ARCH_K3 && ARM64
+	default 0x200000 if ARCH_K3 && CPU_V7R
 	default 0x100000
 	help
 	  Specify the amount of the stack to use as memory pool for
@@ -492,7 +500,7 @@ config SYS_MMCSD_RAW_MODE_U_BOOT_USE_SECTOR
 		     ARCH_MX6 || ARCH_MX7 || \
 		     ARCH_ROCKCHIP || ARCH_MVEBU ||  ARCH_SOCFPGA || \
 		     ARCH_AT91 || ARCH_ZYNQ || ARCH_KEYSTONE || OMAP34XX || \
-		     OMAP44XX || OMAP54XX || AM33XX || AM43XX || \
+		     OMAP54XX || AM33XX || AM43XX || \
 		     TARGET_SIFIVE_UNLEASHED || TARGET_SIFIVE_UNMATCHED
 	select SPL_LOAD_BLOCK if SPL_MMC
 	select SPL_SYS_MMCSD_RAW_MODE if SPL_MMC
@@ -509,7 +517,7 @@ config SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR
 	default 0x100 if ARCH_UNIPHIER
 	default 0x0 if ARCH_MVEBU
 	default 0x200 if ARCH_SOCFPGA || ARCH_AT91
-	default 0x300 if ARCH_ZYNQ || ARCH_KEYSTONE || OMAP34XX || OMAP44XX || \
+	default 0x300 if ARCH_ZYNQ || ARCH_KEYSTONE || OMAP34XX || \
 		         OMAP54XX || AM33XX || AM43XX || ARCH_K3
 	default 0x4000 if ARCH_ROCKCHIP
 	default 0x822 if TARGET_SIFIVE_UNLEASHED || TARGET_SIFIVE_UNMATCHED
@@ -1314,7 +1322,7 @@ config SPL_SATA_RAW_U_BOOT_SECTOR
 
 config SPL_NVME
 	bool "NVM Express device support"
-	depends on BLK
+	depends on SPL_BLK
 	select FS_LOADER
 	select SPL_BLK_FS
 	help

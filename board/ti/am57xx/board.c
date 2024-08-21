@@ -7,7 +7,7 @@
  * Based on board/ti/dra7xx/evm.c
  */
 
-#include <common.h>
+#include <config.h>
 #include <env.h>
 #include <fastboot.h>
 #include <fdt_support.h>
@@ -514,7 +514,6 @@ int get_voltrail_opp(int rail_offset)
 
 	return opp;
 }
-
 
 #ifdef CONFIG_SPL_BUILD
 /* No env to setup for SPL */

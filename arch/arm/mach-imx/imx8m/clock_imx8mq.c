@@ -5,7 +5,6 @@
  * Peng Fan <peng.fan@nxp.com>
  */
 
-#include <common.h>
 #include <command.h>
 #include <asm/arch/clock.h>
 #include <asm/arch/imx-regs.h>
@@ -733,7 +732,6 @@ static int frac_pll_init(u32 pll, enum frac_pll_out_val val)
 
 	return 0;
 }
-
 
 int clock_init(void)
 {

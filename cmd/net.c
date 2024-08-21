@@ -9,7 +9,6 @@
 /*
  * Boot support
  */
-#include <common.h>
 #include <bootstage.h>
 #include <command.h>
 #include <dm.h>
@@ -97,7 +96,6 @@ U_BOOT_CMD(
 	"about 50 seconds or if Ctrl-C is pressed."
 );
 #endif
-
 
 #ifdef CONFIG_CMD_RARP
 int do_rarpb(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])

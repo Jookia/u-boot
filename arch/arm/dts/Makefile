@@ -52,14 +52,6 @@ dtb-$(CONFIG_MACH_S900) += \
 dtb-$(CONFIG_MACH_S700) += \
 	s700-cubieboard7.dtb
 
-dtb-$(CONFIG_ROCKCHIP_PX30) += \
-	px30-evb.dtb \
-	px30-firefly.dtb \
-	px30-engicam-px30-core-ctouch2.dtb \
-	px30-engicam-px30-core-ctouch2-of10.dtb \
-	px30-engicam-px30-core-edimm2.2.dtb \
-	rk3326-odroid-go2.dtb
-
 dtb-$(CONFIG_ROCKCHIP_RK3036) += \
 	rk3036-sdk.dtb
 
@@ -91,7 +83,6 @@ dtb-$(CONFIG_ROCKCHIP_RK3288) += \
 	rk3288-vyasa.dtb
 
 dtb-$(CONFIG_ROCKCHIP_RK3368) += \
-	rk3368-lion-haikou.dtb \
 	rk3368-sheep.dtb \
 	rk3368-geekbox.dtb \
 	rk3368-px5-evb.dtb \
@@ -102,7 +93,11 @@ dtb-$(CONFIG_ARCH_S5P4418) += \
 dtb-$(CONFIG_ARCH_MESON) += \
 	meson-a1-ad401.dtb
 
-dtb-$(CONFIG_ARCH_TEGRA) += tegra20-harmony.dtb \
+dtb-$(CONFIG_ARCH_TEGRA) += \
+	tegra20-asus-sl101.dtb \
+	tegra20-asus-tf101.dtb \
+	tegra20-asus-tf101g.dtb \
+	tegra20-harmony.dtb \
 	tegra20-medcom-wide.dtb \
 	tegra20-paz00.dtb \
 	tegra20-plutux.dtb \
@@ -126,9 +121,12 @@ dtb-$(CONFIG_ARCH_TEGRA) += tegra20-harmony.dtb \
 	tegra30-cardhu.dtb \
 	tegra30-colibri.dtb \
 	tegra30-htc-endeavoru.dtb \
+	tegra30-lenovo-ideapad-yoga-11.dtb \
 	tegra30-lg-p880.dtb \
 	tegra30-lg-p895.dtb \
+	tegra30-microsoft-surface-rt.dtb \
 	tegra30-tec-ng.dtb \
+	tegra30-wexler-qc750.dtb \
 	tegra114-dalmore.dtb \
 	tegra124-apalis.dtb \
 	tegra124-jetson-tk1.dtb \
@@ -151,7 +149,6 @@ dtb-$(CONFIG_ARCH_MVEBU) +=			\
 	armada-385-atl-x530.dtb			\
 	armada-385-atl-x530DP.dtb		\
 	armada-385-db-88f6820-amc.dtb		\
-	armada-385-synology-ds116.dtb		\
 	armada-385-thecus-n2350.dtb		\
 	armada-385-turris-omnia.dtb		\
 	armada-388-clearfog.dtb			\
@@ -341,6 +338,8 @@ dtb-$(CONFIG_ARCH_VERSAL) += \
 	versal-mini-qspi-x2-single.dtb \
 	versal-mini-qspi-x2-stacked.dtb \
 	xilinx-versal-virt.dtb
+dtb-$(CONFIG_ARCH_VERSAL2) += \
+	amd-versal2-virt.dtb
 dtb-$(CONFIG_ARCH_VERSAL_NET) += \
 	versal-net-mini.dtb \
 	versal-net-mini-emmc.dtb \
@@ -679,6 +678,7 @@ dtb-$(CONFIG_MACH_SUN50I_H6) += \
 	sun50i-h6-tanix-tx6.dtb \
 	sun50i-h6-tanix-tx6-mini.dtb
 dtb-$(CONFIG_MACH_SUN50I_H616) += \
+	sun50i-h313-tanix-tx1.dtb \
 	sun50i-h616-orangepi-zero2.dtb \
 	sun50i-h618-orangepi-zero2w.dtb \
 	sun50i-h618-orangepi-zero3.dtb \
@@ -764,8 +764,6 @@ dtb-y += \
 	imx6dl-icore.dtb \
 	imx6dl-icore-mipi.dtb \
 	imx6dl-icore-rqs.dtb \
-	imx6dl-mba6a.dtb \
-	imx6dl-mba6b.dtb \
 	imx6dl-mamoj.dtb \
 	imx6dl-nitrogen6x.dtb \
 	imx6dl-pico.dtb \
@@ -815,8 +813,6 @@ dtb-y += \
 	imx6q-kp.dtb \
 	imx6q-logicpd.dtb \
 	imx6q-marsboard.dtb \
-	imx6q-mba6a.dtb \
-	imx6q-mba6b.dtb \
 	imx6q-mccmon6.dtb\
 	imx6q-nitrogen6x.dtb \
 	imx6q-novena.dtb \
@@ -841,10 +837,7 @@ dtb-$(CONFIG_MX6SLL) += imx6sll-evk.dtb
 dtb-$(CONFIG_MX6SX) += \
 	imx6sx-sabreauto.dtb \
 	imx6sx-sdb.dtb \
-	imx6sx-softing-vining-2000.dtb \
-	imx6sx-udoo-neo-basic.dtb \
-	imx6sx-udoo-neo-extended.dtb \
-	imx6sx-udoo-neo-full.dtb
+	imx6sx-softing-vining-2000.dtb
 
 dtb-$(CONFIG_MX6UL) += \
 	imx6ul-geam.dtb \
@@ -870,7 +863,6 @@ dtb-$(CONFIG_MX6ULL) += \
 	imx6ull-phytec-segin-ff-rdk-emmc.dtb \
 	imx6ull-dart-6ul.dtb \
 	imx6ull-somlabs-visionsom.dtb \
-	imx6ulz-bsh-smm-m2.dtb \
 	imx6ulz-14x14-evk.dtb
 
 dtb-$(CONFIG_ARCH_MX6) += \
@@ -888,7 +880,6 @@ dtb-$(CONFIG_MX7) += imx7d-sdb.dtb \
 	imx7-cm.dtb \
 	imx7d-colibri-emmc-eval-v3.dtb \
 	imx7d-colibri-eval-v3.dtb \
-	imx7s-warp.dtb \
 	imx7d-meerkat96.dtb \
 	imx7d-pico-pi.dtb \
 	imx7d-pico-hobbit.dtb \
@@ -922,10 +913,6 @@ dtb-$(CONFIG_ARCH_IMX8M) += \
 	imx8mm-kontron-bl-osm-s.dtb \
 	imx8mm-mx8menlo.dtb \
 	imx8mm-phg.dtb \
-	imx8mm-phyboard-polis-rdk.dtb \
-	imx8mm-phygate-tauri-l.dtb \
-	imx8mn-bsh-smm-s2.dtb \
-	imx8mn-bsh-smm-s2pro.dtb \
 	imx8mq-cm.dtb \
 	imx8mn-var-som-symphony.dtb \
 	imx8mq-mnt-reform2.dtb \
@@ -941,7 +928,6 @@ dtb-$(CONFIG_ARCH_IMX8M) += \
 	imx8mp-dhcom-pdk3-overlay-rev100.dtbo \
 	imx8mp-icore-mx8mp-edimm2.2.dtb \
 	imx8mp-msc-sm2s.dtb \
-	imx8mp-phyboard-pollux-rdk.dtb \
 	imx8mq-pico-pi.dtb \
 	imx8mq-kontron-pitx-imx8m.dtb \
 	imx8mq-librem5-r4.dtb
@@ -953,9 +939,6 @@ dtb-$(CONFIG_ARCH_IMX9) += \
 dtb-$(CONFIG_ARCH_IMXRT) += imxrt1050-evk.dtb \
 	imxrt1020-evk.dtb \
 	imxrt1170-evk.dtb \
-
-dtb-$(CONFIG_RCAR_GEN4) += \
-	r8a779h0-gray-hawk.dtb
 
 dtb-$(CONFIG_TARGET_RZG2L) += \
 	r9a07g044l2-smarc.dts
@@ -1019,20 +1002,7 @@ dtb-$(CONFIG_TARGET_OMAP3_EVM) += \
 	omap3-evm-37xx.dtb \
 	omap3-evm.dtb
 
-dtb-$(CONFIG_TARGET_OMAP3_BEAGLE) += \
-	omap3-beagle-xm-ab.dtb \
-	omap3-beagle-xm.dtb \
-	omap3-beagle.dtb
-
 dtb-$(CONFIG_TARGET_DEVKIT8000) += omap3-devkit8000.dtb
-
-dtb-$(CONFIG_TARGET_OMAP4_PANDA) += \
-	omap4-panda.dtb \
-	omap4-panda-es.dtb
-
-dtb-$(CONFIG_TARGET_OMAP4_SDP4430) += \
-	omap4-sdp.dtb \
-	omap4-sdp-es23plus.dtb
 
 dtb-$(CONFIG_TARGET_SAMA7G5EK) += \
 	at91-sama7g5ek.dtb
@@ -1146,6 +1116,7 @@ dtb-$(CONFIG_ASPEED_AST2600) += \
 dtb-$(CONFIG_ARCH_STI) += stih410-b2260.dtb
 
 dtb-$(CONFIG_STM32MP13X) += \
+	stm32mp135f-dhcor-dhsbc.dtb \
 	stm32mp135f-dk.dtb
 
 dtb-$(CONFIG_STM32MP15X) += \
@@ -1185,36 +1156,30 @@ dtb-$(CONFIG_SOC_K3_AM654) += \
 	k3-am6548-iot2050-advanced-m2-bkey-ekey-pcie-overlay.dtbo \
 	k3-am654-icssg2.dtbo
 
-dtb-$(CONFIG_SOC_K3_J721E) += k3-j721e-common-proc-board.dtb \
-			      k3-j721e-r5-common-proc-board.dtb \
-			      k3-j7200-common-proc-board.dtb \
+dtb-$(CONFIG_SOC_K3_J721E) += k3-j721e-r5-common-proc-board.dtb \
 			      k3-j7200-r5-common-proc-board.dtb \
-			      k3-j721e-sk.dtb \
 			      k3-j721e-r5-sk.dtb \
 			      k3-j721e-beagleboneai64.dtb \
 			      k3-j721e-r5-beagleboneai64.dtb
 
-dtb-$(CONFIG_SOC_K3_J721S2) += k3-am68-sk-base-board.dtb\
-			       k3-am68-sk-r5-base-board.dtb\
-			       k3-j721s2-common-proc-board.dtb\
+dtb-$(CONFIG_SOC_K3_J721S2) += k3-am68-sk-r5-base-board.dtb\
 			       k3-j721s2-r5-common-proc-board.dtb
 
 dtb-$(CONFIG_SOC_K3_J784S4) += k3-am69-r5-sk.dtb \
 			       k3-j784s4-r5-evm.dtb
 
+dtb-$(CONFIG_SOC_K3_J722S) += k3-j722s-r5-evm.dtb
+
 dtb-$(CONFIG_SOC_K3_AM642) += k3-am642-r5-evm.dtb \
 			      k3-am642-r5-sk.dtb \
 			      k3-am642-r5-phycore-som-2gb.dtb
 
-dtb-$(CONFIG_SOC_K3_AM625) += k3-am625-sk.dtb \
-			      k3-am625-r5-sk.dtb \
-			      k3-am625-beagleplay.dtb \
+dtb-$(CONFIG_SOC_K3_AM625) += k3-am625-r5-sk.dtb \
 			      k3-am625-r5-beagleplay.dtb \
 			      k3-am625-verdin-r5.dtb \
 			      k3-am625-r5-phycore-som-2gb.dtb
 
-dtb-$(CONFIG_SOC_K3_AM62A7) += k3-am62a7-sk.dtb \
-			      k3-am62a7-r5-sk.dtb
+dtb-$(CONFIG_SOC_K3_AM62A7) += k3-am62a7-r5-sk.dtb
 
 dtb-$(CONFIG_SOC_K3_AM62P5) += k3-am62p5-r5-sk.dtb
 
@@ -1311,6 +1276,7 @@ targets += $(dtb-y)
 # Add any required device tree compiler flags here
 DTC_FLAGS += -a 0x8
 
+DTC_FLAGS_imx8mp-dhcom-som-overlay-rev100 += -Wno-avoid_default_addr_size -Wno-reg_format
 DTC_FLAGS_imx8mp-dhcom-pdk3-overlay-rev100 += -Wno-avoid_default_addr_size -Wno-reg_format
 
 PHONY += dtbs

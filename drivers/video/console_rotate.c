@@ -6,7 +6,6 @@
  * (C) Copyright 2023 Dzmitry Sankouski <dsankouski@gmail.com>
  */
 
-#include <common.h>
 #include <charset.h>
 #include <dm.h>
 #include <video.h>
@@ -100,7 +99,6 @@ static int console_putc_xy_1(struct udevice *dev, uint x_frac, uint y, int cp)
 
 	return VID_TO_POS(fontdata->width);
 }
-
 
 static int console_set_row_2(struct udevice *dev, uint row, int clr)
 {

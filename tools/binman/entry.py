@@ -315,6 +315,7 @@ class Entry(object):
         self.overlap = fdt_util.GetBool(self._node, 'overlap')
         if self.overlap:
             self.required_props += ['offset', 'size']
+        self.assume_size = fdt_util.GetInt(self._node, 'assume-size', 0)
 
         # This is only supported by blobs and sections at present
         self.compress = fdt_util.GetString(self._node, 'compress', 'none')
@@ -812,7 +813,7 @@ class Entry(object):
                 as missing
         """
         print('''Binman Entry Documentation
-===========================
+==========================
 
 This file describes the entry types supported by binman. These entry types can
 be placed in an image one by one to build up a final firmware image. It is
@@ -1198,6 +1199,9 @@ features to produce new behaviours.
             self.uncomp_size = len(indata)
             if self.comp_bintool.is_present():
                 data = self.comp_bintool.compress(indata)
+                uniq = self.GetUniqueName()
+                fname = tools.get_output_filename(f'comp.{uniq}')
+                tools.write_file(fname, data)
             else:
                 self.record_missing_bintool(self.comp_bintool)
                 data = tools.get_bytes(0, 1024)
@@ -1382,3 +1386,17 @@ features to produce new behaviours.
 
     def UpdateSignatures(self, privatekey_fname, algo, input_fname):
         self.Raise('Updating signatures is not supported with this entry type')
+
+    def FdtContents(self, fdt_etype):
+        """Get the contents of an FDT for a particular phase
+
+        Args:
+            fdt_etype (str): Filename of the phase of the FDT to return, e.g.
+                'u-boot-tpl-dtb'
+
+        Returns:
+            tuple:
+                fname (str): Filename of .dtb
+                bytes: Contents of FDT (possibly run through fdtgrep)
+        """
+        return self.section.FdtContents(fdt_etype)

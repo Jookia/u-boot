@@ -4,7 +4,7 @@
  * Copyright 2019-2020 NXP
  */
 
-#include <common.h>
+#include <config.h>
 #include <clock_legacy.h>
 #include <i2c.h>
 #include <fdt_support.h>
@@ -507,7 +507,6 @@ int config_serdes_mux(void)
 {
 	return 0;
 }
-
 
 #ifdef CONFIG_MISC_INIT_R
 int misc_init_r(void)

@@ -7,7 +7,7 @@
  * Author: Nikita Kiryanov <nikita@compulab.co.il>
  */
 
-#include <common.h>
+#include <config.h>
 #include <ahci.h>
 #include <dm.h>
 #include <dwc_ahsata.h>
@@ -251,7 +251,6 @@ I2C_PADS(i2c2_pads,
 	 PAD_GPIO_6__I2C3_SDA | MUX_PAD_CTRL(I2C_PAD_CTRL),
 	 PAD_GPIO_6__GPIO1_IO06 | MUX_PAD_CTRL(I2C_PAD_CTRL),
 	 IMX_GPIO_NR(1, 6));
-
 
 static int cm_fx6_setup_one_i2c(int busnum, struct i2c_pads_info *pads)
 {

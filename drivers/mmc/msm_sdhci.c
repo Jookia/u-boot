@@ -7,7 +7,6 @@
  * Based on Linux driver
  */
 
-#include <common.h>
 #include <clk.h>
 #include <dm.h>
 #include <malloc.h>
@@ -114,7 +113,6 @@ static int msm_sdc_mci_init(struct msm_sdhc *prv)
 	/* Reset the core and Enable SDHC mode */
 	writel(readl(prv->base + SDCC_MCI_POWER) | SDCC_MCI_POWER_SW_RST,
 	       prv->base + SDCC_MCI_POWER);
-
 
 	/* Wait for reset to be written to register */
 	if (wait_for_bit_le32(prv->base + SDCC_MCI_STATUS2,

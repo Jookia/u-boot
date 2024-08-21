@@ -8,7 +8,7 @@
  * Copyright (C) 2007 Atmel Corporation
  */
 
-#include <common.h>
+#include <config.h>
 #include <log.h>
 #include <spi.h>
 #include <malloc.h>
@@ -206,7 +206,6 @@ static int davinci_spi_read_write(struct davinci_spi_slave *ds, unsigned
 
 	return 0;
 }
-
 
 static int __davinci_spi_claim_bus(struct davinci_spi_slave *ds, int cs)
 {

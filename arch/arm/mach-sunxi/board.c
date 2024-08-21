@@ -347,7 +347,8 @@ uint32_t sunxi_get_spl_size(void)
  * The eGON SPL image can be located at 8KB or at 128KB into an SD card or
  * an eMMC device. The boot source has bit 4 set in the latter case.
  * By adding 120KB to the normal offset when booting from a "high" location
- * we can support both cases.
+ * we can support both cases. The H616 has the alternative location
+ * moved up to 256 KB instead of 128KB, so cater for that, too.
  * Also U-Boot proper is located at least 32KB after the SPL, but will
  * immediately follow the SPL if that is bigger than that.
  */
@@ -359,8 +360,11 @@ unsigned long board_spl_mmc_get_uboot_raw_sector(struct mmc *mmc,
 
 	sector = max(raw_sect, spl_size / 512);
 
-	if (sunxi_get_boot_position() == 1)
+	if (sunxi_get_boot_position() == 1) {
 		sector += (128 - 8) * 2;
+		if (IS_ENABLED(CONFIG_MACH_SUN50I_H616))
+			sector += 128 * 2;
+	}
 
 	return sector;
 }

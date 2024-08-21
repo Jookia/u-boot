@@ -5,7 +5,6 @@
  * Copyright (C) 2016 Xilinx, Inc.
  */
 
-#include <common.h>
 #include <log.h>
 #include <malloc.h>
 #include <dm/device_compat.h>
@@ -109,7 +108,6 @@ static const resource_size_t zynqmp_crl_apb_clkc_base = 0xff5e0020;
 #define PLLCTRL_POST_SRC_MASK	(0x7 << PLLCTRL_POST_SRC_SHFT)
 #define PLLCTRL_PRE_SRC_SHFT	20
 #define PLLCTRL_PRE_SRC_MASK	(0x7 << PLLCTRL_PRE_SRC_SHFT)
-
 
 #define NUM_MIO_PINS	77
 
@@ -728,6 +726,7 @@ static ulong zynqmp_clk_set_rate(struct clk *clk, ulong rate)
 	case gem_tsu:
 	case qspi_ref ... can1_ref:
 	case usb0_bus_ref ... usb3_dual_ref:
+	case dp_video_ref ... dp_stc_ref:
 		return zynqmp_clk_set_peripheral_rate(priv, id,
 						      rate, two_divs);
 	default:

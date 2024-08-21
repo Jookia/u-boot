@@ -5,7 +5,6 @@
  * Rockchip GMAC ethernet IP driver for U-Boot
  */
 
-#include <common.h>
 #include <dm.h>
 #include <clk.h>
 #include <log.h>
@@ -51,7 +50,6 @@ struct rk_gmac_ops {
 	void (*set_to_rmii)(struct gmac_rockchip_plat *pdata);
 	void (*set_to_rgmii)(struct gmac_rockchip_plat *pdata);
 };
-
 
 static int gmac_rockchip_of_to_plat(struct udevice *dev)
 {

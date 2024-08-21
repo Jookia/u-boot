@@ -4,7 +4,6 @@
  * Copyright (C) 2010 Freescale Semiconductor, Inc.
  */
 
-#include <common.h>
 #include <log.h>
 #include <usb.h>
 #include <errno.h>
@@ -21,7 +20,6 @@
 #include "ehci.h"
 
 #define MX5_USBOTHER_REGS_OFFSET 0x800
-
 
 #define MXC_OTG_OFFSET			0
 #define MXC_H1_OFFSET			0x200

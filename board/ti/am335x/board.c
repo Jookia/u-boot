@@ -7,7 +7,7 @@
  * Copyright (C) 2011, Texas Instruments, Incorporated - https://www.ti.com/
  */
 
-#include <common.h>
+#include <config.h>
 #include <dm.h>
 #include <env.h>
 #include <errno.h>
@@ -338,7 +338,6 @@ static void scale_vcores_bone(int freq)
 
 	if (power_tps65217_init(0))
 		return;
-
 
 	/*
 	 * On Beaglebone White we need to ensure we have AC power

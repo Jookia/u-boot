@@ -5,7 +5,7 @@
  */
 
 #include <clock_legacy.h>
-#include <common.h>
+#include <config.h>
 #include <clk.h>
 #include <dm.h>
 #include <errno.h>
@@ -227,8 +227,7 @@ static void ns16550_setbrg(struct ns16550 *com_port, int baud_divisor)
 
 void ns16550_init(struct ns16550 *com_port, int baud_divisor)
 {
-#if (defined(CONFIG_SPL_BUILD) && \
-		(defined(CONFIG_OMAP34XX) || defined(CONFIG_OMAP44XX)))
+#if defined(CONFIG_SPL_BUILD) && defined(CONFIG_OMAP34XX)
 	/*
 	 * On some OMAP3/OMAP4 devices when UART3 is configured for boot mode
 	 * before SPL starts only THRE bit is set. We have to empty the
@@ -291,9 +290,9 @@ void ns16550_putc(struct ns16550 *com_port, char c)
 	serial_out(c, &com_port->thr);
 
 	/*
-	 * Call watchdog_reset() upon newline. This is done here in putc
+	 * Call schedule() upon newline. This is done here in putc
 	 * since the environment code uses a single puts() to print the complete
-	 * environment upon "printenv". So we can't put this watchdog call
+	 * environment upon "printenv". So we can't put this schedule call
 	 * in puts().
 	 */
 	if (c == '\n')
@@ -390,9 +389,9 @@ static int ns16550_serial_putc(struct udevice *dev, const char ch)
 	serial_out(ch, &com_port->thr);
 
 	/*
-	 * Call watchdog_reset() upon newline. This is done here in putc
+	 * Call schedule() upon newline. This is done here in putc
 	 * since the environment code uses a single puts() to print the complete
-	 * environment upon "printenv". So we can't put this watchdog call
+	 * environment upon "printenv". So we can't put this schedule call
 	 * in puts().
 	 */
 	if (ch == '\n')

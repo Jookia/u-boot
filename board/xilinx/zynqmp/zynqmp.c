@@ -4,7 +4,7 @@
  * Michal Simek <michal.simek@amd.com>
  */
 
-#include <common.h>
+#include <config.h>
 #include <command.h>
 #include <cpu_func.h>
 #include <debug_uart.h>
@@ -152,20 +152,7 @@ int board_init(void)
 	if (sizeof(CONFIG_ZYNQMP_SPL_PM_CFG_OBJ_FILE) > 1)
 		zynqmp_pmufw_load_config_object(zynqmp_pm_cfg_obj,
 						zynqmp_pm_cfg_obj_size);
-#endif
 
-#if defined(CONFIG_ZYNQMP_FIRMWARE)
-	struct udevice *dev;
-
-	uclass_get_device_by_name(UCLASS_FIRMWARE, "power-management", &dev);
-	if (!dev) {
-		uclass_get_device_by_name(UCLASS_FIRMWARE, "zynqmp-power", &dev);
-		if (!dev)
-			panic("PMU Firmware device not found - Enable it");
-	}
-#endif
-
-#if defined(CONFIG_SPL_BUILD)
 	printf("Silicon version:\t%d\n", zynqmp_get_silicon_version());
 
 	/* the CSU disables the JTAG interface when secure boot is enabled */
@@ -285,6 +272,18 @@ int dram_init(void)
 #if !CONFIG_IS_ENABLED(SYSRESET)
 void reset_cpu(void)
 {
+	if (!IS_ENABLED(CONFIG_ZYNQMP_FIRMWARE)) {
+		log_warning("reset failed: ZYNQMP_FIRMWARE disabled");
+		return;
+	}
+
+	/* In case of !CONFIG_ZYNQMP_FIRMWARE the call to 'xilinx_pm_request()'
+	 * will be removed by the compiler due to the early return.
+	 * If CONFIG_ZYNQMP_FIRMWARE is defined in SPL 'xilinx_pm_request()'
+	 * will send command over IPI and requires pmufw to be present.
+	 */
+	xilinx_pm_request(PM_RESET_ASSERT, ZYNQMP_PM_RESET_SOFT,
+			  PM_RESET_ACTION_ASSERT, 0, 0, NULL);
 }
 #endif
 
@@ -519,6 +518,10 @@ int board_late_init(void)
 	usb_ether_init();
 #endif
 
+	multiboot = multi_boot();
+	if (multiboot >= 0)
+		env_set_hex("multiboot", multiboot);
+
 	if (!(gd->flags & GD_FLG_ENV_DEFAULT)) {
 		debug("Saved variables - Skipping\n");
 		return 0;
@@ -530,10 +533,6 @@ int board_late_init(void)
 	ret = set_fdtfile();
 	if (ret)
 		return ret;
-
-	multiboot = multi_boot();
-	if (multiboot >= 0)
-		env_set_hex("multiboot", multiboot);
 
 	if (IS_ENABLED(CONFIG_DISTRO_DEFAULTS)) {
 		ret = boot_targets_setup();

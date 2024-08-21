@@ -30,6 +30,10 @@ Sources
     :start-after: .. k3_rst_include_start_boot_sources
     :end-before: .. k3_rst_include_end_boot_sources
 
+.. include::  ../ti/k3.rst
+    :start-after: .. k3_rst_include_start_boot_firmwares_sysfw
+    :end-before: .. k3_rst_include_end_boot_firmwares_sysfw
+
 Build procedure
 ---------------
 
@@ -111,14 +115,33 @@ tiboot3.bin, tispl.bin and u-boot.img are stored on the uSD card.
 
 .. code-block:: bash
 
-  sf probe
+  mtd list
   fatload mmc 1 ${loadaddr} tiboot3.bin
-  sf update $loadaddr 0x0 $filesize
+  mtd write ospi.tiboot3 ${loadaddr} 0 ${filesize}
   fatload mmc 1 ${loadaddr} tispl.bin
-  sf update $loadaddr 0x80000 $filesize
+  mtd write ospi.tispl ${loadaddr} 0 ${filesize}
   fatload mmc 1 ${loadaddr} u-boot.img
-  sf update $loadaddr 0x280000 $filesize
+  mtd write ospi.u-boot ${loadaddr} 0 ${filesize}
 
+UART based boot
+---------------
+
+To boot the board via UART, set the switches to UART mode and connect to the
+micro USB port labeled as "Debug UART". After power-on the build artifacts
+needs to be uploaded one by one with a tool like sz.
+
+Example bash script sequence for running on a Linux host PC feeding all boot
+artifacts needed to the device. Assuming the host uses /dev/ttyUSB0 as
+the main domain serial port:
+
+.. prompt:: bash $
+
+  stty -F /dev/ttyUSB0 115200
+  sb --xmodem tiboot3.bin > /dev/ttyUSB0 < /dev/ttyUSB0
+  # Resend tiboot3.bin a 2nd time due to ErrataID:i2331
+  sb --xmodem tiboot3.bin > /dev/ttyUSB0 < /dev/ttyUSB0
+  sb --ymodem tispl.bin > /dev/ttyUSB0 < /dev/ttyUSB0
+  sb --ymodem u-boot.img > /dev/ttyUSB0 < /dev/ttyUSB0
 
 Boot Modes
 ----------

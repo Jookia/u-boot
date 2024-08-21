@@ -3,7 +3,6 @@
  * Copyright (C) 2015-2019 Stefan Roese <sr@denx.de>
  */
 
-#include <common.h>
 #include <command.h>
 #include <console.h>
 #include <dm.h>
@@ -288,7 +287,6 @@ int board_late_init(void)
 				return 0;
 			}
 		} while (get_timer(start_time) < ABORT_TIMEOUT);
-
 
 		/*
 		 * At this stage the bootcounter has not been incremented

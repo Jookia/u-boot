@@ -193,6 +193,24 @@ config CALXEDA_XGMAC
 	  This driver supports the XGMAC in Calxeda Highbank and Midway
 	  machines.
 
+config DWC_ETH_XGMAC
+        bool "Synopsys DWC Ethernet XGMAC device support"
+	select PHYLIB
+        help
+          This driver supports the Synopsys Designware Ethernet XGMAC (10G
+          Ethernet MAC) IP block. The IP supports many options for bus type,
+          clocking/reset structure, and feature list.
+
+config DWC_ETH_XGMAC_SOCFPGA
+	bool "Synopsys DWC Ethernet XGMAC device support for SOCFPGA"
+	select REGMAP
+	select SYSCON
+	depends on DWC_ETH_XGMAC
+	default y if TARGET_SOCFPGA_AGILEX5
+	help
+	  The Synopsys Designware Ethernet XGMAC IP block with specific
+	  configuration used in Intel SoC FPGA chip.
+
 config DRIVER_DM9000
 	bool "Davicom DM9000 controller driver"
 	help
@@ -306,6 +324,14 @@ config EEPRO100
 	help
 	  This driver supports Intel(R) PRO/100 82557/82559/82559ER fast
 	  ethernet family of adapters.
+
+config ESSEDMA
+	bool "Qualcomm ESS Edma support"
+	depends on DM_ETH && ARCH_IPQ40XX
+	select PHYLIB
+	help
+	  This driver supports ethernet DMA adapter found in
+	  Qualcomm IPQ40xx series SoC-s.
 
 config ETH_SANDBOX
 	depends on SANDBOX

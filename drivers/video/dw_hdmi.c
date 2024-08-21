@@ -5,13 +5,14 @@
  * Copyright 2017 Jernej Skrabec <jernej.skrabec@siol.net>
  */
 
-#include <common.h>
 #include <fdtdec.h>
 #include <log.h>
 #include <asm/io.h>
 #include <i2c.h>
 #include <media_bus_format.h>
+#include <time.h>
 #include <linux/delay.h>
+#include <linux/errno.h>
 #include "dw_hdmi.h"
 
 struct tmds_n_cts {
@@ -760,7 +761,6 @@ static void hdmi_audio_set_format(struct dw_hdmi *hdmi)
 {
 	hdmi_write(hdmi, HDMI_AUD_CONF0_I2S_SELECT | HDMI_AUD_CONF0_I2S_IN_EN_0,
 		   HDMI_AUD_CONF0);
-
 
 	hdmi_write(hdmi, HDMI_AUD_CONF1_I2S_MODE_STANDARD_MODE |
 		   HDMI_AUD_CONF1_I2S_WIDTH_16BIT, HDMI_AUD_CONF1);

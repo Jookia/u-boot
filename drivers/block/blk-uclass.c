@@ -6,7 +6,6 @@
 
 #define LOG_CATEGORY UCLASS_BLK
 
-#include <common.h>
 #include <blk.h>
 #include <dm.h>
 #include <log.h>
@@ -37,6 +36,8 @@ static struct {
 	{ UCLASS_PVBLOCK, "pvblock" },
 	{ UCLASS_BLKMAP, "blkmap" },
 	{ UCLASS_RKMTD, "rkmtd" },
+	{ UCLASS_MTD, "mtd" },
+	{ UCLASS_MTD, "ubi" },
 };
 
 static enum uclass_id uclass_name_to_iftype(const char *uclass_idname)

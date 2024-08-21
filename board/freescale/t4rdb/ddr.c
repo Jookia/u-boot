@@ -3,7 +3,6 @@
  * Copyright 2014 Freescale Semiconductor, Inc.
  */
 
-#include <common.h>
 #include <i2c.h>
 #include <hwconfig.h>
 #include <init.h>
@@ -39,7 +38,6 @@ void fsl_ddr_board_options(memctl_options_t *popts,
 		pbsp = rdimms[0];
 	else
 		pbsp = udimms[0];
-
 
 	/* Get clk_adjust, cpo, write_data_delay,2T, according to the board ddr
 	 * freqency and n_banks specified in board_specific_parameters table.

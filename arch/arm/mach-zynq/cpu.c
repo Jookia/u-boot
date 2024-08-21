@@ -3,10 +3,11 @@
  * Copyright (C) 2012 Michal Simek <monstr@monstr.eu>
  * Copyright (C) 2012 Xilinx, Inc. All rights reserved.
  */
-#include <common.h>
+#include <config.h>
 #include <cpu_func.h>
 #include <init.h>
 #include <zynqpl.h>
+#include <linux/errno.h>
 #include <asm/cache.h>
 #include <asm/io.h>
 #include <asm/arch/clk.h>
@@ -35,9 +36,11 @@ static const struct {
 } zynq_fpga_descs[] = {
 	ZYNQ_DESC(7Z007S),
 	ZYNQ_DESC(7Z010),
+	ZYNQ_DESC(7Z010_LR),
 	ZYNQ_DESC(7Z012S),
 	ZYNQ_DESC(7Z014S),
 	ZYNQ_DESC(7Z015),
+	ZYNQ_DESC(7Z020_LR),
 	ZYNQ_DESC(7Z020),
 	ZYNQ_DESC(7Z030),
 	ZYNQ_DESC(7Z035),

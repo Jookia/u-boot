@@ -6,7 +6,6 @@
  */
 
 #include <bouncebuf.h>
-#include <common.h>
 #include <cpu_func.h>
 #include <errno.h>
 #include <log.h>
@@ -55,7 +54,6 @@ static void dwmci_prepare_data(struct dwmci_host *host,
 	unsigned long ctrl;
 	unsigned int i = 0, flags, cnt, blk_cnt;
 	ulong data_start, data_end;
-
 
 	blk_cnt = data->blocks;
 
@@ -357,7 +355,6 @@ static int dwmci_send_cmd(struct mmc *mmc, struct mmc_cmd *cmd,
 		debug("%s: Response CRC Error.\n", __func__);
 		return -EIO;
 	}
-
 
 	if (cmd->resp_type & MMC_RSP_PRESENT) {
 		if (cmd->resp_type & MMC_RSP_136) {

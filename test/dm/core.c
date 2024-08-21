@@ -5,7 +5,6 @@
  * Copyright (c) 2013 Google, Inc
  */
 
-#include <common.h>
 #include <errno.h>
 #include <dm.h>
 #include <fdtdec.h>
@@ -17,6 +16,7 @@
 #include <dm/util.h>
 #include <dm/test.h>
 #include <dm/uclass-internal.h>
+#include <linux/list.h>
 #include <test/test.h>
 #include <test/ut.h>
 
@@ -124,15 +124,15 @@ static int dm_test_autobind(struct unit_test_state *uts)
 	 * device with no children.
 	 */
 	ut_assert(uts->root);
-	ut_asserteq(1, list_count_items(gd->uclass_root));
-	ut_asserteq(0, list_count_items(&gd->dm_root->child_head));
+	ut_asserteq(1, list_count_nodes(gd->uclass_root));
+	ut_asserteq(0, list_count_nodes(&gd->dm_root->child_head));
 	ut_asserteq(0, dm_testdrv_op_count[DM_TEST_OP_POST_BIND]);
 
 	ut_assertok(dm_scan_plat(false));
 
 	/* We should have our test class now at least, plus more children */
-	ut_assert(1 < list_count_items(gd->uclass_root));
-	ut_assert(0 < list_count_items(&gd->dm_root->child_head));
+	ut_assert(1 < list_count_nodes(gd->uclass_root));
+	ut_assert(0 < list_count_nodes(&gd->dm_root->child_head));
 
 	/* Our 3 dm_test_infox children should be bound to the test uclass */
 	ut_asserteq(3, dm_testdrv_op_count[DM_TEST_OP_POST_BIND]);
@@ -1007,7 +1007,6 @@ static int dm_test_uclass_before_ready(struct unit_test_state *uts)
 	ut_assertok(uclass_get(UCLASS_TEST, &uc));
 
 	gd->dm_root = NULL;
-	gd->dm_root_f = NULL;
 	memset(&gd->uclass_root, '\0', sizeof(gd->uclass_root));
 
 	ut_asserteq_ptr(NULL, uclass_find(UCLASS_TEST));

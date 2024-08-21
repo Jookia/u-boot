@@ -7,7 +7,6 @@
  */
 
 #include <clk.h>
-#include <common.h>
 #include <dm.h>
 #include <mmc.h>
 #include <errno.h>
@@ -336,6 +335,7 @@ struct msdc_compatible {
 	bool enhance_rx;
 	bool builtin_pad_ctrl;
 	bool default_pad_dly;
+	bool use_internal_cd;
 };
 
 struct msdc_delay_phase {
@@ -365,6 +365,10 @@ struct msdc_host {
 	struct clk src_clk;	/* for SD/MMC bus clock */
 	struct clk src_clk_cg;	/* optional, MSDC source clock control gate */
 	struct clk h_clk;	/* MSDC core clock */
+
+	/* upstream linux clock */
+	struct clk axi_cg_clk;	/* optional, AXI clock */
+	struct clk ahb_cg_clk;	/* optional, AHB clock */
 
 	u32 src_clk_freq;	/* source clock */
 	u32 mclk;		/* mmc framework required bus clock */
@@ -1011,7 +1015,7 @@ static int msdc_ops_get_wp(struct udevice *dev)
 #endif
 }
 
-#ifdef MMC_SUPPORTS_TUNING
+#if CONFIG_IS_ENABLED(MMC_SUPPORTS_TUNING)
 static u32 test_delay_bit(u32 delay, u32 bit)
 {
 	bit %= PAD_DELAY_MAX;
@@ -1627,7 +1631,6 @@ static void msdc_init_hw(struct msdc_host *host)
 	clrsetbits_le32(&host->base->sdc_cfg, SDC_CFG_DTOC_M,
 			3 << SDC_CFG_DTOC_S);
 
-
 	host->def_tune_para.iocon = readl(&host->base->msdc_iocon);
 	host->def_tune_para.pad_tune = readl(&host->base->pad_tune);
 }
@@ -1638,6 +1641,11 @@ static void msdc_ungate_clock(struct msdc_host *host)
 	clk_enable(&host->h_clk);
 	if (host->src_clk_cg.dev)
 		clk_enable(&host->src_clk_cg);
+
+	if (host->axi_cg_clk.dev)
+		clk_enable(&host->axi_cg_clk);
+	if (host->ahb_cg_clk.dev)
+		clk_enable(&host->ahb_cg_clk);
 }
 
 static int msdc_drv_probe(struct udevice *dev)
@@ -1650,6 +1658,9 @@ static int msdc_drv_probe(struct udevice *dev)
 	cfg->name = dev->name;
 
 	host->dev_comp = (struct msdc_compatible *)dev_get_driver_data(dev);
+
+	if (host->dev_comp->use_internal_cd)
+		host->builtin_cd = 1;
 
 	host->src_clk_freq = clk_get_rate(&host->src_clk);
 
@@ -1716,18 +1727,31 @@ static int msdc_of_to_plat(struct udevice *dev)
 
 	clk_get_by_name(dev, "source_cg", &host->src_clk_cg); /* optional */
 
+	/* upstream linux clock */
+	clk_get_by_name(dev, "axi_cg", &host->axi_cg_clk); /* optional */
+	clk_get_by_name(dev, "ahb_cg", &host->ahb_cg_clk); /* optional */
+
 #if CONFIG_IS_ENABLED(DM_GPIO)
 	gpio_request_by_name(dev, "wp-gpios", 0, &host->gpio_wp, GPIOD_IS_IN);
 	gpio_request_by_name(dev, "cd-gpios", 0, &host->gpio_cd, GPIOD_IS_IN);
 #endif
 
 	host->hs400_ds_delay = dev_read_u32_default(dev, "hs400-ds-delay", 0);
-	host->hs200_cmd_int_delay =
-			dev_read_u32_default(dev, "cmd_int_delay", 0);
+	if (dev_read_u32(dev, "mediatek,hs200-cmd-int-delay",
+			 &host->hs200_cmd_int_delay))
+		host->hs200_cmd_int_delay =
+				dev_read_u32_default(dev, "cmd_int_delay", 0);
+
 	host->hs200_write_int_delay =
 			dev_read_u32_default(dev, "write_int_delay", 0);
-	host->latch_ck = dev_read_u32_default(dev, "latch-ck", 0);
+
+	if (dev_read_u32(dev, "mediatek,latch-ck", &host->latch_ck))
+		host->latch_ck = dev_read_u32_default(dev, "latch-ck", 0);
+
 	host->r_smpl = dev_read_u32_default(dev, "r_smpl", 0);
+	if (dev_read_bool(dev, "mediatek,hs400-cmd-resp-sel-rising"))
+		host->r_smpl = 1;
+
 	host->builtin_cd = dev_read_u32_default(dev, "builtin-cd", 0);
 	host->cd_active_high = dev_read_bool(dev, "cd-active-high");
 
@@ -1760,7 +1784,7 @@ static const struct dm_mmc_ops msdc_ops = {
 	.set_ios = msdc_ops_set_ios,
 	.get_cd = msdc_ops_get_cd,
 	.get_wp = msdc_ops_get_wp,
-#ifdef MMC_SUPPORTS_TUNING
+#if CONFIG_IS_ENABLED(MMC_SUPPORTS_TUNING)
 	.execute_tuning = msdc_execute_tuning,
 #endif
 	.wait_dat0 = msdc_ops_wait_dat0,
@@ -1776,6 +1800,7 @@ static const struct msdc_compatible mt7620_compat = {
 	.enhance_rx = false,
 	.builtin_pad_ctrl = true,
 	.default_pad_dly = true,
+	.use_internal_cd = true,
 };
 
 static const struct msdc_compatible mt7621_compat = {
@@ -1806,7 +1831,7 @@ static const struct msdc_compatible mt7623_compat = {
 	.data_tune = true,
 	.busy_check = false,
 	.stop_clk_fix = false,
-	.enhance_rx = false
+	.enhance_rx = false,
 };
 
 static const struct msdc_compatible mt7986_compat = {

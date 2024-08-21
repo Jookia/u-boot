@@ -5,6 +5,8 @@
  * Adapted from coreboot src/arch/x86/smbios.c
  */
 
+#define LOG_CATEGORY	LOGC_BOARD
+
 #include <dm.h>
 #include <env.h>
 #include <linux/stringify.h>
@@ -20,6 +22,7 @@
 #include <cpu.h>
 #include <dm/uclass-internal.h>
 #endif
+#include <linux/sizes.h>
 
 /* Safeguard for checking that U_BOOT_VERSION_NUM macros are compatible with U_BOOT_DMI */
 #if U_BOOT_VERSION_NUM < 2000 || U_BOOT_VERSION_NUM > 2099 || \
@@ -346,7 +349,13 @@ static int smbios_write_type0(ulong *current, int handle,
 #endif
 	t->bios_release_date = smbios_add_prop(ctx, NULL, U_BOOT_DMI_DATE);
 #ifdef CONFIG_ROM_SIZE
-	t->bios_rom_size = (CONFIG_ROM_SIZE / 65536) - 1;
+	if (CONFIG_ROM_SIZE < SZ_16M) {
+		t->bios_rom_size = (CONFIG_ROM_SIZE / 65536) - 1;
+	} else {
+		/* CONFIG_ROM_SIZE < 8 GiB */
+		t->bios_rom_size = 0xff;
+		t->extended_bios_rom_size = CONFIG_ROM_SIZE >> 20;
+	}
 #endif
 	t->bios_characteristics = BIOS_CHARACTERISTICS_PCI_SUPPORTED |
 				  BIOS_CHARACTERISTICS_SELECTABLE_BOOT |
@@ -383,8 +392,12 @@ static int smbios_write_type1(ulong *current, int handle,
 	memset(t, 0, sizeof(struct smbios_type1));
 	fill_smbios_header(t, SMBIOS_SYSTEM_INFORMATION, len, handle);
 	smbios_set_eos(ctx, t->eos);
-	t->manufacturer = smbios_add_prop(ctx, "manufacturer", NULL);
-	t->product_name = smbios_add_prop(ctx, "product", NULL);
+	t->manufacturer = smbios_add_prop_si(ctx, "manufacturer",
+					     SYSINFO_ID_SMBIOS_SYSTEM_MANUFACTURER,
+					     NULL);
+	t->product_name = smbios_add_prop_si(ctx, "product",
+					     SYSINFO_ID_SMBIOS_SYSTEM_PRODUCT,
+					     NULL);
 	t->version = smbios_add_prop_si(ctx, "version",
 					SYSINFO_ID_SMBIOS_SYSTEM_VERSION,
 					NULL);
@@ -392,11 +405,15 @@ static int smbios_write_type1(ulong *current, int handle,
 		t->serial_number = smbios_add_prop(ctx, NULL, serial_str);
 		strncpy((char *)t->uuid, serial_str, sizeof(t->uuid));
 	} else {
-		t->serial_number = smbios_add_prop(ctx, "serial", NULL);
+		t->serial_number = smbios_add_prop_si(ctx, "serial",
+						      SYSINFO_ID_SMBIOS_SYSTEM_SERIAL,
+						      NULL);
 	}
 	t->wakeup_type = SMBIOS_WAKEUP_TYPE_UNKNOWN;
-	t->sku_number = smbios_add_prop(ctx, "sku", NULL);
-	t->family = smbios_add_prop(ctx, "family", NULL);
+	t->sku_number = smbios_add_prop_si(ctx, "sku",
+					   SYSINFO_ID_SMBIOS_SYSTEM_SKU, NULL);
+	t->family = smbios_add_prop_si(ctx, "family",
+				       SYSINFO_ID_SMBIOS_SYSTEM_FAMILY, NULL);
 
 	len = t->length + smbios_string_table_len(ctx);
 	*current += len;
@@ -415,12 +432,22 @@ static int smbios_write_type2(ulong *current, int handle,
 	memset(t, 0, sizeof(struct smbios_type2));
 	fill_smbios_header(t, SMBIOS_BOARD_INFORMATION, len, handle);
 	smbios_set_eos(ctx, t->eos);
-	t->manufacturer = smbios_add_prop(ctx, "manufacturer", NULL);
-	t->product_name = smbios_add_prop(ctx, "product", NULL);
+	t->manufacturer = smbios_add_prop_si(ctx, "manufacturer",
+					     SYSINFO_ID_SMBIOS_BASEBOARD_MANUFACTURER,
+					     NULL);
+	t->product_name = smbios_add_prop_si(ctx, "product",
+					     SYSINFO_ID_SMBIOS_BASEBOARD_PRODUCT,
+					     NULL);
 	t->version = smbios_add_prop_si(ctx, "version",
 					SYSINFO_ID_SMBIOS_BASEBOARD_VERSION,
 					NULL);
-	t->asset_tag_number = smbios_add_prop(ctx, "asset-tag", NULL);
+
+	t->serial_number = smbios_add_prop_si(ctx, "serial",
+					      SYSINFO_ID_SMBIOS_BASEBOARD_SERIAL,
+					      NULL);
+	t->asset_tag_number = smbios_add_prop_si(ctx, "asset-tag",
+						 SYSINFO_ID_SMBIOS_BASEBOARD_ASSET_TAG,
+						 NULL);
 	t->feature_flags = SMBIOS_BOARD_FEATURE_HOSTING;
 	t->board_type = SMBIOS_BOARD_MOTHERBOARD;
 	t->chassis_handle = handle + 1;
@@ -571,10 +598,20 @@ ulong write_smbios_table(ulong addr)
 	int i;
 
 	ctx.node = ofnode_null();
-	if (IS_ENABLED(CONFIG_OF_CONTROL)) {
+	if (IS_ENABLED(CONFIG_OF_CONTROL) && CONFIG_IS_ENABLED(SYSINFO)) {
 		uclass_first_device(UCLASS_SYSINFO, &ctx.dev);
-		if (ctx.dev)
+		if (ctx.dev) {
+			int ret;
+
 			parent_node = dev_read_subnode(ctx.dev, "smbios");
+			ret = sysinfo_detect(ctx.dev);
+
+			/*
+			 * ignore the error since many boards don't implement
+			 * this and we can still use the info in the devicetree
+			 */
+			ret = log_msg_ret("sys", ret);
+		}
 	} else {
 		ctx.dev = NULL;
 	}

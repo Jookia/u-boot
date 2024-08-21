@@ -6,6 +6,29 @@ config TARGET_EVB_RK3588
 	help
 	  RK3588 EVB is a evaluation board for Rockchp RK3588.
 
+config TARGET_CM3588_NAS_RK3588
+	bool "FriendlyElec CM3588 NAS"
+	select BOARD_LATE_INIT
+	help
+	  The CM3588 NAS by FriendlyElec pairs the CM3588 compute module, based
+	  on the Rockchip RK3588 SoC, with the CM3588 NAS Kit carrier board.
+
+	  Hardware features:
+	  - Rockchip RK3588 SoC
+	  - 4GB/8GB/16GB LPDDR4x RAM
+	  - 0GB/64GB HS400 eMMC
+	  - MicroSD card slot
+	  - 1x RTL8125B 2.5G Ethernet
+	  - 4x M.2 M-Key with PCIe 3.0 x1 (via bifurcation) for NVMe SSDs
+	  - 2x USB 3.0 (USB 3.1 Gen1) Type-A, 1x USB 2.0 Type-A
+	  - 1x USB 3.0 Type-C with DP AltMode support
+	  - 2x HDMI 2.1 out, 1x HDMI in
+	  - MIPI-CSI Connector, MIPI-DSI Connector
+	  - 40-pin GPIO header
+	  - 4 buttons: power, reset, recovery, MASK, user button
+	  - 3.5mm Headphone out, 2.0mm PH-2A Mic in
+	  - 5V Fan connector, PWM beeper, IR receiver, RTC battery connector
+
 config TARGET_JAGUAR_RK3588
 	bool "Theobroma Systems SBC-RK3588-AMR (Jaguar)"
 	select BOARD_LATE_INIT
@@ -77,6 +100,30 @@ config TARGET_NANOPCT6_RK3588
 	  Working Temperature: 0C to 70C
 	  Power: 5.5*2.1mm DC Jack, 12VDC input
 	  Dimensions: 110x80x1.6mm (without case) / 86x114.5x30mm (with case)
+
+config TARGET_NANOPI_R6C_RK3588S
+	bool "FriendlyElec NanoPi R6C"
+	select BOARD_LATE_INIT
+	help
+	  The NanoPi R6C is a SBC by FriendlyElec based on the Rockchip
+	  RK3588s.
+	  It comes with 4GB or 8GB of RAM, a microSD card slot, optional 32GB
+	  eMMC storage, one M.2 M-Key connector, one RTL8211F 1GbE and one
+	  RTL8125 2.5GbE Ethernet port, one USB 2.0 Type-A and one USB 3.0
+	  Type-A port, a HDMI port, a 30-pin GPIO header as well as some
+	  buttons and LEDs.
+
+config TARGET_NANOPI_R6S_RK3588S
+	bool "FriendlyElec NanoPi R6S"
+	select BOARD_LATE_INIT
+	help
+	  The NanoPi R6S is a SBC by FriendlyElec based on the Rockchip
+	  RK3588s.
+	  It comes with 4GB or 8GB of RAM, a microSD card slot, 32GB eMMC
+	  storage, one RTL8211F 1GbE and two RTL8125 2.5GbE Ethernet ports,
+	  one USB 2.0 Type-A and one USB 3.0 Type-A port, a HDMI port, a
+	  12-pin GPIO FPC connector, a fan connector, IR receiver as well
+	  as some buttons and LEDs.
 
 config TARGET_NOVA_RK3588
 	bool "Indiedroid Nova RK3588"
@@ -161,12 +208,95 @@ config TARGET_ROCK5B_RK3588
 	  USB PD over USB Type-C
 	  Size: 100mm x 72mm (Pico-ITX form factor)
 
+config TARGET_ROCK_5_ITX_RK3588
+	bool "Radxa ROCK-5-ITX RK3588 board"
+	select BOARD_LATE_INIT
+	help
+	  Radxa ROCK-5-ITX is a Rockchip RK3588 based SBC (Single Board
+	  Computer) by Radxa in the ITX formfactor.
+
+	  There are variants depending on the DRAM size : from 4G up to 32G.
+
+	  Specification:
+
+	  Rockchip Rk3588 SoC
+	  4x ARM Cortex-A76, 4x ARM Cortex-A55
+	  4/8/16/24/32GB memory LPDDR5
+	  Mali G610MC4 GPU
+	  2x MIPI CSI 2 multiple lanes connector
+	  eMMC
+	  uSD slot (up to 128GB)
+	  M.2 M-key and M.2 E-key connector
+	  4x SATA
+	  2x USB 2.0 + 4x USB 3.0 Type-A, 2x USB 2.0 Panel, 1x USB 3.0 Type-C
+	  2x HDMI 2.1 output, 1x HDMI input
+	  DP via Type-C
+	  2x DSI via PCB connector
+	  2x 2.5 Gbps Ethernet port
+	  Front-panel connectors for audio and case-power, -leds
+	  Powered by either 12V, ATX power-supply or PoE
+
+config TARGET_SIGE7_RK3588
+	bool "ArmSoM Sige7 RK3588 board"
+	select BOARD_LATE_INIT
+	help
+	  ArmSoM Sige7 is a Rockchip RK3588 based SBC (Single Board Computer)
+	  by ArmSoM.
+
+	  There are two variants depending on the DRAM size : 8G and 16G.
+
+	  Specification:
+
+	  Rockchip Rk3588 SoC
+	  4x ARM Cortex-A76, 4x ARM Cortex-A55
+	  8/16GB memory LPDDR4x
+	  Mali G610MC4 GPU
+	  2x MIPI CSI 2 multiple lanes connector
+	  64GB/128GB on board eMMC
+	  uSD slot
+	  1x USB 2.0 Type-A, 1x USB 3.0 Type-A, 1x USB 3.0 Type-C
+	  1x HDMI 2.1 output
+	  2x 2.5 Gbps Ethernet port
+	  40-pin IO header including UART, SPI and I2C
+	  USB PD over USB Type-C
+	  Size: 92mm x 62mm
+
 config TARGET_QUARTZPRO64_RK3588
 	bool "Pine64 QuartzPro64 RK3588 board"
 	select BOARD_LATE_INIT
 	help
 	  Pine64 QuartzPro64 is a Rockchip RK3588 based SBC (Single Board
 	  Computer) by Pine64.
+
+config TARGET_TIGER_RK3588
+	bool "Theobroma Systems SOM-RK3588-Q7 (Tiger)"
+	select BOARD_LATE_INIT
+	help
+	  The RK3588-Q7 SoM is a Qseven-compatible (70mm x 70mm, MXM-230
+	  connector) system-on-module from Theobroma Systems, featuring the
+	  Rockchip RK3588.
+
+	  It provides the following feature set:
+	   * up to 16GB LPDDR4x
+	   * on-module eMMC
+	   * SD card (on a baseboard) via edge connector
+	   * Gigabit Ethernet with on-module GbE PHY
+	   * HDMI/eDP
+	   * MIPI-DSI
+	   * 4x MIPI-CSI (3x on FPC connectors, 1x over Q7)
+	   * HDMI input over FPC connector
+	   * CAN
+	   * USB
+	     - 1x USB 3.0 dual-role (direct connection)
+	     - 2x USB 3.0 host + 1x USB 2.0 host
+	   * PCIe
+	     - 1x PCIe 2.1 Gen3, 4 lanes
+	     - 2xSATA / 2x PCIe 2.1 Gen1, 2 lanes
+	   * on-module ATtiny816 companion controller, implementing:
+	     - low-power RTC functionality (ISL1208 emulation)
+	     - fan controller (AMC6821 emulation)
+	   * on-module Secure Element with Global Platform 2.2.1 compliant
+	     JavaCard environment
 
 config TARGET_TURINGRK1_RK3588
 	bool "Turing Machines RK1 RK3588 board"
@@ -230,15 +360,21 @@ config ROCKCHIP_COMMON_STACK_ADDR
 config TEXT_BASE
 	default 0x00a00000
 
+source "board/armsom/sige7-rk3588/Kconfig"
 source "board/edgeble/neural-compute-module-6/Kconfig"
+source "board/friendlyelec/cm3588-nas-rk3588/Kconfig"
 source "board/friendlyelec/nanopc-t6-rk3588/Kconfig"
+source "board/friendlyelec/nanopi-r6c-rk3588s/Kconfig"
+source "board/friendlyelec/nanopi-r6s-rk3588s/Kconfig"
 source "board/indiedroid/nova/Kconfig"
 source "board/pine64/quartzpro64-rk3588/Kconfig"
 source "board/turing/turing-rk1-rk3588/Kconfig"
 source "board/radxa/rock5a-rk3588s/Kconfig"
 source "board/radxa/rock5b-rk3588/Kconfig"
+source "board/radxa/rock-5-itx-rk3588/Kconfig"
 source "board/rockchip/evb_rk3588/Kconfig"
 source "board/rockchip/toybrick_rk3588/Kconfig"
 source "board/theobroma-systems/jaguar_rk3588/Kconfig"
+source "board/theobroma-systems/tiger_rk3588/Kconfig"
 
 endif

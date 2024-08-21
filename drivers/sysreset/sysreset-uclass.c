@@ -6,7 +6,6 @@
 
 #define LOG_CATEGORY UCLASS_SYSRESET
 
-#include <common.h>
 #include <command.h>
 #include <cpu_func.h>
 #include <dm.h>
@@ -117,7 +116,6 @@ void reset_cpu(void)
 {
 	sysreset_walk_halt(SYSRESET_WARM);
 }
-
 
 #if IS_ENABLED(CONFIG_SYSRESET_CMD_RESET)
 int do_reset(struct cmd_tbl *cmdtp, int flag, int argc, char *const argv[])

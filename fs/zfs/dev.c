@@ -7,8 +7,6 @@
  *	Sysgo AG, <www.elinos.com>, Pavel Bartusek <pba@sysgo.com>
  */
 
-
-#include <common.h>
 #include <config.h>
 #include <fs_internal.h>
 #include <zfs_common.h>

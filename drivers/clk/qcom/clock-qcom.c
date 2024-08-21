@@ -12,7 +12,6 @@
  * Based on Little Kernel driver, simplified
  */
 
-#include <common.h>
 #include <clk-uclass.h>
 #include <dm.h>
 #include <dm/device-internal.h>
@@ -376,7 +375,6 @@ static int qcom_power_set(struct power_domain *pwr, bool on)
 					 (value & GDSC_POWER_DOWN_COMPLETE) ||
 					 !(value & GDSC_PWR_ON_MASK),
 					 GDSC_STATUS_POLL_TIMEOUT_US);
-
 
 	if (ret == -ETIMEDOUT)
 		printf("WARNING: GDSC %lu is stuck during power on/off\n",

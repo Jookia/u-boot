@@ -8,7 +8,6 @@
 
 #define LOG_CATEGORY UCLASS_CLK
 
-#include <common.h>
 #include <clk.h>
 #include <clk-uclass.h>
 #include <dm.h>
@@ -131,7 +130,6 @@ static int clk_get_by_indexed_prop(struct udevice *dev, const char *prop_name,
 		return log_ret(ret);
 	}
 
-
 	return clk_get_by_index_tail(ret, dev_ofnode(dev), &args, "clocks",
 				     index, clk);
 }
@@ -180,7 +178,7 @@ int clk_get_bulk(struct udevice *dev, struct clk_bulk *bulk)
 bulk_get_err:
 	err = clk_release_all(bulk->clks, bulk->count);
 	if (err)
-		debug("%s: could release all clocks for %p\n",
+		debug("%s: could not release all clocks for %p\n",
 		      __func__, dev);
 
 	return ret;
@@ -611,7 +609,7 @@ int clk_enable(struct clk *clk)
 	struct clk *clkp = NULL;
 	int ret;
 
-	debug("%s(clk=%p)\n", __func__, clk);
+	debug("%s(clk=%p name=%s)\n", __func__, clk, clk->dev->name);
 	if (!clk_valid(clk))
 		return 0;
 	ops = clk_dev_ops(clk->dev);
@@ -672,7 +670,7 @@ int clk_disable(struct clk *clk)
 	struct clk *clkp = NULL;
 	int ret;
 
-	debug("%s(clk=%p)\n", __func__, clk);
+	debug("%s(clk=%p name=%s)\n", __func__, clk, clk->dev->name);
 	if (!clk_valid(clk))
 		return 0;
 	ops = clk_dev_ops(clk->dev);

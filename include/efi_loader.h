@@ -21,16 +21,6 @@
 struct blk_desc;
 struct jmp_buf_data;
 
-static inline int guidcmp(const void *g1, const void *g2)
-{
-	return memcmp(g1, g2, sizeof(efi_guid_t));
-}
-
-static inline void *guidcpy(void *dst, const void *src)
-{
-	return memcpy(dst, src, sizeof(efi_guid_t));
-}
-
 #if CONFIG_IS_ENABLED(EFI_LOADER)
 
 /**
@@ -162,7 +152,6 @@ static inline void efi_set_bootdev(const char *dev, const char *devnr,
 #define U_BOOT_EFI_RT_VAR_FILE_GUID \
 	EFI_GUID(0xb2ac5fc9, 0x92b7, 0x4acd, \
 		 0xae, 0xac, 0x11, 0xe8, 0x18, 0xc3, 0x13, 0x0c)
-
 
 /* Use internal device tree when starting UEFI application */
 #define EFI_FDT_USE_INTERNAL NULL
@@ -664,6 +653,10 @@ efi_status_t EFIAPI efi_load_image(bool boot_policy,
 				   void *source_buffer,
 				   efi_uintn_t source_size,
 				   efi_handle_t *image_handle);
+/* Load image from path */
+efi_status_t efi_load_image_from_path(bool boot_policy,
+				      struct efi_device_path *file_path,
+				      void **buffer, efi_uintn_t *size);
 /* Start image */
 efi_status_t EFIAPI efi_start_image(efi_handle_t image_handle,
 				    efi_uintn_t *exit_data_size,
@@ -946,7 +939,7 @@ struct efi_device_path *efi_dp_from_lo(struct efi_load_option *lo,
 				       const efi_guid_t *guid);
 struct efi_device_path *efi_dp_concat(const struct efi_device_path *dp1,
 				      const struct efi_device_path *dp2,
-				      bool split_end_node);
+				      size_t split_end_node);
 struct efi_device_path *search_gpt_dp_node(struct efi_device_path *device_path);
 efi_status_t efi_deserialize_load_option(struct efi_load_option *lo, u8 *data,
 					 efi_uintn_t *size);
@@ -1184,5 +1177,23 @@ efi_status_t efi_disk_get_device_name(const efi_handle_t handle, char *buf, int 
  * This weak function may be overridden for specific architectures.
  */
 void efi_add_known_memory(void);
+
+/**
+ * efi_load_option_dp_join() - join device-paths for load option
+ *
+ * @dp:		in: binary device-path, out: joined device-path
+ * @dp_size:	size of joined device-path
+ * @initrd_dp:	initrd device-path or NULL
+ * @fdt_dp:	device-tree device-path or NULL
+ * Return:	status_code
+ */
+efi_status_t efi_load_option_dp_join(struct efi_device_path **dp,
+				     size_t *dp_size,
+				     struct efi_device_path *initrd_dp,
+				     struct efi_device_path *fdt_dp);
+
+int efi_get_distro_fdt_name(char *fname, int size, int seq);
+
+void efi_load_distro_fdt(efi_handle_t handle, void **fdt, efi_uintn_t *fdt_size);
 
 #endif /* _EFI_LOADER_H */

@@ -19,7 +19,7 @@
 #include <asm/mach-imx/mxc_i2c.h>
 #include <asm/io.h>
 #include <asm/sections.h>
-#include <common.h>
+#include <config.h>
 #include <env.h>
 #include <fsl_esdhc_imx.h>
 #include <i2c.h>
@@ -107,7 +107,6 @@ static iomux_v3_cfg_t const uart1_pads[] = {
 	MX6_PAD_UART1_TX_DATA__UART1_DCE_TX | MUX_PAD_CTRL(UART_PAD_CTRL),
 	MX6_PAD_UART1_RX_DATA__UART1_DCE_RX | MUX_PAD_CTRL(UART_PAD_CTRL),
 };
-
 
 static void setup_iomux_uart(void)
 {
@@ -351,7 +350,6 @@ void board_preboot_os(void)
 #include <linux/libfdt.h>
 #include <spl.h>
 #include <asm/arch/mx6-ddr.h>
-
 
 static struct mx6ul_iomux_grp_regs mx6_grp_ioregs = {
 	.grp_addds = 0x00000030,

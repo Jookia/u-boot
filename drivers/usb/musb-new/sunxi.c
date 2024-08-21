@@ -15,7 +15,6 @@
  *
  * This file is part of the Inventra Controller Driver for Linux.
  */
-#include <common.h>
 #include <clk.h>
 #include <dm.h>
 #include <generic-phy.h>
@@ -429,15 +428,18 @@ static struct musb_hdrc_config musb_config_h3 = {
 	.ram_bits	= SUNXI_MUSB_RAM_BITS,
 };
 
-#if CONFIG_IS_ENABLED(DM_USB_GADGET)
-int dm_usb_gadget_handle_interrupts(struct udevice *dev) {
+static int sunxi_gadget_handle_interrupts(struct udevice *dev)
+{
 	struct sunxi_glue *glue = dev_get_priv(dev);
 	struct musb_host_data *host = &glue->mdata;
 
 	host->host->isr(0, host->host);
 	return 0;
 }
-#endif
+
+static const struct usb_gadget_generic_ops sunxi_gadget_ops = {
+	.handle_interrupts	= sunxi_gadget_handle_interrupts,
+};
 
 static int musb_usb_probe(struct udevice *dev)
 {
@@ -564,6 +566,7 @@ U_BOOT_DRIVER(usb_musb) = {
 	.id		= UCLASS_USB_GADGET_GENERIC,
 #endif
 	.of_match	= sunxi_musb_ids,
+	.ops		= &sunxi_gadget_ops,
 	.probe		= musb_usb_probe,
 	.remove		= musb_usb_remove,
 #ifdef CONFIG_USB_MUSB_HOST

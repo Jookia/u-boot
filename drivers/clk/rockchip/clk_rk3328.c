@@ -3,7 +3,6 @@
  * (C) Copyright 2017 Rockchip Electronics Co., Ltd
  */
 
-#include <common.h>
 #include <bitfield.h>
 #include <clk-uclass.h>
 #include <dm.h>
@@ -334,7 +333,6 @@ void rk3328_configure_cpu(struct rk3328_cru *cru,
 		     pclk_dbg_div << PCLK_DBG_DIV_SHIFT |
 		     aclkm_div << ACLKM_CORE_DIV_SHIFT);
 }
-
 
 static ulong rk3328_i2c_get_clk(struct rk3328_cru *cru, ulong clk_id)
 {

@@ -5,7 +5,6 @@
  * (C) Copyright 2022 Sumit Garg <sumit.garg@linaro.org>
  */
 
-#include <common.h>
 #include <clk-uclass.h>
 #include <dm.h>
 #include <errno.h>
@@ -67,7 +66,6 @@
 #define ETH_AXI_CBCR			(0x4e010)
 #define EMAC_PTP_CMD_RCGR		(0x4e014)
 #define EMAC_CMD_RCGR			(0x4e01c)
-
 
 /* GPLL0 clock control registers */
 #define GPLL0_STATUS_ACTIVE BIT(31)
