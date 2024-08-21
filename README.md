@@ -1,3 +1,11 @@
+Notice
+------
+
+This branch is no longer maintained.
+I've moved all future development to a long term fork.
+
+See the ```jookia_main``` branch for more information.
+
 Jookia's U-Boot
 ---------------
 
