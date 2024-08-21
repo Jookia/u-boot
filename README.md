@@ -1,30 +1,24 @@
 Jookia's U-Boot
 ---------------
 
-This is my branch of U-Boot with features I've either developed or use in my projects.
+This is my fork of U-Boot with out of tree features I use or have developed:
 
-Allwinner D1 and T113 patches:
-- [sunxi: video: Support LCD and HDMI output on H6/D1](https://lore.kernel.org/r/20240420-d1_de2-v1-0-297efca674ba@jookia.org) (branch b4/d1_de2)
-- [pwm: sunxi: Add support Allwinner D1 PWM](https://lore.kernel.org/r/20240518-pwm_d1-v1-0-311fc5fe2248@jookia.org) (branch b4/pwm_d1)
-- [Support SPI NAND booting on the T113](https://lore.kernel.org/r/20240411-spinand-v1-0-62d31bb188e8@jookia.org) (branch b4/spinand)
-- [sunxi: Support UART1 and UART2 on the T113](https://lore.kernel.org/r/20240411-t113serial-v1-0-41ff858a1235@jookia.org) (branch b4/t113serial)
-- [sunxi: video: Support driver model LCDs](https://lore.kernel.org/r/20240614-sunxi_lcd-v1-1-1dc9257b0112@jookia.org) (branch b4/sunxi_lcd)
-- [sunxi: video: Fix lcdc polarity display flags](https://lore.kernel.org/r/20240614-sunxipolarities-v1-0-15bbbf57dfff@jookia.org) (branch b4/sunxipolarities)
+General features:
 
-Platform independent patches:
-- [boot: Pass baud rate to stdout](https://lore.kernel.org/r/20240411-stdout-v1-1-66ebe5bb152f@jookia.org) (branch b4/stdout)
-- [video: add support for MIPI DBI interface](https://lore.kernel.org/r/20240614-mipi_dbi-v1-0-946eb82f8533@jookia.org) (branch b4/mipi_dbi)
-- [video: Add support for NewVision NV3052C SPI panels](https://lore.kernel.org/r/20240614-panel_nv3052c-v1-1-4d94f7abde6a@jookia.org) (branch b4/panel_nv3052c)
+- Serial baud rate is passed to the kernel
+- Support for MIPI DBI panels
+- Support for NewVision NV3052C SPI panels
 
-Cleanup patches:
-- [ubi: Depend on MTD](https://lore.kernel.org/r/20240411-mtd-v1-1-fe300f6ab657@jookia.org) (branch b4/mtd)
-- [spi: Various Kconfig fixes](https://lore.kernel.org/r/20240427-spikconfig-v1-0-8a54772522f4@jookia.org) (branch b4/spikconfig)
+Allwinner D1/T113 features:
 
-Third party patches:
-- [sunxi, usb: UDC/DM gadget model support](https://lore.kernel.org/all/20230608195631.55364-1-CFSworks@gmail.com/) (branch patches/musb-new)
+- SPI NAND booting
+- UART1 and UART2 support
+- LCD video output
+- PWM support
+- Working USB gadget
 
-This branch tracks mainline U-Boot and performs small fixups on the patches. To
-see a list of commits from this branch only use this command:
+This branch tracks mainline U-Boot. To see a list of commits from this branch
+only use this command:
 
 ```
 git log --left-only --oneline jookia_allpatches...master
@@ -41,6 +35,30 @@ git -c gpg.ssh.allowedSignersFile=jookia/allowed_signers log --oneline --show-si
 My key fingerprint is ```SHA256:/gEvgms/9HpbgpcH+K7O4GYXmqkP7siJx9zHeEWRZTg```.
 
 Please verify it by comparing it to my website: https://www.jookia.org/wiki/Keys
+
+Patch graveyard
+---------------
+
+I originally envisioned this repo as a place to hold patches I would mainline,
+but after a mental health event I've decided to abandon that attempt.
+
+Feel free to try and mainline these yourself.
+
+Allwinner D1 and T113 patches:
+- [sunxi: video: Support LCD and HDMI output on H6/D1](https://lore.kernel.org/r/20240420-d1_de2-v1-0-297efca674ba@jookia.org) (branch b4/d1_de2)
+- [pwm: sunxi: Add support Allwinner D1 PWM](https://lore.kernel.org/r/20240518-pwm_d1-v1-0-311fc5fe2248@jookia.org) (branch b4/pwm_d1)
+- [Support SPI NAND booting on the T113](https://lore.kernel.org/r/20240411-spinand-v1-0-62d31bb188e8@jookia.org) (branch b4/spinand)
+- [sunxi: Support UART1 and UART2 on the T113](https://lore.kernel.org/r/20240411-t113serial-v1-0-41ff858a1235@jookia.org) (branch b4/t113serial)
+- [sunxi: video: Support driver model LCDs](https://lore.kernel.org/r/20240614-sunxi_lcd-v1-1-1dc9257b0112@jookia.org) (branch b4/sunxi_lcd)
+- [sunxi: video: Fix lcdc polarity display flags](https://lore.kernel.org/r/20240614-sunxipolarities-v1-0-15bbbf57dfff@jookia.org) (branch b4/sunxipolarities)
+
+Platform independent patches:
+- [boot: Pass baud rate to stdout](https://lore.kernel.org/r/20240411-stdout-v1-1-66ebe5bb152f@jookia.org) (branch b4/stdout)
+- [video: add support for MIPI DBI interface](https://lore.kernel.org/r/20240614-mipi_dbi-v1-0-946eb82f8533@jookia.org) (branch b4/mipi_dbi)
+- [video: Add support for NewVision NV3052C SPI panels](https://lore.kernel.org/r/20240614-panel_nv3052c-v1-1-4d94f7abde6a@jookia.org) (branch b4/panel_nv3052c)
+
+Cleanup patches:
+- [spi: Various Kconfig fixes](https://lore.kernel.org/r/20240427-spikconfig-v1-0-8a54772522f4@jookia.org) (branch b4/spikconfig)
 
 Mainline README
 ---------------
