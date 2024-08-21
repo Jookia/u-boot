@@ -14,7 +14,7 @@ Allwinner D1 and T113 patches:
 Platform independent patches:
 - [boot: Pass baud rate to stdout](https://lore.kernel.org/r/20240411-stdout-v1-1-66ebe5bb152f@jookia.org) (branch b4/stdout)
 - [video: add support for MIPI DBI interface](https://lore.kernel.org/r/20240614-mipi_dbi-v1-0-946eb82f8533@jookia.org) (branch b4/mipi_dbi)
-- [video: Add support for NewVision NV3052C SPI panesl](https://lore.kernel.org/r/20240614-panel_nv3052c-v1-1-4d94f7abde6a@jookia.org) (branch b4/panel_nv3052c)
+- [video: Add support for NewVision NV3052C SPI panels](https://lore.kernel.org/r/20240614-panel_nv3052c-v1-1-4d94f7abde6a@jookia.org) (branch b4/panel_nv3052c)
 
 Cleanup patches:
 - [ubi: Depend on MTD](https://lore.kernel.org/r/20240411-mtd-v1-1-fe300f6ab657@jookia.org) (branch b4/mtd)
