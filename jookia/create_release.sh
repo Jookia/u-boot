@@ -5,17 +5,17 @@
 set -e
 set -x
 TODAY="$(date +"%Y%m%d")"
-FILE=uboot-allpatches-$TODAY.tar.bz2
-sed -i "s/\(PATCHESVERSION = \).*/\1-allpatches$TODAY/g" Makefile
-git commit -m "Bump PATCHESVERSION to -allpatches$TODAY" -s -S Makefile
-git tag -s -m "Release $TODAY" allpatches/$TODAY
+FILE=uboot-jookia-$TODAY.tar.bz2
+sed -i "s/\(PATCHESVERSION = \).*/\1-jookia$TODAY/g" Makefile
+git commit -m "Bump PATCHESVERSION to -jookia$TODAY" -s -S Makefile
+git tag -s -m "Release $TODAY" jookia/$TODAY
 mkdir -p release/
-git archive --format=tar --prefix=uboot-allpatches-$TODAY/ HEAD | \
+git archive --format=tar --prefix=uboot-jookia-$TODAY/ HEAD | \
 	bzip2 > release/$FILE
 cp jookia/allowed_signers release
 ssh-keygen -Y sign -f ~/.ssh/id_ed25519_sk_solo.pub -n file release/$FILE
 (cd release; sha256sum * > sha256sums)
-git push mine jookia_allpatches allpatches/$TODAY
+git push mine jookia_main jookia/$TODAY
 cat <<EOF >release/GITHUB
 (add some comment here)
 

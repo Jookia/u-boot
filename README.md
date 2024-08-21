@@ -21,7 +21,7 @@ This branch tracks mainline U-Boot. To see a list of commits from this branch
 only use this command:
 
 ```
-git log --left-only --oneline jookia_allpatches...master
+git log --left-only --oneline jookia_main...master
 ```
 
 I regularly sign my Git commits with my hardware SSH key, if you would like to
