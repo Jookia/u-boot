@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0
-// Copyright 2022 Jookia <contact@jookia.org>
+// Copyright 2024 John Watts <contact@jookia.org>
 /*
  * The Allwinner D1's PWM channels are paired 16-bit counters.
  *
