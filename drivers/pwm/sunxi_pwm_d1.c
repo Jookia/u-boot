@@ -438,7 +438,7 @@ static int sunxi_pwm_d1_of_to_plat(struct udevice *dev)
 {
 	struct sunxi_pwm_d1_priv *priv = dev_get_priv(dev);
 	struct clk *clk_hosc;
-	struct clk *clk_apb0;
+	struct clk *clk_apb;
 	int ret;
 
 	priv->base = dev_read_addr_ptr(dev);
@@ -471,16 +471,16 @@ static int sunxi_pwm_d1_of_to_plat(struct udevice *dev)
 		return PTR_ERR(clk_hosc);
 	}
 
-	clk_apb0 = devm_clk_get(dev, "apb0");
+	clk_apb = devm_clk_get(dev, "apb");
 
-	if (IS_ERR(clk_apb0)) {
-		dev_err(dev, "failed to get apb0 clock: %ld",
-			PTR_ERR(clk_apb0));
-		return PTR_ERR(clk_apb0);
+	if (IS_ERR(clk_apb)) {
+		dev_err(dev, "failed to get apb clock: %ld",
+			PTR_ERR(clk_apb));
+		return PTR_ERR(clk_apb);
 	}
 
 	priv->clk_srcs[0] = clk_hosc;
-	priv->clk_srcs[1] = clk_apb0;
+	priv->clk_srcs[1] = clk_apb;
 	priv->clk_srcs[2] = NULL;
 
 	priv->reset = devm_reset_control_get(dev, NULL);

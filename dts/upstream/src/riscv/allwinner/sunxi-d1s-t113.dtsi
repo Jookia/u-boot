@@ -151,7 +151,7 @@
 			clocks = <&ccu CLK_BUS_PWM>,
 				 <&dcxo>,
 				 <&ccu CLK_APB0>;
-			clock-names = "bus", "hosc", "apb0";
+			clock-names = "bus", "hosc", "apb";
 			resets = <&ccu RST_BUS_PWM>;
 			status = "disabled";
 			#pwm-cells = <0x3>;
