@@ -5,7 +5,6 @@ This is my fork of U-Boot with out of tree features I use or have developed:
 
 General features:
 
-- Serial baud rate is passed to the kernel
 - Support for MIPI DBI panels
 - Support for NewVision NV3052C SPI panels
 
@@ -53,7 +52,6 @@ Allwinner D1 and T113 patches:
 - [sunxi: video: Fix lcdc polarity display flags](https://lore.kernel.org/r/20240614-sunxipolarities-v1-0-15bbbf57dfff@jookia.org)
 
 Platform independent patches:
-- [boot: Pass baud rate to stdout](https://lore.kernel.org/r/20240411-stdout-v1-1-66ebe5bb152f@jookia.org)
 - [video: add support for MIPI DBI interface](https://lore.kernel.org/r/20240614-mipi_dbi-v1-0-946eb82f8533@jookia.org)
 - [video: Add support for NewVision NV3052C SPI panels](https://lore.kernel.org/r/20240614-panel_nv3052c-v1-1-4d94f7abde6a@jookia.org)
 
