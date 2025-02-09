@@ -47,7 +47,7 @@ enum {
 
 static bool from_spl __section(".data");
 
-#ifndef CONFIG_SPL_BUILD
+#ifndef CONFIG_XPL_BUILD
 void save_boot_params(unsigned long r0, unsigned long r1, unsigned long r2,
 		      unsigned long r3)
 {
@@ -181,7 +181,7 @@ static int uart_configs[] = {
 	-1,
 	-1,
 	-1,
-	-1,
+	FUNCMUX_UART5_SDMMC1,  /* UARTE */
 #elif defined(CONFIG_TEGRA114)
 	-1,
 	-1,

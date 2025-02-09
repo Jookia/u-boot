@@ -84,7 +84,7 @@ int board_usb_phy_mode(int port)
 }
 #endif
 
-int dh_setup_mac_address(void)
+int dh_setup_mac_address(struct eeprom_id_page *eip)
 {
 	unsigned char enetaddr[6];
 
@@ -127,8 +127,6 @@ int board_init(void)
 	setbits_le32(&mxc_ccm->CCGR6, 0x1 << MXC_CCM_CCGR6_EMI_SLOW_OFFSET);
 
 	setup_fec_clock();
-
-	regulators_enable_boot_on(_DEBUG);
 
 	return 0;
 }
@@ -173,7 +171,7 @@ int board_late_init(void)
 	u32 hw_code;
 	char buf[16];
 
-	dh_setup_mac_address();
+	dh_setup_mac_address(NULL);
 
 	hw_code = board_get_hwcode();
 

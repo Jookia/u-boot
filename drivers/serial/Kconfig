@@ -539,6 +539,13 @@ config TPL_DEBUG_UART_BASE
 	help
 	  This is the base address of your UART for memory-mapped UARTs for TPL.
 
+config VPL_DEBUG_UART_BASE
+	hex "Base address of UART for VPL"
+	depends on VPL && DEBUG_UART
+	default DEBUG_UART_BASE
+	help
+	  This is the base address of your UART for memory-mapped UARTs for VPL.
+
 config DEBUG_UART_CLOCK
 	int "UART input clock"
 	depends on DEBUG_UART
@@ -913,7 +920,7 @@ config SCIF_CONSOLE
 	depends on SH || ARCH_RENESAS
 	help
 	  Select this to enable Renesas SCIF UART. To operate serial ports
-	  on systems with RCar or SH SoCs, say Y to this option. If unsure,
+	  on systems with R-Car or SH SoCs, say Y to this option. If unsure,
 	  say N.
 
 choice

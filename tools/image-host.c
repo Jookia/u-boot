@@ -535,7 +535,7 @@ fit_image_process_cipher(const char *keydir, void *keydest, void *fit,
 	 * size values
 	 * And, if needed, write the iv in the FIT file
 	 */
-	if (keydest) {
+	if (keydest || (!keydest && !info.ivname)) {
 		ret = info.cipher->add_cipher_data(&info, keydest, fit, node_noffset);
 		if (ret) {
 			fprintf(stderr,
@@ -574,7 +574,7 @@ int fit_image_cipher_data(const char *keydir, void *keydest,
 	}
 
 	/* Get image data and data length */
-	if (fit_image_get_data(fit, image_noffset, &data, &size)) {
+	if (fit_image_get_emb_data(fit, image_noffset, &data, &size)) {
 		fprintf(stderr, "Can't get image data/size\n");
 		return -1;
 	}
@@ -654,7 +654,7 @@ int fit_image_add_verification_data(const char *keydir, const char *keyfile,
 	int noffset;
 
 	/* Get image data and data length */
-	if (fit_image_get_data(fit, image_noffset, &data, &size)) {
+	if (fit_image_get_emb_data(fit, image_noffset, &data, &size)) {
 		fprintf(stderr, "Can't get image data/size\n");
 		return -1;
 	}
@@ -1333,7 +1333,7 @@ int fit_add_verification_data(const char *keydir, const char *keyfile,
 		if (ret) {
 			fprintf(stderr, "Can't add verification data for node '%s' (%s)\n",
 				fdt_get_name(fit, noffset, NULL),
-				fdt_strerror(ret));
+				strerror(-ret));
 			return ret;
 		}
 	}

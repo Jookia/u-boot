@@ -24,7 +24,7 @@ static int dm_test_led_base(struct unit_test_state *uts)
 
 	return 0;
 }
-DM_TEST(dm_test_led_base, UT_TESTF_SCAN_PDATA | UT_TESTF_SCAN_FDT);
+DM_TEST(dm_test_led_base, UTF_SCAN_PDATA | UTF_SCAN_FDT);
 
 /* Test of the LED 'default-state' device tree property */
 static int dm_test_led_default_state(struct unit_test_state *uts)
@@ -41,7 +41,7 @@ static int dm_test_led_default_state(struct unit_test_state *uts)
 
 	return 0;
 }
-DM_TEST(dm_test_led_default_state, UT_TESTF_SCAN_PDATA | UT_TESTF_SCAN_FDT);
+DM_TEST(dm_test_led_default_state, UTF_SCAN_PDATA | UTF_SCAN_FDT);
 
 /* Test of the led uclass using the led_gpio driver */
 static int dm_test_led_gpio(struct unit_test_state *uts)
@@ -66,7 +66,7 @@ static int dm_test_led_gpio(struct unit_test_state *uts)
 
 	return 0;
 }
-DM_TEST(dm_test_led_gpio, UT_TESTF_SCAN_PDATA | UT_TESTF_SCAN_FDT);
+DM_TEST(dm_test_led_gpio, UTF_SCAN_PDATA | UTF_SCAN_FDT);
 
 /* Test that we can toggle LEDs */
 static int dm_test_led_toggle(struct unit_test_state *uts)
@@ -91,7 +91,7 @@ static int dm_test_led_toggle(struct unit_test_state *uts)
 
 	return 0;
 }
-DM_TEST(dm_test_led_toggle, UT_TESTF_SCAN_PDATA | UT_TESTF_SCAN_FDT);
+DM_TEST(dm_test_led_toggle, UTF_SCAN_PDATA | UTF_SCAN_FDT);
 
 /* Test obtaining an LED by label */
 static int dm_test_led_label(struct unit_test_state *uts)
@@ -112,7 +112,7 @@ static int dm_test_led_label(struct unit_test_state *uts)
 
 	return 0;
 }
-DM_TEST(dm_test_led_label, UT_TESTF_SCAN_PDATA | UT_TESTF_SCAN_FDT);
+DM_TEST(dm_test_led_label, UTF_SCAN_PDATA | UTF_SCAN_FDT);
 
 /* Test LED blinking */
 #ifdef CONFIG_LED_BLINK
@@ -135,5 +135,81 @@ static int dm_test_led_blink(struct unit_test_state *uts)
 
 	return 0;
 }
-DM_TEST(dm_test_led_blink, UT_TESTF_SCAN_PDATA | UT_TESTF_SCAN_FDT);
+DM_TEST(dm_test_led_blink, UTF_SCAN_PDATA | UTF_SCAN_FDT);
+#endif
+
+/* Test LED boot */
+#ifdef CONFIG_LED_BOOT
+static int dm_test_led_boot(struct unit_test_state *uts)
+{
+	struct udevice *dev
+
+	/* options/u-boot/boot-led is set to phandle to "sandbox:green" */
+	ut_assertok(led_get_by_label("sandbox:green", &dev));
+	ut_asserteq(LEDST_OFF, led_get_state(dev));
+	ut_assertok(led_boot_on());
+	ut_asserteq(LEDST_ON, led_get_state(dev));
+	ut_assertok(led_boot_off());
+	ut_asserteq(LEDST_OFF, led_get_state(dev));
+
+	return 0;
+}
+DM_TEST(dm_test_led_boot, UTF_SCAN_PDATA | UTF_SCAN_FDT);
+
+/* Test LED boot blink fallback */
+#ifndef CONFIG_LED_BLINK
+static int dm_test_led_boot_blink(struct unit_test_state *uts)
+{
+	struct udevice *dev
+
+	/* options/u-boot/boot-led is set to phandle to "sandbox:green" */
+	ut_assertok(led_get_by_label("sandbox:green", &dev));
+	ut_asserteq(LEDST_OFF, led_get_state(dev));
+	ut_assertok(led_boot_blink());
+	ut_asserteq(LEDST_ON, led_get_state(dev));
+	ut_assertok(led_boot_off());
+	ut_asserteq(LEDST_OFF, led_get_state(dev));
+
+	return 0;
+}
+DM_TEST(dm_test_led_boot_blink, UTF_SCAN_PDATA | UTF_SCAN_FDT);
+#endif
+#endif
+
+/* Test LED activity */
+#ifdef CONFIG_LED_ACTIVITY
+static int dm_test_led_activity(struct unit_test_state *uts)
+{
+	struct udevice *dev
+
+	/* options/u-boot/activity-led is set to phandle to "sandbox:red" */
+	ut_assertok(led_get_by_label("sandbox:red", &dev));
+	ut_asserteq(LEDST_OFF, led_get_state(dev));
+	ut_assertok(led_activity_on());
+	ut_asserteq(LEDST_ON, led_get_state(dev));
+	ut_assertok(led_activity_off());
+	ut_asserteq(LEDST_OFF, led_get_state(dev));
+
+	return 0;
+}
+DM_TEST(dm_test_led_activity, UTF_SCAN_PDATA | UTF_SCAN_FDT);
+
+/* Test LED activity blink fallback */
+#ifndef CONFIG_LED_BLINK
+static int dm_test_led_activityt_blink(struct unit_test_state *uts)
+{
+	struct udevice *dev
+
+	/* options/u-boot/activity-led is set to phandle to "sandbox:red" */
+	ut_assertok(led_get_by_label("sandbox:red", &dev));
+	ut_asserteq(LEDST_OFF, led_get_state(dev));
+	ut_assertok(led_activity_blink());
+	ut_asserteq(LEDST_ON, led_get_state(dev));
+	ut_assertok(led_activity_off());
+	ut_asserteq(LEDST_OFF, led_get_state(dev));
+
+	return 0;
+}
+DM_TEST(dm_test_led_activityt_blink, UTF_SCAN_PDATA | UTF_SCAN_FDT);
+#endif
 #endif

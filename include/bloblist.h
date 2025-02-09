@@ -110,6 +110,7 @@ enum bloblist_tag_t {
 	BLOBLISTT_ACPI_TABLES = 4,
 	BLOBLISTT_TPM_EVLOG = 5,
 	BLOBLISTT_TPM_CRB_BASE = 6,
+	BLOBLISTT_ACPI_PP = 7,
 
 	/* Standard area to allocate blobs used across firmware components */
 	BLOBLISTT_AREA_FIRMWARE = 0x10,
@@ -356,6 +357,7 @@ int bloblist_new(ulong addr, uint size, uint flags, uint align_log2);
  */
 int bloblist_check(ulong addr, uint size);
 
+#if CONFIG_IS_ENABLED(BLOBLIST)
 /**
  * bloblist_finish() - Set up the bloblist for the next U-Boot part
  *
@@ -365,6 +367,12 @@ int bloblist_check(ulong addr, uint size);
  * Return: 0
  */
 int bloblist_finish(void);
+#else
+static inline int bloblist_finish(void)
+{
+	return 0;
+}
+#endif /* BLOBLIST */
 
 /**
  * bloblist_get_stats() - Get information about the bloblist

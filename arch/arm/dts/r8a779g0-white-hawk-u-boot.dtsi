@@ -13,9 +13,23 @@
 	};
 };
 
+&avb1 {
+	status = "disabled";
+};
+
+&avb2 {
+	status = "disabled";
+};
+
 &rpc {
+	bootph-all;
 	flash@0 {
+		bootph-all;
 		spi-tx-bus-width = <1>;
 		spi-rx-bus-width = <1>;
 	};
+};
+
+&qspi0_pins {
+	bootph-all;
 };

@@ -51,7 +51,8 @@ struct dwc3_generic_host_priv {
 };
 
 static int dwc3_generic_probe(struct udevice *dev,
-			      struct dwc3_generic_priv *priv)
+			      struct dwc3_generic_priv *priv,
+			      enum usb_dr_mode mode)
 {
 	int rc;
 	struct dwc3_generic_plat *plat = dev_get_plat(dev);
@@ -62,7 +63,7 @@ static int dwc3_generic_probe(struct udevice *dev,
 
 	dwc3->dev = dev;
 	dwc3->maximum_speed = plat->maximum_speed;
-	dwc3->dr_mode = plat->dr_mode;
+	dwc3->dr_mode = mode;
 #if CONFIG_IS_ENABLED(OF_CONTROL)
 	dwc3_of_parse(dwc3);
 
@@ -197,7 +198,7 @@ static int dwc3_generic_peripheral_probe(struct udevice *dev)
 {
 	struct dwc3_generic_priv *priv = dev_get_priv(dev);
 
-	return dwc3_generic_probe(dev, priv);
+	return dwc3_generic_probe(dev, priv, USB_DR_MODE_PERIPHERAL);
 }
 
 static int dwc3_generic_peripheral_remove(struct udevice *dev)
@@ -241,17 +242,17 @@ static int dwc3_generic_host_probe(struct udevice *dev)
 	struct dwc3_generic_host_priv *priv = dev_get_priv(dev);
 	int rc;
 
-	rc = dwc3_generic_probe(dev, &priv->gen_priv);
+	rc = dwc3_generic_probe(dev, &priv->gen_priv, USB_DR_MODE_HOST);
 	if (rc)
 		return rc;
 
 	rc = device_get_supply_regulator(dev, "vbus-supply", &priv->vbus_supply);
-	if (rc)
+	if (rc && rc != -ENOSYS)
 		debug("%s: No vbus regulator found: %d\n", dev->name, rc);
 
-	/* Only returns an error if regulator is valid and failed to enable due to a driver issue */
+	/* Does not return an error if regulator is invalid - but does so when DM_REGULATOR is disabled */
 	rc = regulator_set_enable_if_allowed(priv->vbus_supply, true);
-	if (rc)
+	if (rc && rc != -ENOSYS)
 		return rc;
 
 	hccr = (struct xhci_hccr *)priv->gen_priv.base;

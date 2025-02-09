@@ -5,7 +5,7 @@
 
 #include <dt-bindings/interrupt-controller/mips-gic.h>
 
-#include "eyeq5-fixed-clocks.dtsi"
+#include <dt-bindings/clock/mobileye,eyeq5-clk.h>
 
 / {
 	#address-cells = <2>;
@@ -17,7 +17,7 @@
 			device_type = "cpu";
 			compatible = "img,i6500";
 			reg = <0>;
-			clocks = <&core0_clk>;
+			clocks = <&olb EQ5C_CPU_CORE0>;
 		};
 	};
 
@@ -64,6 +64,24 @@
 		#interrupt-cells = <1>;
 	};
 
+	xtal: xtal {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <30000000>;
+	};
+
+	pclk: pclk {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <250000000>;  /* 250MHz */
+	};
+
+	tsu_clk: tsu-clk {
+		compatible = "fixed-clock";
+		#clock-cells = <0>;
+		clock-frequency = <125000000>;  /* 125MHz */
+	};
+
 	soc: soc {
 		#address-cells = <2>;
 		#size-cells = <2>;
@@ -76,8 +94,11 @@
 			reg-io-width = <4>;
 			interrupt-parent = <&gic>;
 			interrupts = <GIC_SHARED 6 IRQ_TYPE_LEVEL_HIGH>;
-			clocks  = <&uart_clk>, <&occ_periph>;
+			clocks  = <&olb EQ5C_PER_UART>, <&olb EQ5C_PER_OCC>;
 			clock-names = "uartclk", "apb_pclk";
+			resets = <&olb 0 10>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&uart0_pins>;
 		};
 
 		uart1: serial@900000 {
@@ -86,8 +107,11 @@
 			reg-io-width = <4>;
 			interrupt-parent = <&gic>;
 			interrupts = <GIC_SHARED 6 IRQ_TYPE_LEVEL_HIGH>;
-			clocks  = <&uart_clk>, <&occ_periph>;
+			clocks  = <&olb EQ5C_PER_UART>, <&olb EQ5C_PER_OCC>;
 			clock-names = "uartclk", "apb_pclk";
+			resets = <&olb 0 11>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&uart1_pins>;
 		};
 
 		uart2: serial@a00000 {
@@ -96,8 +120,20 @@
 			reg-io-width = <4>;
 			interrupt-parent = <&gic>;
 			interrupts = <GIC_SHARED 6 IRQ_TYPE_LEVEL_HIGH>;
-			clocks  = <&uart_clk>, <&occ_periph>;
+			clocks  = <&olb EQ5C_PER_UART>, <&olb EQ5C_PER_OCC>;
 			clock-names = "uartclk", "apb_pclk";
+			resets = <&olb 0 12>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&uart2_pins>;
+		};
+
+		olb: system-controller@e00000 {
+			compatible = "mobileye,eyeq5-olb", "syscon";
+			reg = <0 0xe00000 0x0 0x400>;
+			#reset-cells = <2>;
+			#clock-cells = <1>;
+			clocks = <&xtal>;
+			clock-names = "ref";
 		};
 
 		gic: interrupt-controller@140000 {
@@ -117,8 +153,10 @@
 			timer {
 				compatible = "mti,gic-timer";
 				interrupts = <GIC_LOCAL 1 IRQ_TYPE_NONE>;
-				clocks = <&core0_clk>;
+				clocks = <&olb EQ5C_CPU_CORE0>;
 			};
 		};
 	};
 };
+
+#include "eyeq5-pins.dtsi"

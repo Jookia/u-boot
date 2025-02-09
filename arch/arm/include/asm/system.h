@@ -171,7 +171,7 @@ static inline unsigned int current_el(void)
 	return 3 & (el >> 2);
 }
 
-static inline unsigned int get_sctlr(void)
+static inline unsigned long get_sctlr(void)
 {
 	unsigned int el;
 	unsigned long val;
@@ -277,6 +277,16 @@ void protect_secure_region(void);
 void smp_kick_all_cpus(void);
 
 void flush_l3_cache(void);
+
+/**
+ * mmu_map_region() - map a region of previously unmapped memory.
+ * Will be mapped MT_NORMAL & PTE_BLOCK_INNER_SHARE.
+ *
+ * @start: Start address of the region
+ * @size: Size of the region
+ * @emerg: Also map the region in the emergency table
+ */
+void mmu_map_region(phys_addr_t start, u64 size, bool emerg);
 void mmu_change_region_attr(phys_addr_t start, size_t size, u64 attrs);
 
 /*
@@ -383,6 +393,15 @@ void switch_to_hypervisor_ret(void);
 #else
 #define wfi()
 #endif
+
+static inline unsigned long read_mpidr(void)
+{
+	unsigned long val;
+
+	asm volatile("mrc p15, 0, %0, c0, c0, 5" : "=r" (val));
+
+	return val;
+}
 
 static inline unsigned long get_cpsr(void)
 {
@@ -645,22 +664,6 @@ void mmu_set_region_dcache_behaviour_phys(phys_addr_t virt, phys_addr_t phys,
  */
 void mmu_set_region_dcache_behaviour(phys_addr_t start, size_t size,
 				     enum dcache_option option);
-
-#ifdef CONFIG_SYS_NONCACHED_MEMORY
-/**
- * noncached_init() - Initialize non-cached memory region
- *
- * Initialize non-cached memory area. This memory region will be typically
- * located right below the malloc() area and mapped uncached in the MMU.
- *
- * It is called during the generic post-relocation init sequence.
- *
- * Return: 0 if OK
- */
-int noncached_init(void);
-
-phys_addr_t noncached_alloc(size_t size, size_t align);
-#endif /* CONFIG_SYS_NONCACHED_MEMORY */
 
 #endif /* __ASSEMBLY__ */
 

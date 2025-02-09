@@ -40,6 +40,7 @@
 #include <sysreset.h>
 #include <timer.h>
 #include <trace.h>
+#include <upl.h>
 #include <video.h>
 #include <watchdog.h>
 #include <asm/cache.h>
@@ -350,7 +351,7 @@ __weak int arch_setup_dest_addr(void)
 
 static int setup_dest_addr(void)
 {
-	debug("Monitor len: %08lX\n", gd->mon_len);
+	debug("Monitor len: %08x\n", gd->mon_len);
 	/*
 	 * Ram is setup, size stored in gd !!
 	 */
@@ -407,7 +408,7 @@ __weak int arch_reserve_mmu(void)
 
 static int reserve_video_from_videoblob(void)
 {
-	if (IS_ENABLED(CONFIG_SPL_VIDEO_HANDOFF) && spl_phase() > PHASE_SPL) {
+	if (IS_ENABLED(CONFIG_SPL_VIDEO_HANDOFF) && xpl_phase() > PHASE_SPL) {
 		struct video_handoff *ho;
 		int ret = 0;
 
@@ -487,7 +488,7 @@ static int reserve_uboot(void)
 		gd->relocaddr &= ~(65536 - 1);
 	#endif
 
-		debug("Reserving %ldk for U-Boot at: %08lx\n",
+		debug("Reserving %dk for U-Boot at: %08lx\n",
 		      gd->mon_len >> 10, gd->relocaddr);
 	}
 
@@ -511,9 +512,9 @@ static unsigned long reserve_stack_aligned(size_t size)
 static int reserve_noncached(void)
 {
 	/*
-	 * The value of gd->start_addr_sp must match the value of malloc_start
-	 * calculated in board_r.c:initr_malloc(), which is passed to
-	 * dlmalloc.c:mem_malloc_init() and then used by
+	 * The value of gd->start_addr_sp must match the value of
+	 * mem_malloc_start calculated in board_r.c:initr_malloc(), which is
+	 * passed to dlmalloc.c:mem_malloc_init() and then used by
 	 * cache.c:noncached_init()
 	 *
 	 * These calculations must match the code in cache.c:noncached_init()
@@ -574,12 +575,15 @@ static int reserve_fdt(void)
 		 * section, then it will be relocated with other data.
 		 */
 		if (gd->fdt_blob) {
-			gd->fdt_size = ALIGN(fdt_totalsize(gd->fdt_blob), 32);
+			gd->boardf->fdt_size =
+				ALIGN(fdt_totalsize(gd->fdt_blob), 32);
 
-			gd->start_addr_sp = reserve_stack_aligned(gd->fdt_size);
-			gd->new_fdt = map_sysmem(gd->start_addr_sp, gd->fdt_size);
+			gd->start_addr_sp = reserve_stack_aligned(
+				gd->boardf->fdt_size);
+			gd->boardf->new_fdt = map_sysmem(gd->start_addr_sp,
+							 gd->boardf->fdt_size);
 			debug("Reserving %lu Bytes for FDT at: %08lx\n",
-			      gd->fdt_size, gd->start_addr_sp);
+			      gd->boardf->fdt_size, gd->start_addr_sp);
 		}
 	}
 
@@ -589,10 +593,10 @@ static int reserve_fdt(void)
 static int reserve_bootstage(void)
 {
 #ifdef CONFIG_BOOTSTAGE
-	int size = bootstage_get_size();
+	int size = bootstage_get_size(true);
 
 	gd->start_addr_sp = reserve_stack_aligned(size);
-	gd->new_bootstage = map_sysmem(gd->start_addr_sp, size);
+	gd->boardf->new_bootstage = map_sysmem(gd->start_addr_sp, size);
 	debug("Reserving %#x Bytes for bootstage at: %08lx\n", size,
 	      gd->start_addr_sp);
 #endif
@@ -623,8 +627,8 @@ static int reserve_bloblist(void)
 	/* Align to a 4KB boundary for easier reading of addresses */
 	gd->start_addr_sp = ALIGN_DOWN(gd->start_addr_sp -
 				       CONFIG_BLOBLIST_SIZE_RELOC, 0x1000);
-	gd->new_bloblist = map_sysmem(gd->start_addr_sp,
-				      CONFIG_BLOBLIST_SIZE_RELOC);
+	gd->boardf->new_bloblist = map_sysmem(gd->start_addr_sp,
+					      CONFIG_BLOBLIST_SIZE_RELOC);
 #endif
 
 	return 0;
@@ -644,13 +648,6 @@ __weak int arch_setup_bdinfo(void)
 
 int setup_bdinfo(void)
 {
-	struct bd_info *bd = gd->bd;
-
-	if (IS_ENABLED(CONFIG_SYS_HAS_SRAM)) {
-		bd->bi_sramstart = CONFIG_SYS_SRAM_BASE; /* start of SRAM */
-		bd->bi_sramsize = CONFIG_SYS_SRAM_SIZE;  /* size  of SRAM */
-	}
-
 	return arch_setup_bdinfo();
 }
 
@@ -667,10 +664,10 @@ static int init_post(void)
 static int reloc_fdt(void)
 {
 	if (!IS_ENABLED(CONFIG_OF_EMBED)) {
-		if (gd->new_fdt) {
-			memcpy(gd->new_fdt, gd->fdt_blob,
+		if (gd->boardf->new_fdt) {
+			memcpy(gd->boardf->new_fdt, gd->fdt_blob,
 			       fdt_totalsize(gd->fdt_blob));
-			gd->fdt_blob = gd->new_fdt;
+			gd->fdt_blob = gd->boardf->new_fdt;
 		}
 	}
 
@@ -682,15 +679,8 @@ static int reloc_bootstage(void)
 #ifdef CONFIG_BOOTSTAGE
 	if (gd->flags & GD_FLG_SKIP_RELOC)
 		return 0;
-	if (gd->new_bootstage) {
-		int size = bootstage_get_size();
-
-		debug("Copying bootstage from %p to %p, size %x\n",
-		      gd->bootstage, gd->new_bootstage, size);
-		memcpy(gd->new_bootstage, gd->bootstage, size);
-		gd->bootstage = gd->new_bootstage;
-		bootstage_relocate();
-	}
+	if (gd->boardf->new_bootstage)
+		bootstage_relocate(gd->boardf->new_bootstage);
 #endif
 
 	return 0;
@@ -707,10 +697,11 @@ static int reloc_bloblist(void)
 		debug("Not relocating bloblist\n");
 		return 0;
 	}
-	if (gd->new_bloblist) {
+	if (gd->boardf->new_bloblist) {
 		debug("Copying bloblist from %p to %p, size %x\n",
-		      gd->bloblist, gd->new_bloblist, gd->bloblist->total_size);
-		return bloblist_reloc(gd->new_bloblist,
+		      gd->bloblist, gd->boardf->new_bloblist,
+	gd->bloblist->total_size);
+		return bloblist_reloc(gd->boardf->new_bloblist,
 				      CONFIG_BLOBLIST_SIZE_RELOC);
 	}
 #endif
@@ -824,12 +815,18 @@ static int initf_bootstage(void)
 
 static int initf_dm(void)
 {
-#if defined(CONFIG_DM) && CONFIG_IS_ENABLED(SYS_MALLOC_F)
 	int ret;
+
+	if (!CONFIG_IS_ENABLED(SYS_MALLOC_F))
+		return 0;
 
 	bootstage_start(BOOTSTAGE_ID_ACCUM_DM_F, "dm_f");
 	ret = dm_init_and_scan(true);
 	bootstage_accum(BOOTSTAGE_ID_ACCUM_DM_F);
+	if (ret)
+		return ret;
+
+	ret = dm_autoprobe();
 	if (ret)
 		return ret;
 
@@ -838,7 +835,6 @@ static int initf_dm(void)
 		if (ret)
 			return ret;
 	}
-#endif
 
 	return 0;
 }
@@ -859,6 +855,26 @@ __weak int clear_bss(void)
 	return 0;
 }
 
+static int initf_upl(void)
+{
+	struct upl *upl;
+	int ret;
+
+	if (!IS_ENABLED(CONFIG_UPL_IN) || !(gd->flags & GD_FLG_UPL))
+		return 0;
+
+	upl = malloc(sizeof(struct upl));
+	if (upl)
+		ret = upl_read_handoff(upl, oftree_default());
+	if (ret) {
+		printf("UPL handoff: read failure (err=%dE)\n", ret);
+		return ret;
+	}
+	gd_set_upl(upl);
+
+	return 0;
+}
+
 static const init_fnc_t init_sequence_f[] = {
 	setup_mon_len,
 #ifdef CONFIG_OF_CONTROL
@@ -868,6 +884,7 @@ static const init_fnc_t init_sequence_f[] = {
 	trace_early_init,
 #endif
 	initf_malloc,
+	initf_upl,
 	log_init,
 	initf_bootstage,	/* uses its own timer, so does not need DM */
 	event_init,
@@ -1005,8 +1022,11 @@ static const init_fnc_t init_sequence_f[] = {
 
 void board_init_f(ulong boot_flags)
 {
+	struct board_f boardf;
+
 	gd->flags = boot_flags;
-	gd->have_console = 0;
+	gd->flags &= ~GD_FLG_HAVE_CONSOLE;
+	gd->boardf = &boardf;
 
 	if (initcall_run_list(init_sequence_f))
 		hang();

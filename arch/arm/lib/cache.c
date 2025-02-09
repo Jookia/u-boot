@@ -4,8 +4,6 @@
  * Wolfgang Denk, DENX Software Engineering, wd@denx.de.
  */
 
-/* for now: just dummy functions to satisfy the linker */
-
 #include <config.h>
 #include <cpu_func.h>
 #include <log.h>
@@ -62,7 +60,7 @@ int check_cache_range(unsigned long start, unsigned long stop)
 		ok = 0;
 
 	if (!ok) {
-		warn_non_spl("CACHE: Misaligned operation at range [%08lx, %08lx]\n",
+		warn_non_xpl("CACHE: Misaligned operation at range [%08lx, %08lx]\n",
 			     start, stop);
 	}
 

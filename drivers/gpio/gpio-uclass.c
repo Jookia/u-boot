@@ -412,7 +412,7 @@ int dm_gpio_request(struct gpio_desc *desc, const char *label)
 
 static int dm_gpio_requestf(struct gpio_desc *desc, const char *fmt, ...)
 {
-#if !defined(CONFIG_SPL_BUILD) || !CONFIG_IS_ENABLED(USE_TINY_PRINTF)
+#if !defined(CONFIG_XPL_BUILD) || !CONFIG_IS_ENABLED(USE_TINY_PRINTF)
 	va_list args;
 	char buf[40];
 
@@ -461,7 +461,7 @@ int gpio_request(unsigned gpio, const char *label)
  */
 int gpio_requestf(unsigned gpio, const char *fmt, ...)
 {
-#if !defined(CONFIG_SPL_BUILD) || !CONFIG_IS_ENABLED(USE_TINY_PRINTF)
+#if !defined(CONFIG_XPL_BUILD) || !CONFIG_IS_ENABLED(USE_TINY_PRINTF)
 	va_list args;
 	char buf[40];
 
@@ -705,6 +705,9 @@ static int _dm_gpio_set_flags(struct gpio_desc *desc, ulong flags)
 	if (ops->set_flags) {
 		ret = ops->set_flags(dev, desc->offset, flags);
 	} else {
+		if (flags & GPIOD_MASK_PULL)
+			return -EINVAL;
+
 		if (flags & GPIOD_IS_OUT) {
 			bool value = flags & GPIOD_IS_OUT_ACTIVE;
 

@@ -526,13 +526,11 @@ static int spl_spi_load_image(struct spl_image_info *spl_image,
 #if defined(CONFIG_SPL_SPINAND_SUPPORT)
 	case BOOT_DEVICE_SPINAND:
 		spi0_nand_reset();
-		load.read = spi_load_read_nand;
-		spl_set_bl_len(&load, 1);
+		spl_load_init(&load, spi_load_read_nand, NULL, 1);
 		break;
 #endif
 	case BOOT_DEVICE_SPI:
-		load.read = spi_load_read_nor;
-		spl_set_bl_len(&load, 1);
+		spl_load_init(&load, spi_load_read_nor, NULL, 1);
 		allow_raw = true;
 		break;
 	}

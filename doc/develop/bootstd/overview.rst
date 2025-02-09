@@ -103,6 +103,12 @@ provide a `read_bootflow()` method which checks whatever bootdevs it likes, then
 returns the bootflow, if found. Some of these bootmeths may be very slow, if
 they scan a lot of devices.
 
+The extlinux bootmeth also allows for bootmeth specific configuration to be
+set. A bootmeth that wishes to support this provides the `set_property()`
+method. This allows string properties and values to be passed to the bootmeth.
+It is up to the bootmeth to determine what action to take when this method is
+called.
+
 
 Boot process
 ------------
@@ -447,7 +453,7 @@ drivers are bound automatically.
 Command interface
 -----------------
 
-Three commands are available:
+Four commands are available:
 
 `bootdev`
     Allows listing of available bootdevs, selecting a particular one and
@@ -459,8 +465,27 @@ Three commands are available:
     See :doc:`/usage/cmd/bootflow`
 
 `bootmeth`
-    Allow listing of available bootmethds and setting the order in which they
-    are tried. See :doc:`/usage/cmd/bootmeth`
+    Allow listing of available bootmethds, setting the order in which they are
+    tried and bootmeth specific configuration. See :doc:`/usage/cmd/bootmeth`
+
+`bootstd`
+    Allow access to standard boot itself, so far only for listing images across
+    all bootflows. See :doc:`/usage/cmd/bootstd`
+
+Images
+------
+
+Standard boot keeps track of images which can or have been loaded. These are
+kept in a list attached to each bootflow. They can be listed using the
+``bootstd images`` command (see :doc:`/usage/cmd/bootstd`).
+
+For now most bootmeths load their images when scanning. Over time, some may
+adjust to load them only when needed, but in this case the images will still
+be visible.
+
+Once a bootflow has been selected, images for those that are not selected can
+potentially be dropped from the memory map. For now, this is not implemented.
+
 
 .. _BootflowStates:
 

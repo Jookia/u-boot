@@ -72,13 +72,21 @@ int __maybe_unused psu_uboot_init(void)
 	writel(ZYNQMP_PS_SYSMON_ANALOG_BUS_VAL,
 	       ZYNQMP_AMS_PS_SYSMON_ANALOG_BUS);
 
+	/* Disable secure access for boot devices */
+	writel(0x04920492, ZYNQMP_IOU_SECURE_SLCR);
+	writel(0x00920492, ZYNQMP_IOU_SECURE_SLCR + 4);
+
+	/* Enable CCI PMU events */
+	writel(ZYNQMP_CCI_REG_CCI_MISC_CTRL_NIDEN,
+	       ZYNQMP_CCI_REG_CCI_MISC_CTRL);
+
 	/* Delay is required for clocks to be propagated */
 	udelay(1000000);
 	
 	return 0;
 }
 
-#if !defined(CONFIG_SPL_BUILD)
+#if !defined(CONFIG_XPL_BUILD)
 # if defined(CONFIG_DEBUG_UART_BOARD_INIT)
 void board_debug_uart_init(void)
 {
@@ -112,7 +120,7 @@ static int multi_boot(void)
 	return multiboot;
 }
 
-#if defined(CONFIG_SPL_BUILD)
+#if defined(CONFIG_XPL_BUILD)
 static void restore_jtag(void)
 {
 	if (current_el() != 3)
@@ -147,7 +155,7 @@ int board_init(void)
 	int ret;
 #endif
 
-#if defined(CONFIG_SPL_BUILD)
+#if defined(CONFIG_XPL_BUILD)
 	/* Check *at build time* if the filename is an non-empty string */
 	if (sizeof(CONFIG_ZYNQMP_SPL_PM_CFG_OBJ_FILE) > 1)
 		zynqmp_pmufw_load_config_object(zynqmp_pm_cfg_obj,

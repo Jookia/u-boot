@@ -12,8 +12,7 @@
 #include <version_string.h>
 
 /* Declare a new bootdev test */
-#define BOOTSTD_TEST(_name, _flags) \
-		UNIT_TEST(_name, _flags, bootstd_test)
+#define BOOTSTD_TEST(_name, _flags)	UNIT_TEST(_name, _flags, bootstd)
 
 #define NVDATA_START_BLK	((0x400 + 0x400) / MMC_MAX_BLOCK_LEN)
 #define VERSION_START_BLK	((0x400 + 0x800) / MMC_MAX_BLOCK_LEN)
@@ -52,5 +51,13 @@ int bootstd_setup_for_tests(void);
  * Returns: 0 if OK (used), other value on error (not used)
  */
 int bootstd_test_check_mmc_hunter(struct unit_test_state *uts);
+
+/**
+ * bootstd_reset_usb() - Reset the USB subsystem
+ *
+ * Resets USB so that it can be started (and scanning) again. This is useful in
+ * tests which need to use USB.
+ */
+void bootstd_reset_usb(void);
 
 #endif

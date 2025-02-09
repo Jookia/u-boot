@@ -197,7 +197,7 @@ source files that the tool examples:
 
 To run the tool::
 
-    $ tools/binman/fip_util.py  -s /path/to/trusted-firmware-a
+    $ tools/binman/fip_util.py  -s /path/to/arm-trusted-firmware
     Warning: UUID 'UUID_NON_TRUSTED_WORLD_KEY_CERT' is not mentioned in tbbr_config.c file
     Existing code in 'tools/binman/fip_util.py' is up-to-date
 
@@ -862,7 +862,25 @@ The top-level 'fit' node supports the following special properties:
         can be provided as a directory. Each .dtb file in the directory is
         processed, , e.g.::
 
-            fit,fdt-list-dir = "arch/arm/dts
+            fit,fdt-list-dir = "arch/arm/dts";
+
+        In this case the input directories are ignored and all devicetree
+        files must be in that directory.
+
+    fit,sign
+        Enable signing FIT images via mkimage as described in
+        verified-boot.rst. If the property is found, the private keys path
+        is detected among binman include directories and passed to mkimage
+        via  -k flag. All the keys required for signing FIT must be
+        available at time of signing and must be located in single include
+        directory.
+
+    fit,encrypt
+        Enable data encryption in FIT images via mkimage. If the property
+        is found, the keys path is detected among binman include
+        directories and passed to mkimage via  -k flag. All the keys
+        required for encrypting the FIT must be available at the time of
+        encrypting and must be located in a single include directory.
 
 Substitutions
 ~~~~~~~~~~~~~
@@ -884,6 +902,9 @@ Available substitutions for property values in these nodes are:
 DEFAULT-SEQ:
     Sequence number of the default fdt, as provided by the 'default-dt'
     entry argument
+
+DEFAULT-NAME:
+    Name of the default fdt, as provided by the 'default-dt' entry argument
 
 Available operations
 ~~~~~~~~~~~~~~~~~~~~
@@ -946,6 +967,21 @@ You can create config nodes in a similar way::
 This tells binman to create nodes `config-1` and `config-2`, i.e. a config
 for each of your two files.
 
+It is also possible to use NAME in the node names so that the FDT files name
+will be used instead of the sequence number. This can be useful to identify
+easily at runtime in U-Boot, the config to be used::
+
+    configurations {
+        default = "@config-DEFAULT-NAME";
+        @config-NAME {
+            description = "NAME";
+            firmware = "atf";
+            loadables = "uboot";
+            fdt = "fdt-NAME";
+            fit,compatible;    // optional
+        };
+    };
+
 Note that if no devicetree files are provided (with '-a of-list' as above)
 then no nodes will be generated.
 
@@ -978,7 +1014,8 @@ same approach can of course be used for SPL images.
 
 Note that the `of-spl-remove-props` entryarg can be used to indicate
 additional properties to remove. It is often used to remove properties like
-`clock-names` and `pinctrl-names` which are not needed in SPL builds.
+`clock-names` and `pinctrl-names` which are not needed in SPL builds. This
+value is automatically passed to binman by the U-Boot build.
 
 See :ref:`fdtgrep_filter` for more information.
 

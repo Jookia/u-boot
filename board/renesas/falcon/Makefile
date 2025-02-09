@@ -6,8 +6,8 @@
 # SPDX-License-Identifier: GPL-2.0+
 #
 
-ifdef CONFIG_SPL_BUILD
+ifdef CONFIG_XPL_BUILD
 obj-y	:= ../rcar-common/gen3-spl.o
 else
-obj-y	:= falcon.o ../rcar-common/common.o
+obj-y	:= ../rcar-common/gen4-common.o ../rcar-common/common.o
 endif

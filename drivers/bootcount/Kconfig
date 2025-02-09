@@ -13,7 +13,6 @@ if BOOTCOUNT_LIMIT
 choice
 	prompt "Boot count device"
 	default BOOTCOUNT_AM33XX if AM33XX || SOC_DA8XX
-	default BOOTCOUNT_AT91 if AT91SAM9XE
 	default BOOTCOUNT_GENERIC
 
 config BOOTCOUNT_GENERIC
@@ -164,6 +163,13 @@ config DM_BOOTCOUNT_SYSCON
 	  configuration.
 
 	  Accessing the backend is done using the regmap interface.
+
+config DM_BOOTCOUNT_ZYNQMP
+	bool "Support ZynqMP PMUFW as a backing store for bootcount"
+	depends on ARCH_ZYNQMP
+	help
+	  Enable support for the bootcount API by utilising the Persistent
+	  Global General Storage Register 2 of the PMU.
 
 endmenu
 
