@@ -748,6 +748,13 @@ config UART0_PORT_F
 	at the same time, the system can be only booted in the FEL mode.
 	Only enable this if you really know what you are doing.
 
+config UART2_PORT_D
+	bool "UART2 on PD1 and PD2"
+	depends on MACH_SUN8I_R528
+	---help---
+	Use PD1 and PD2 for UART2 on the R528, D1 and T113 chips.
+	Enable this if you need UART2 on these pins.
+
 config OLD_SUNXI_KERNEL_COMPAT
 	bool "Enable workarounds for booting old kernels"
 	---help---
