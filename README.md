@@ -14,7 +14,7 @@ Allwinner D1/T113 features:
 - UART1 and UART2 support
 - LCD video output
 - PWM support
-- Working USB gadget
+- DM USB gadget
 
 This branch tracks mainline U-Boot. To see a list of commits from this branch
 only use this command:
