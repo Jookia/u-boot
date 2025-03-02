@@ -492,10 +492,10 @@ static int sunxi_pwm_d1_of_to_plat(struct udevice *dev)
 	}
 
 	priv->npwm = 8;
-	ret = dev_read_u32(dev, "allwinner,pwm-channels", &priv->npwm);
+	ret = dev_read_u32(dev, "allwinner,npwms", &priv->npwm);
 
 	if (ret < 0 && ret != -EINVAL) {
-		dev_err(dev, "failed to read allwinner,pwm-channels: %d",
+		dev_err(dev, "failed to read allwinner,npwms: %d",
 			ret);
 		return ret;
 	}
