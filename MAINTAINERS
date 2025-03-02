@@ -386,6 +386,14 @@ T:	git https://source.denx.de/u-boot/custodians/u-boot-marvell.git
 F:	drivers/pci/pci-aardvark.c
 F:	drivers/pci/pci_mvebu.c
 
+ARM MARVELL PXA1908
+M:	Duje Mihanović <duje.mihanovic@skole.hr>
+S:	Maintained
+T:	git git://git.dujemihanovic.xyz/u-boot.git
+F:	arch/arm/dts/pxa1908*
+F:	arch/arm/mach-mmp/
+F:	include/configs/pxa1908.h
+
 ARM MARVELL SERIAL DRIVERS
 M:	Pali Rohár <pali@kernel.org>
 M:	Stefan Roese <sr@denx.de>
@@ -663,8 +671,7 @@ F:	drivers/reset/sti-reset.c
 F:	drivers/serial/serial_sti_asc.c
 F:	drivers/sysreset/sysreset_sti.c
 F:	drivers/timer/arm_global_timer.c
-F:	drivers/usb/host/dwc3-sti-glue.c
-F:	include/dwc3-sti-glue.h
+F:	drivers/usb/host/dwc3-sti.c
 F:	include/dt-bindings/clock/stih407-clks.h
 F:	include/dt-bindings/clock/stih410-clks.h
 F:	include/dt-bindings/reset/stih407-resets.h
@@ -1797,6 +1804,13 @@ UUID testing
 M:	Abdellatif El Khlifi <abdellatif.elkhlifi@arm.com>
 S:	Maintained
 F:	test/lib/uuid.c
+
+VBE
+M:	Simon Glass <sjg@chromium.org>
+S:	Maintained
+F:	boot/vbe*
+F:	common/spl_reloc.c
+F:	include/vbe.h
 
 VIDEO
 M:	Anatolij Gustschin <agust@denx.de>
