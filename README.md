@@ -10,7 +10,7 @@ General features:
 
 Allwinner D1/T113 features:
 
-- SPI NAND booting
+- SPI NAND booting (based on work by Icenowy Zheng and Maksim Kiselev)
 - UART1 and UART2 support
 - LCD video output
 - PWM support
