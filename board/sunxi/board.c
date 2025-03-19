@@ -150,6 +150,7 @@ enum env_location env_get_location(enum env_operation op, int prio)
 		if (IS_ENABLED(CONFIG_ENV_IS_IN_MMC))
 			return ENVL_MMC;
 		break;
+	case BOOT_DEVICE_SPINAND:
 	case BOOT_DEVICE_NAND:
 		if (prio == 0 && IS_ENABLED(CONFIG_ENV_IS_IN_UBI))
 			return ENVL_UBI;
