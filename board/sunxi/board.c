@@ -811,6 +811,8 @@ int misc_init_r(void)
 	env_set("fel_booted", NULL);
 	env_set("fel_scriptaddr", NULL);
 	env_set("mmc_bootdev", NULL);
+	env_set("spi_booted", NULL);
+	env_set("spinand_booted", NULL);
 
 	boot = sunxi_get_boot_device();
 	/* determine if we are running in FEL mode */
@@ -822,6 +824,10 @@ int misc_init_r(void)
 		env_set("mmc_bootdev", "0");
 	} else if (boot == BOOT_DEVICE_MMC2) {
 		env_set("mmc_bootdev", "1");
+	} else if (boot == BOOT_DEVICE_SPI) {
+		env_set("spi_booted", "1");
+	} else if (boot == BOOT_DEVICE_SPINAND) {
+		env_set("spinand_booted", "1");
 	}
 
 	/* Set fdtfile to match the FIT configuration chosen in SPL. */
