@@ -34,6 +34,24 @@ My key fingerprint is ```SHA256:/gEvgms/9HpbgpcH+K7O4GYXmqkP7siJx9zHeEWRZTg```.
 
 Please verify it by comparing it to my website: https://www.jookia.org/wiki/Keys
 
+Testing notes
+-------------
+
+I try to test my custom features with each release, but this isn't always
+feasible. Here's a list of features I've tested and which commit I tested.
+
+General features:
+
+- MIPI DBI panel support: 05cd2fcfd2b6a94a on 2025-03-20
+- NewVision NV3052C SPI panels: 05cd2fcfd2b6a94a on 2025-03-20
+
+Allwinner D1/T113 features:
+
+- SPI NAND booting: 05cd2fcfd2b6a94a on 2025-03-20
+- UART1 and UART2 support: 05cd2fcfd2b6a94a on 2025-03-20
+- LCD video support: 05cd2fcfd2b6a94a on 2025-03-20
+- PWM support: 05cd2fcfd2b6a94a on 2025-03-20
+
 Mainline README
 ---------------
 
