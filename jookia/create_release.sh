@@ -5,7 +5,7 @@
 set -e
 set -x
 TODAY="$(date +"%Y%m%d")"
-MERGEBASE="$(git describe --exact-match "$(git merge-base HEAD master)")"
+MERGEBASE="$(git describe --exact-match "$(git merge-base HEAD v2025.04-rc4)")"
 sed -i "s/\(PATCHESVERSION = \).*/\1-jookia$TODAY/g" Makefile
 git commit -m "Bump PATCHESVERSION to -jookia$TODAY" -s -S Makefile
 git tag -s -m "Release $TODAY" jookia/$TODAY
