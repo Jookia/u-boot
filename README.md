@@ -15,11 +15,11 @@ Allwinner D1/T113 features:
 - LCD video output
 - PWM support
 
-This branch tracks mainline U-Boot. To see a list of commits from this branch
-only use this command:
+This branch tracks U-Boot v2025.04-rc4.
+To see a list of commits from this branch only use this command:
 
 ```
-git log --left-only --oneline jookia_main...master
+git log --left-only --oneline jookia_main...v2025.04-rc4
 ```
 
 I regularly sign my Git commits with my hardware SSH key, if you would like to
