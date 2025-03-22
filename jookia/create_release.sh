@@ -10,7 +10,7 @@ sed -i "s/\(PATCHESVERSION = \).*/\1-jookia$TODAY/g" Makefile
 git commit -m "Bump PATCHESVERSION to -jookia$TODAY" -s -S Makefile
 git tag -s -m "Release $TODAY" jookia/$TODAY
 mkdir -p release/
-FILE=uboot-$MERGEBASE-jookia-$TODAY.patch
+FILE=u-boot-$MERGEBASE-jookia-$TODAY.patch
 git diff $MERGEBASE jookia/$TODAY > release/$FILE
 cp jookia/allowed_signers release
 ssh-keygen -Y sign -f ~/.ssh/id_ed25519_sk_solo.pub -n file release/$FILE
