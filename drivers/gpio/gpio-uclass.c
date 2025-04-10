@@ -291,12 +291,15 @@ struct gpio_hog_priv {
 struct gpio_hog_data {
 	int gpiod_flags;
 	int value;
-	u32 val[2];
+	u32 val[OF_MAX_PHANDLE_ARGS];
+	int val_len;
 };
 
 static int gpio_hog_of_to_plat(struct udevice *dev)
 {
 	struct gpio_hog_data *plat = dev_get_plat(dev);
+	size_t val_size = sizeof(plat->val[0]);
+	size_t val_max = sizeof(plat->val) / val_size;
 	const char *nodename;
 	int ret;
 
@@ -312,9 +315,21 @@ static int gpio_hog_of_to_plat(struct udevice *dev)
 		printf("%s: missing gpio-hog state.\n", __func__);
 		return -EINVAL;
 	}
-	ret = dev_read_u32_array(dev, "gpios", plat->val, 2);
+	plat->val_len = dev_read_size(dev, "gpios");
+	if (plat->val_len < 0) {
+		printf("%s: unable to get size for gpios property %d\n",
+		       __func__, ret);
+		return ret;
+	}
+	plat->val_len = plat->val_len / val_size;
+	if (plat->val_len > val_max) {
+		printf("%s: gpios property too large for platform vals %d\n",
+		       __func__, ret);
+		return -EINVAL;
+	}
+	ret = dev_read_u32_array(dev, "gpios", plat->val, plat->val_len);
 	if (ret) {
-		printf("%s: wrong gpios property, 2 values needed %d\n",
+		printf("%s: unable to read gpios property %d\n",
 		       __func__, ret);
 		return ret;
 	}
