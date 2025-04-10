@@ -29,6 +29,13 @@ DECLARE_GLOBAL_DATA_PTR;
 
 #define GPIO_ALLOC_BITS	32
 
+/* Forward definition used by gpio-hog code */
+static int gpio_request_tail(int ret, const char *nodename,
+			     struct ofnode_phandle_args *args,
+			     const char *list_name, int index,
+			     struct gpio_desc *desc, int flags,
+			     bool add_index, struct udevice *gpio_dev);
+
 /**
  * gpio_desc_init() - Initialize the GPIO descriptor
  *
@@ -344,11 +351,17 @@ static int gpio_hog_gpio(struct udevice *dev)
 {
 	struct gpio_hog_data *plat = dev_get_plat(dev);
 	struct gpio_hog_priv *priv = dev_get_priv(dev);
+	struct ofnode_phandle_args args;
 	int ret;
 
-	ret = gpio_dev_request_index(dev->parent, dev->name, "gpio-hog",
-				     plat->val[0], plat->gpiod_flags,
-				     plat->val[1], &priv->gpiod);
+	args.node = ofnode_null();
+	args.args_count = 2;
+	args.args[0] = plat->val[0];
+	args.args[1] = plat->val[1];
+
+	ret = gpio_request_tail(0, dev->name, &args, "gpio-hog",
+				plat->val[0], &priv->gpiod,
+				plat->gpiod_flags, 0, dev->parent);
 	if (ret < 0) {
 		debug("%s: node %s could not get gpio.\n", __func__,
 		      dev->name);
