@@ -340,7 +340,7 @@ static int gpio_hog_of_to_plat(struct udevice *dev)
 	return 0;
 }
 
-static int gpio_hog_probe(struct udevice *dev)
+static int gpio_hog_gpio(struct udevice *dev)
 {
 	struct gpio_hog_data *plat = dev_get_plat(dev);
 	struct gpio_hog_priv *priv = dev_get_priv(dev);
@@ -362,6 +362,18 @@ static int gpio_hog_probe(struct udevice *dev)
 			      dev->name);
 			return ret;
 		}
+	}
+
+	return 0;
+}
+
+static int gpio_hog_probe(struct udevice *dev)
+{
+	int ret = gpio_hog_gpio(dev);
+	if (ret < 0) {
+		debug("%s: node %s failed to hog gpio %d\n", __func__,
+		      dev->name, ret);
+		return ret;
 	}
 
 	return 0;
