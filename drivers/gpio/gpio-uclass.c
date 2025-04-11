@@ -291,8 +291,10 @@ static int gpio_find_and_xlate(struct gpio_desc *desc,
 
 #if CONFIG_IS_ENABLED(GPIO_HOG)
 
+#define MAX_GPIO_HOG 8
+
 struct gpio_hog_priv {
-	struct gpio_desc gpiod;
+	struct gpio_desc gpiod[MAX_GPIO_HOG];
 };
 
 struct gpio_hog_data {
@@ -347,12 +349,13 @@ static int gpio_hog_of_to_plat(struct udevice *dev)
 	return 0;
 }
 
-static int gpio_hog_gpio(struct udevice *dev, int gpio_cells)
+static int gpio_hog_gpio(struct udevice *dev, int gpio_cells, int index)
 {
 	struct gpio_hog_data *plat = dev_get_plat(dev);
 	struct gpio_hog_priv *priv = dev_get_priv(dev);
-	u32 *gpio_val = &plat->val[gpio_cells];
+	u32 *gpio_val = &plat->val[gpio_cells * index];
 	struct ofnode_phandle_args args;
+	bool use_index = (index > 0);
 	int ret;
 
 	args.node = ofnode_null();
@@ -360,9 +363,9 @@ static int gpio_hog_gpio(struct udevice *dev, int gpio_cells)
 	for (int i = 0; i < gpio_cells; ++i)
 		args.args[i] = gpio_val[i];
 
-	ret = gpio_request_tail(0, dev->name, &args, "gpio-hog", 0,
-				&priv->gpiod, plat->gpiod_flags, 0,
-				dev->parent);
+	ret = gpio_request_tail(0, dev->name, &args, "gpio-hog", index,
+				&priv->gpiod[index], plat->gpiod_flags,
+				use_index, dev->parent);
 	if (ret < 0) {
 		debug("%s: node %s could not get gpio.\n", __func__,
 		      dev->name);
@@ -370,7 +373,7 @@ static int gpio_hog_gpio(struct udevice *dev, int gpio_cells)
 	}
 
 	if (plat->gpiod_flags == GPIOD_IS_OUT) {
-		ret = dm_gpio_set_value(&priv->gpiod, plat->value);
+		ret = dm_gpio_set_value(&priv->gpiod[index], plat->value);
 		if (ret < 0) {
 			debug("%s: node %s could not set gpio.\n", __func__,
 			      dev->name);
@@ -383,6 +386,7 @@ static int gpio_hog_gpio(struct udevice *dev, int gpio_cells)
 
 static int gpio_hog_probe(struct udevice *dev)
 {
+	struct gpio_hog_data *plat = dev_get_plat(dev);
 	int gpio_cells;
 	int gpio_count;
 	int ret;
@@ -394,11 +398,21 @@ static int gpio_hog_probe(struct udevice *dev)
 		gpio_cells = 2;
 	}
 
-	ret = gpio_hog_gpio(dev, gpio_cells);
-	if (ret < 0) {
-		debug("%s: node %s failed to hog gpio %d\n", __func__,
-		      dev->name, ret);
-		return ret;
+	gpio_count = plat->val_len / gpio_cells;
+
+	if (gpio_count > MAX_GPIO_HOG) {
+		gpio_count = MAX_GPIO_HOG;
+		debug("%s: node %s has too many gpios, limiting to %i\n",
+		      __func__, dev->name, MAX_GPIO_HOG);
+	}
+
+	for (int i = 0; i < gpio_count; ++i) {
+		ret = gpio_hog_gpio(dev, gpio_cells, i);
+		if (ret < 0) {
+			debug("%s: node %s failed to hog gpio (num %d) %d\n", __func__,
+			      dev->name, i, ret);
+			return ret;
+		}
 	}
 
 	return 0;
@@ -412,7 +426,7 @@ int gpio_hog_lookup_name(const char *name, struct gpio_desc **desc)
 	if (!uclass_get_device_by_name(UCLASS_NOP, name, &dev)) {
 		struct gpio_hog_priv *priv = dev_get_priv(dev);
 
-		*desc = &priv->gpiod;
+		*desc = &priv->gpiod[0];
 		return 0;
 	}
 
