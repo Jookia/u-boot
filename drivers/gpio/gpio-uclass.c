@@ -347,21 +347,22 @@ static int gpio_hog_of_to_plat(struct udevice *dev)
 	return 0;
 }
 
-static int gpio_hog_gpio(struct udevice *dev)
+static int gpio_hog_gpio(struct udevice *dev, int gpio_cells)
 {
 	struct gpio_hog_data *plat = dev_get_plat(dev);
 	struct gpio_hog_priv *priv = dev_get_priv(dev);
+	u32 *gpio_val = &plat->val[gpio_cells];
 	struct ofnode_phandle_args args;
 	int ret;
 
 	args.node = ofnode_null();
-	args.args_count = 2;
-	args.args[0] = plat->val[0];
-	args.args[1] = plat->val[1];
+	args.args_count = gpio_cells;
+	for (int i = 0; i < gpio_cells; ++i)
+		args.args[i] = gpio_val[i];
 
-	ret = gpio_request_tail(0, dev->name, &args, "gpio-hog",
-				plat->val[0], &priv->gpiod,
-				plat->gpiod_flags, 0, dev->parent);
+	ret = gpio_request_tail(0, dev->name, &args, "gpio-hog", 0,
+				&priv->gpiod, plat->gpiod_flags, 0,
+				dev->parent);
 	if (ret < 0) {
 		debug("%s: node %s could not get gpio.\n", __func__,
 		      dev->name);
@@ -382,7 +383,18 @@ static int gpio_hog_gpio(struct udevice *dev)
 
 static int gpio_hog_probe(struct udevice *dev)
 {
-	int ret = gpio_hog_gpio(dev);
+	int gpio_cells;
+	int gpio_count;
+	int ret;
+
+	ret = dev_read_u32(dev->parent, "#gpio-cells", &gpio_cells);
+	if (ret < 0) {
+		debug("%s: node %s could not get gpio-cells, assuming 2. %d\n",
+		      __func__, dev->name, ret);
+		gpio_cells = 2;
+	}
+
+	ret = gpio_hog_gpio(dev, gpio_cells);
 	if (ret < 0) {
 		debug("%s: node %s failed to hog gpio %d\n", __func__,
 		      dev->name, ret);
