@@ -283,9 +283,25 @@ static int sunxi_gpio_get_function(struct udevice *dev, unsigned offset)
 static int sunxi_gpio_xlate(struct udevice *dev, struct gpio_desc *desc,
 			    struct ofnode_phandle_args *args)
 {
+	struct udevice *child;
+	int child_gpio_num = -1;
+	int child_dev_num = -1;
+	int gpio_dev_num = -1;
 	int ret;
 
-	ret = device_get_child(dev, args->args[0], &desc->dev);
+	device_foreach_child(child, dev) {
+		child_dev_num++;
+		if (device_get_uclass_id(child) != UCLASS_GPIO)
+			continue;
+
+		child_gpio_num++;
+		if (child_gpio_num == args->args[0])
+			gpio_dev_num = child_dev_num;
+	}
+	if (gpio_dev_num == -1)
+		return -ENODEV;
+
+	ret = device_get_child(dev, gpio_dev_num, &desc->dev);
 	if (ret)
 		return ret;
 	desc->offset = args->args[1];
