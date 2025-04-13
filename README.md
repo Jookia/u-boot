@@ -5,6 +5,7 @@ This is my fork of U-Boot with out of tree features I use or have developed:
 
 General features:
 
+- Multiple gpio-hog pins support
 - Support for MIPI DBI panels
 - Support for NewVision NV3052C SPI panels
 
@@ -14,6 +15,7 @@ Allwinner D1/T113 features:
 - UART1 and UART2 support
 - LCD video output
 - PWM support
+- gpio-hog support
 
 This branch tracks U-Boot v2025.04.
 To see a list of commits from this branch only use this command:
@@ -44,6 +46,7 @@ General features:
 
 - MIPI DBI panel support: 05cd2fcfd2b6a94a on 2025-03-20
 - NewVision NV3052C SPI panels: 05cd2fcfd2b6a94a on 2025-03-20
+- Multiple gpio-hog pins support: c4e8d9f0b8ac06f1 on 2025-04-13
 
 Allwinner D1/T113 features:
 
@@ -51,6 +54,7 @@ Allwinner D1/T113 features:
 - UART1 and UART2 support: 05cd2fcfd2b6a94a on 2025-03-20
 - LCD video support: 05cd2fcfd2b6a94a on 2025-03-20
 - PWM support: 05cd2fcfd2b6a94a on 2025-03-20
+- gpio-hog support: c4e8d9f0b8ac06f1 on 2025-04-13
 
 Mainline README
 ---------------
