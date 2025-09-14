@@ -618,7 +618,11 @@ static const struct sunxi_pinctrl_function sun20i_d1_pinctrl_functions[] = {
 #else
 	{ "uart2",	7 },	/* PB0-PB1 */
 #endif
+#if IS_ENABLED(CONFIG_UART3_PORT_E)
+	{ "uart3",	5 },	/* PE8-PE9 */
+#else
 	{ "uart3",	7 },	/* PB6-PB7 */
+#endif
 	{ "pwm7",	5 },	/* PD22 */
 };
 

@@ -774,6 +774,13 @@ config UART2_PORT_D
 	Use PD1 and PD2 for UART2 on the R528, D1 and T113 chips.
 	Enable this if you need UART2 on these pins.
 
+config UART3_PORT_E
+	bool "UART3 on PE8 and PE9"
+	depends on MACH_SUN8I_R528
+	---help---
+	Use PE8 and PE9 for UART3 on the R528, D1 and T113 chips.
+	Enable this if you need UART3 on these pins.
+
 config OLD_SUNXI_KERNEL_COMPAT
 	bool "Enable workarounds for booting old kernels"
 	---help---
