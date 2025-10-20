@@ -823,7 +823,16 @@ int misc_init_r(void)
 	} else if (boot == BOOT_DEVICE_MMC1) {
 		env_set("mmc_bootdev", "0");
 	} else if (boot == BOOT_DEVICE_MMC2) {
-		env_set("mmc_bootdev", "1");
+		char str[8];
+		int mmc;
+
+		if (CONFIG_MMC_SUNXI_SLOT_EXTRA != -1)
+			mmc = CONFIG_MMC_SUNXI_SLOT_EXTRA;
+		else
+			mmc = 1;
+
+		snprintf(str, sizeof(str), "%d", mmc);
+		env_set("mmc_bootdev", str);
 	} else if (boot == BOOT_DEVICE_SPI) {
 		env_set("spi_booted", "1");
 	} else if (boot == BOOT_DEVICE_SPINAND) {
