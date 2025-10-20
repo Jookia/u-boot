@@ -524,7 +524,10 @@ int mmc_get_env_dev(void)
 	case BOOT_DEVICE_MMC1:
 		return 0;
 	case BOOT_DEVICE_MMC2:
-		return 1;
+		if (CONFIG_MMC_SUNXI_SLOT_EXTRA != -1)
+			return CONFIG_MMC_SUNXI_SLOT_EXTRA;
+		else
+			return 1;
 	default:
 		return CONFIG_SYS_MMC_ENV_DEV;
 	}
