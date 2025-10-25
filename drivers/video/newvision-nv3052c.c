@@ -15,6 +15,11 @@
 #include <panel.h>
 #include <power/regulator.h>
 
+#define NV3052C_REG_INTERFACE_PIXEL_FORMAT 0x3A
+#define NV3052C_PIXEL_FORMAT_16 0x50
+#define NV3052C_PIXEL_FORMAT_18 0x60
+#define NV3052C_PIXEL_FORMAT_24 0x70
+
 struct nv3052c_reg {
 	u8 cmd;
 	u8 val;
@@ -24,6 +29,7 @@ struct nv3052c_panel_info {
 	struct display_timing default_timing;
 	const struct nv3052c_reg *panel_regs;
 	unsigned int panel_regs_len;
+	bool selectable_pixel_format;
 };
 
 struct nv3052c {
@@ -33,6 +39,7 @@ struct nv3052c {
 	struct udevice *backlight;
 	struct spi_slave *spi;
 	struct mipi_dbi dbi;
+	u8 pixel_format;
 };
 
 static const struct nv3052c_reg ltk035c5444t_panel_regs[] = {
@@ -440,6 +447,7 @@ static const struct nv3052c_panel_info ltk035c5444t_panel_info = {
 	},
 	.panel_regs = ltk035c5444t_panel_regs,
 	.panel_regs_len = ARRAY_SIZE(ltk035c5444t_panel_regs),
+	.selectable_pixel_format = false,
 };
 
 static const struct nv3052c_panel_info fs035vg158_panel_info = {
@@ -457,6 +465,7 @@ static const struct nv3052c_panel_info fs035vg158_panel_info = {
 	},
 	.panel_regs = fs035vg158_panel_regs,
 	.panel_regs_len = ARRAY_SIZE(fs035vg158_panel_regs),
+	.selectable_pixel_format = true,
 };
 
 static const struct nv3052c_panel_info *panel_infos[] = {
@@ -497,6 +506,34 @@ static int nv3052c_panel_get_display_timing(struct udevice *dev,
 	return 0;
 }
 
+static int nv3052c_get_pixel_format(struct udevice *dev, struct nv3052c *priv)
+{
+	bool selectable_format = priv->panel_info->selectable_pixel_format;
+	const char *format_name;
+
+	priv->pixel_format = NV3052C_PIXEL_FORMAT_24;
+
+	if (!selectable_format)
+		return 0;
+
+	format_name = dev_read_string(dev, "pixel-format");
+	if (!format_name)
+		return 0;
+
+	if (!strcmp(format_name, "r5g6b5")) {
+		priv->pixel_format = NV3052C_PIXEL_FORMAT_16;
+	} else if (!strcmp(format_name, "r6g6b6")) {
+		priv->pixel_format = NV3052C_PIXEL_FORMAT_18;
+	} else if (!strcmp(format_name, "r8g8b8")) {
+		priv->pixel_format = NV3052C_PIXEL_FORMAT_24;
+	} else {
+		dev_err(dev, "Unknown pixel format: %s\n", format_name);
+		return -EINVAL;
+	}
+
+	return 0;
+}
+
 static int nv3052c_panel_of_to_plat(struct udevice *dev)
 {
 	struct nv3052c *priv = dev_get_priv(dev);
@@ -526,6 +563,12 @@ static int nv3052c_panel_of_to_plat(struct udevice *dev)
 					   "backlight", &priv->backlight);
 	if (err) {
 		dev_err(dev, "Failed to get backlight: %d\n", err);
+		return err;
+	}
+
+	err = nv3052c_get_pixel_format(dev, priv);
+	if (err) {
+		dev_err(dev, "Unable to get pixel format: %d\n", err);
 		return err;
 	}
 
@@ -569,6 +612,13 @@ static int nv3052c_panel_probe(struct udevice *dev)
 			dev_err(dev, "Unable to set register: %d\n", err);
 			goto err_disable_regulator;
 		}
+	}
+
+	err = mipi_dbi_command(dbi, NV3052C_REG_INTERFACE_PIXEL_FORMAT,
+			       priv->pixel_format);
+	if (err) {
+		dev_err(dev, "Unable to set pixel format: %d\n", err);
+		goto err_disable_regulator;
 	}
 
 	err = mipi_dbi_command(dbi, MIPI_DCS_EXIT_SLEEP_MODE);
