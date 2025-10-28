@@ -494,6 +494,21 @@ static int nv3052c_panel_enable_backlight(struct udevice *dev)
 	return err;
 }
 
+static int nv3052c_panel_set_backlight(struct udevice *dev, int percent)
+{
+	struct nv3052c *priv = dev_get_priv(dev);
+	int ret;
+
+	if (!priv->backlight)
+		return 0;
+
+	ret = backlight_enable(priv->backlight);
+	if (ret)
+		return ret;
+
+	return backlight_set_brightness(priv->backlight, percent);
+}
+
 static int nv3052c_panel_get_display_timing(struct udevice *dev,
 					    struct display_timing *timing)
 {
@@ -638,6 +653,7 @@ err_disable_regulator:
 
 static const struct panel_ops nv3052c_panel_ops = {
 	.enable_backlight = nv3052c_panel_enable_backlight,
+	.set_backlight = nv3052c_panel_set_backlight,
 	.get_display_timing = nv3052c_panel_get_display_timing,
 };
 
