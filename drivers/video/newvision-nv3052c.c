@@ -15,11 +15,6 @@
 #include <panel.h>
 #include <power/regulator.h>
 
-#define NV3052C_REG_INTERFACE_PIXEL_FORMAT 0x3A
-#define NV3052C_PIXEL_FORMAT_16 0x50
-#define NV3052C_PIXEL_FORMAT_18 0x60
-#define NV3052C_PIXEL_FORMAT_24 0x70
-
 struct nv3052c_reg {
 	u8 cmd;
 	u8 val;
@@ -526,7 +521,7 @@ static int nv3052c_get_pixel_format(struct udevice *dev, struct nv3052c *priv)
 	bool selectable_format = priv->panel_info->selectable_pixel_format;
 	const char *format_name;
 
-	priv->pixel_format = NV3052C_PIXEL_FORMAT_24;
+	priv->pixel_format = MIPI_DCS_PIXEL_FMT_24BIT;
 
 	if (!selectable_format)
 		return 0;
@@ -536,11 +531,11 @@ static int nv3052c_get_pixel_format(struct udevice *dev, struct nv3052c *priv)
 		return 0;
 
 	if (!strcmp(format_name, "r5g6b5")) {
-		priv->pixel_format = NV3052C_PIXEL_FORMAT_16;
+		priv->pixel_format = MIPI_DCS_PIXEL_FMT_16BIT;
 	} else if (!strcmp(format_name, "r6g6b6")) {
-		priv->pixel_format = NV3052C_PIXEL_FORMAT_18;
+		priv->pixel_format = MIPI_DCS_PIXEL_FMT_18BIT;
 	} else if (!strcmp(format_name, "r8g8b8")) {
-		priv->pixel_format = NV3052C_PIXEL_FORMAT_24;
+		priv->pixel_format = MIPI_DCS_PIXEL_FMT_24BIT;
 	} else {
 		dev_err(dev, "Unknown pixel format: %s\n", format_name);
 		return -EINVAL;
@@ -629,8 +624,8 @@ static int nv3052c_panel_probe(struct udevice *dev)
 		}
 	}
 
-	err = mipi_dbi_command(dbi, NV3052C_REG_INTERFACE_PIXEL_FORMAT,
-			       priv->pixel_format);
+	err = mipi_dbi_command(dbi, MIPI_DCS_SET_PIXEL_FORMAT,
+			       (priv->pixel_format << 4));
 	if (err) {
 		dev_err(dev, "Unable to set pixel format: %d\n", err);
 		goto err_disable_regulator;
