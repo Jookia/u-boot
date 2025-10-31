@@ -26,8 +26,10 @@ int mipi_dbi_xfer(struct mipi_dbi *dbi, u8 data, int pos, int len)
 	int flags = 0;
 	u8 buf[2];
 
-	/* Mimic Linux's behaviour of pulling CS active each word */
-	flags |= SPI_XFER_ONCE;
+	if (pos == 0)
+		flags |= SPI_XFER_BEGIN;
+	if (pos == len)
+		flags |= SPI_XFER_END;
 
 	buf[0] = (is_data ? 0x80 : 0x00) | (data >> 1);
 	buf[1] = ((data & 0x1) << 7);
