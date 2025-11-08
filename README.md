@@ -6,16 +6,28 @@ This is my fork of U-Boot with out of tree features I use or have developed:
 General features:
 
 - Multiple gpio-hog pins support
-- Support for MIPI DBI panels
-- Support for NewVision NV3052C SPI panels
+
+Video features:
+
+- MIPI DBI panels
+- NewVision NV3052C panels
+- Sitronix ST7701 panels
+- Setting NV3052C and ST7701 panel pixel formats
+- Fascontek FS305VG158 panel
+- Fascontek FS028VG047 panel
 
 Allwinner D1/T113 features:
 
 - SPI NAND booting (based on work by Icenowy Zheng and Maksim Kiselev)
-- UART1 and UART2 support
+- Fixed MMC clock divider (backported from mainline)
+- T113-S4 booting (Thanks Lukas Schmid)
+- UART1 and UART2
+- UART3 on PE8/PE9
 - LCD video output
 - PWM support
 - gpio-hog support
+
+There's numerous other improvements and bugfixes to support these features.
 
 This branch tracks U-Boot v2025.04.
 To see a list of commits from this branch only use this command:
@@ -44,14 +56,24 @@ feasible. Here's a list of features I've tested and which commit I tested.
 
 General features:
 
-- MIPI DBI panel support: 05cd2fcfd2b6a94a on 2025-03-20
-- NewVision NV3052C SPI panels: 05cd2fcfd2b6a94a on 2025-03-20
 - Multiple gpio-hog pins support: c4e8d9f0b8ac06f1 on 2025-04-13
+
+Video features:
+
+- MIPI DBI panels: 2e2b0df0d439cea8 on 2025-10-31
+- NewVision NV3052C panels: 2e2b0df0d439cea8 on 2025-10-31
+- Sitronix ST7701 panels: 2e2b0df0d439cea8 on 2025-10-31
+- Setting NV3052C and ST7701 panel pixel formats: 2e2b0df0d439cea8 on 2025-10-31
+- Fascontek FS305VG158 panel: 2e2b0df0d439cea8 on 2025-10-31
+- Fascontek FS028VG047 panel: 2e2b0df0d439cea8 on 2025-10-31
 
 Allwinner D1/T113 features:
 
 - SPI NAND booting: 05cd2fcfd2b6a94a on 2025-03-20
-- UART1 and UART2 support: 05cd2fcfd2b6a94a on 2025-03-20
+- Fixed MMC clock divider: Hard to judge, assumed to work
+- T113-S4 booting: dd8bfa17cdd0336d on 2025-09-14
+- UART1 and UART2: 05cd2fcfd2b6a94a on 2025-03-20
+- UART3 on PE8/PE9: 991b8f6719cd002e on 2025-09-15
 - LCD video support: 05cd2fcfd2b6a94a on 2025-03-20
 - PWM support: 05cd2fcfd2b6a94a on 2025-03-20
 - gpio-hog support: c4e8d9f0b8ac06f1 on 2025-04-13
