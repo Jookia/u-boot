@@ -20,7 +20,7 @@ Allwinner D1/T113 features:
 
 - SPI NAND booting (based on work by Icenowy Zheng and Maksim Kiselev)
 - Fixed MMC clock divider (backported from mainline)
-- T113-S4 booting (Thanks Lukas Schmid)
+- T113-S4 booting (by Lukas Schmid)
 - UART1 and UART2
 - UART3 on PE8/PE9
 - LCD video output
