@@ -6,7 +6,7 @@ SUBLEVEL =
 EXTRAVERSION =
 NAME =
 
-PATCHESVERSION = -jookia20250413
+PATCHESVERSION = -jookia20251112
 
 # *DOCUMENTATION*
 # To see a list of typical targets execute "make help"
