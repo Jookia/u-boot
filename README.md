@@ -56,27 +56,27 @@ feasible. Here's a list of features I've tested and which commit I tested.
 
 General features:
 
-- Multiple gpio-hog pins support: c4e8d9f0b8ac06f1 on 2025-04-13
+- Multiple gpio-hog pins support: 33c1c3dfc0dd46cd on 2025-11-09
 
 Video features:
 
-- MIPI DBI panels: 2e2b0df0d439cea8 on 2025-10-31
-- NewVision NV3052C panels: 2e2b0df0d439cea8 on 2025-10-31
-- Sitronix ST7701 panels: 2e2b0df0d439cea8 on 2025-10-31
-- Setting NV3052C and ST7701 panel pixel formats: 2e2b0df0d439cea8 on 2025-10-31
-- Fascontek FS305VG158 panel: 2e2b0df0d439cea8 on 2025-10-31
-- Fascontek FS028VG047 panel: 2e2b0df0d439cea8 on 2025-10-31
+- MIPI DBI panels: 33c1c3dfc0dd46cd on 2025-11-09
+- NewVision NV3052C panels: 33c1c3dfc0dd46cd on 2025-11-09
+- Sitronix ST7701 panels: 33c1c3dfc0dd46cd on 2025-11-09
+- Setting NV3052C and ST7701 panel pixel formats: 33c1c3dfc0dd46cd on 2025-11-09
+- Fascontek FS305VG158 panel: 33c1c3dfc0dd46cd on 2025-11-09
+- Fascontek FS028VG047 panel: 33c1c3dfc0dd46cd on 2025-11-09
 
 Allwinner D1/T113 features:
 
-- SPI NAND booting: 05cd2fcfd2b6a94a on 2025-03-20
+- SPI NAND booting: 33c1c3dfc0dd46cd on 2025-11-09
 - Fixed MMC clock divider: Hard to judge, assumed to work
-- T113-S4 booting: dd8bfa17cdd0336d on 2025-09-14
+- T113-S4 booting: 33c1c3dfc0dd46cd on 2025-11-12
 - UART1 and UART2: 05cd2fcfd2b6a94a on 2025-03-20
-- UART3 on PE8/PE9: 991b8f6719cd002e on 2025-09-15
-- LCD video support: 05cd2fcfd2b6a94a on 2025-03-20
-- PWM support: 05cd2fcfd2b6a94a on 2025-03-20
-- gpio-hog support: c4e8d9f0b8ac06f1 on 2025-04-13
+- UART3 on PE8/PE9: 33c1c3dfc0dd46cd on 2025-11-12
+- LCD video support: 33c1c3dfc0dd46cd on 2025-11-09
+- PWM support: 33c1c3dfc0dd46cd on 2025-11-09
+- gpio-hog support: 33c1c3dfc0dd46cd on 2025-11-09
 
 Mainline README
 ---------------
